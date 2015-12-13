@@ -62,55 +62,59 @@ class Table(QTableWidget):
         self.resizeRowsToContents()
         
     def addGame(self, url, html):
-        doc = fromstring(html)
-        data = dict()
-        # Game's name
-        el = doc.xpath("//h1[@class='page-title']")
-        data[COLUMN_NAME] = el[0].findtext('a')
-        # Game's system
-        el = doc.xpath("//title")
-        system = el[0].text
-        system = system.split(data[COLUMN_NAME] + ' for ')[1]
-        data[COLUMN_SYSTEM] = system.split(' - GameFAQs')[0]
-        # Year
-        el = doc.xpath("//div[@class='pod pod_gameinfo']")
-        year = el[0].getchildren()[1].getchildren()[0].getchildren()[3].findtext('a')
-        data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled', year).group()
-        # Rating, votes and final rating
-        el = doc.xpath("//fieldset[@id='js_mygames_rate']")
-        if len(el)>0:
-            rating_str = el[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-            if rating_str == None:
+        try:
+            doc = fromstring(html)
+            data = dict()
+            # Game's name
+            el = doc.xpath("//h1[@class='page-title']")
+            data[COLUMN_NAME] = el[0].findtext('a')
+            # Game's system
+            el = doc.xpath("//title")
+            system = el[0].text
+            system = system.split(data[COLUMN_NAME] + ' for ')[1]
+            data[COLUMN_SYSTEM] = system.split(' - GameFAQs')[0]
+            # Year
+            el = doc.xpath("//div[@class='pod pod_gameinfo']")
+            year = el[0].getchildren()[1].getchildren()[0].getchildren()[3].findtext('a')
+            data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled', year).group()
+            # Rating, votes and final rating
+            el = doc.xpath("//fieldset[@id='js_mygames_rate']")
+            if len(el)>0:
+                rating_str = el[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                if rating_str == None:
+                    data[COLUMN_RATING] = '0.00'
+                    data[COLUMN_VOTES] = '0'
+                else:
+                    data[COLUMN_RATING] = rating_str.split(' / ')[0]
+                    votes_str = el[0].getchildren()[0].getchildren()[0].getchildren()[2].text
+                    data[COLUMN_VOTES] = votes_str.split(' ')[0]   
+            else:
                 data[COLUMN_RATING] = '0.00'
                 data[COLUMN_VOTES] = '0'
+            # Checking that the game is not already in the database
+            rows = self.rowCount()
+            found = False
+            pos = 0
+            while not found and pos < rows:
+                if self.item(pos,headers.index(COLUMN_NAME)).text() == data[COLUMN_NAME] and self.item(pos,headers.index(COLUMN_SYSTEM)).text() == data[COLUMN_SYSTEM]:
+                    found = True
+                pos = pos + 1
+        
+            if found:
+                errorMessage=QErrorMessage(self)
+                errorMessage.showMessage(data[COLUMN_NAME] + ' (' + data[COLUMN_SYSTEM] + ') is already in the database')
             else:
-                data[COLUMN_RATING] = rating_str.split(' / ')[0]
-                votes_str = el[0].getchildren()[0].getchildren()[0].getchildren()[2].text
-                data[COLUMN_VOTES] = votes_str.split(' ')[0]   
-        else:
-            data[COLUMN_RATING] = '0.00'
-            data[COLUMN_VOTES] = '0'
-        # Checking that the game is not already in the database
-        rows = self.rowCount()
-        found = False
-        pos = 0
-        while not found and pos < rows:
-            if self.item(pos,headers.index(COLUMN_NAME)).text() == data[COLUMN_NAME] and self.item(pos,headers.index(COLUMN_SYSTEM)).text() == data[COLUMN_SYSTEM]:
-                found = True
-            pos = pos + 1
-    
-        if found:
+                data[COLUMN_WEIGHTED] = ''
+                data[COLUMN_STATUS] = 'unplayed'
+                data[COLUMN_LABELS] = ''
+                data[COLUMN_NOTES] = ''
+                data[COLUMN_URL] = url
+                self.addGameRow(data)
+                # And recomputing weighted ratins
+                self.compute_final_rating()
+        except:
             errorMessage=QErrorMessage(self)
-            errorMessage.showMessage(data[COLUMN_NAME] + ' (' + data[COLUMN_SYSTEM] + ') is already in the database')
-        else:
-            data[COLUMN_WEIGHTED] = ''
-            data[COLUMN_STATUS] = 'unplayed'
-            data[COLUMN_LABELS] = ''
-            data[COLUMN_NOTES] = ''
-            data[COLUMN_URL] = url
-            self.addGameRow(data)
-            # And recomputing weighted ratins
-            self.compute_final_rating()
+            errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
     
     def addGameRow(self, data):
             # Adding the row, and disabling some of the fields, so
