@@ -63,7 +63,6 @@ class Table(QTableWidget):
         
     def addGame(self, url, html):
         doc = fromstring(html)
-        print(doc)
         data = dict()
         # Game's name
         el = doc.xpath("//h1[@class='page-title']")
@@ -269,7 +268,7 @@ class Table(QTableWidget):
 
     def hide_rows_search(self, text):
         for row in range(0,self.rowCount()):
-            item_text = self.item(row, headers.index(COLUMN_NAME)).text().lower()
+            item_text = str(self.item(row, headers.index(COLUMN_NAME)).text()).lower()
             self.setRowHidden(row, not text in item_text)
             
     def show_all_rows(self):
