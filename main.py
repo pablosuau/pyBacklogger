@@ -160,15 +160,21 @@ class Window(QMainWindow):
                 for i in reversed(range(self.table.rowCount())):
                     self.table.removeRow(i)
                 with open(fileName, 'r') as fp:
-                    progress = QProgressDialog("Loading backlog", "", 0, 0, self)
+                    reader = csv.reader(fp, delimiter=',',quoting=csv.QUOTE_ALL)
+                    rows = sum(1 for row in reader)
+                    reader.close()
+                    reader = csv.reader(fp, delimiter=',',quoting=csv.QUOTE_ALL)
+                    progress = QProgressDialog("Loading backlog", "", 0, rows, self)
                     progress.setCancelButton(None)
                     progress.setWindowModality(Qt.WindowModal)
-                    reader = csv.reader(fp, delimiter=',',quoting=csv.QUOTE_ALL)
+                    i = 0
                     for row in reader:
                         row_dict = dict()
                         for i in range(0,len(headers)): # defined in the table file
                             row_dict[headers[i]] = row[i]
                         self.table.addGameRow(row_dict)
+                        progress.setValue(i+1)
+                        i = i + 1
                     self.table.changed = False
                     
     def reloadScores(self):
