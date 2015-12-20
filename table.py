@@ -48,6 +48,7 @@ class Table(QTableWidget):
         self.changed = False
         self.already_selected = False
         self.already_selected_status = False
+        self.loading = False
         
     def setmydata(self, data): 
         horHeaders = []

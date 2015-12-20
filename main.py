@@ -13,6 +13,10 @@ from filter_dialog import FilterDialog
 from sort_dialog import *
 import copy
 
+import Queue as queue
+import threading
+import time
+
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 
 class Window(QMainWindow):
@@ -65,6 +69,13 @@ class Window(QMainWindow):
         self.already_sort_order = None
         self.previous_search = ''
         
+    def addGameThread(self, url, stop_event, result_queue):
+        req = urllib2.Request(url, headers={'User-Agent' : "Magic Browser"}) 
+        response = urllib2.urlopen(req)
+        html = response.read().decode('ascii','ignore') 
+        result_queue.put(html)
+        stop_event.set()
+        
     def addGame(self):
         # Asking the user for an url
         window = AddGameForm(self)
@@ -80,13 +91,21 @@ class Window(QMainWindow):
                 errorMessage.showMessage('The URL is not a valid GameFAQs one')
             else:
                 # Download the content of the page
-                try:
-                    req = urllib2.Request(url, headers={'User-Agent' : "Magic Browser"}) 
-                    response = urllib2.urlopen(req)
-                    html = response.read().decode('ascii','ignore') 
+                try: 
+                    progress = QProgressDialog("Adding game", "", 0, 0, self)
+                    progress.setCancelButton(None)
+                    progress.show()
+                    progress.setWindowModality(Qt.WindowModal)
+                    q = queue.Queue()
+                    stop_event = threading.Event()
+                    threading.Thread(target=self.addGameThread, args=(url, stop_event, q))
+                    while not stop_event.is_set():
+                        time.sleep(0.1)
+                    html = q.get()
                     self.table.addGame(url, html)
                     self.table.scrollToBottom()
                     self.table.resizeColumnsToContents()
+                    progress.close()
                 except urllib2.URLError as e:
                     print e.reason   
                     errorMessage=QErrorMessage(self)
