@@ -116,12 +116,15 @@ class Table(QTableWidget):
             errorMessage=QErrorMessage(self)
             errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
     
-    def addGameRow(self, data):
+    def addGameRow(self, data, row=None):
             # Adding the row, and disabling some of the fields, so
             # they can not be edited
             # name
-            rows = self.rowCount()
-            self.setRowCount(rows + 1)
+            if row == None:
+                rows = self.rowCount()
+                self.setRowCount(rows + 1)
+            else:
+                rows = row
             item = QtGui.QTableWidgetItem(data[COLUMN_NAME])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_NAME), item)
@@ -249,7 +252,8 @@ class Table(QTableWidget):
         
     def item_changed_callback(self):
         # resizing
-        self.resizeColumnsToContents()
+        if not self.loading:
+            self.resizeColumnsToContents()
         
     def hide_rows(self, labels, status):
         self.already_selected = labels

@@ -85,6 +85,7 @@ class Window(QMainWindow):
                     response = urllib2.urlopen(req)
                     html = response.read().decode('ascii','ignore') 
                     self.table.addGame(url, html)
+                    self.table.scrollToBottom()
                     self.table.resizeColumnsToContents()
                 except urllib2.URLError as e:
                     print e.reason   
@@ -162,20 +163,23 @@ class Window(QMainWindow):
                 with open(fileName, 'r') as fp:
                     reader = csv.reader(fp, delimiter=',',quoting=csv.QUOTE_ALL)
                     rows = sum(1 for row in reader)
-                    reader.close()
-                    reader = csv.reader(fp, delimiter=',',quoting=csv.QUOTE_ALL)
+                    fp.seek(0)
                     progress = QProgressDialog("Loading backlog", "", 0, rows, self)
                     progress.setCancelButton(None)
                     progress.setWindowModality(Qt.WindowModal)
                     i = 0
+                    self.table.setRowCount(rows)
+                    self.table.loading = True
                     for row in reader:
                         row_dict = dict()
-                        for i in range(0,len(headers)): # defined in the table file
-                            row_dict[headers[i]] = row[i]
-                        self.table.addGameRow(row_dict)
+                        for j in range(0,len(headers)): # defined in the table file
+                            row_dict[headers[j]] = row[j]
+                        self.table.addGameRow(row_dict, i)
                         progress.setValue(i+1)
                         i = i + 1
                     self.table.changed = False
+                    self.table.loading = False
+                    self.table.resizeColumnsToContents()
                     
     def reloadScores(self):
         if not self.checkEmpty():
