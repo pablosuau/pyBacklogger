@@ -11,11 +11,7 @@ from table import *
 from add_game_form import *
 from filter_dialog import FilterDialog
 from sort_dialog import *
-import copy
-
-import Queue as queue
-import threading
-import time
+from thread import start_new_thread
 
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 
@@ -68,13 +64,27 @@ class Window(QMainWindow):
         self.already_sorted = None
         self.already_sort_order = None
         self.previous_search = ''
-        
-    def addGameThread(self, url, stop_event, result_queue):
-        req = urllib2.Request(url, headers={'User-Agent' : "Magic Browser"}) 
-        response = urllib2.urlopen(req)
-        html = response.read().decode('ascii','ignore') 
-        result_queue.put(html)
-        stop_event.set()
+    
+    def addGameBackground(self, url):
+        try:
+            req = urllib2.Request(url, headers={'User-Agent' : "Magic Browser"}) 
+            response = urllib2.urlopen(req)
+            self.html = response.read().decode('ascii','ignore')
+        except urllib2.URLError as e:
+            print e.reason   
+            errorMessage=QErrorMessage(self)
+            errorMessage.setWindowTitle('Add game')
+            errorMessage.showMessage('Incorrect URL or not Internet connection')
+        except urllib2.HTTPError as e:
+            print e.code
+            print e.read() 
+            errorMessage=QErrorMessage(self)
+            errorMessage.setWindowTitle('Add game')
+            errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
+        self.table.addGame(url, self.html)
+        self.table.scrollToBottom()
+        self.table.resizeColumnsToContents()
+        self.progress.close()    
         
     def addGame(self):
         # Asking the user for an url
@@ -91,32 +101,11 @@ class Window(QMainWindow):
                 errorMessage.showMessage('The URL is not a valid GameFAQs one')
             else:
                 # Download the content of the page
-                try: 
-                    progress = QProgressDialog("Adding game", "", 0, 0, self)
-                    progress.setCancelButton(None)
-                    progress.show()
-                    progress.setWindowModality(Qt.WindowModal)
-                    q = queue.Queue()
-                    stop_event = threading.Event()
-                    threading.Thread(target=self.addGameThread, args=(url, stop_event, q))
-                    while not stop_event.is_set():
-                        time.sleep(0.1)
-                    html = q.get()
-                    self.table.addGame(url, html)
-                    self.table.scrollToBottom()
-                    self.table.resizeColumnsToContents()
-                    progress.close()
-                except urllib2.URLError as e:
-                    print e.reason   
-                    errorMessage=QErrorMessage(self)
-                    errorMessage.setWindowTitle('Add game')
-                    errorMessage.showMessage('Incorrect URL or not Internet connection')
-                except urllib2.HTTPError as e:
-                    print e.code
-                    print e.read() 
-                    errorMessage=QErrorMessage(self)
-                    errorMessage.setWindowTitle('Add game')
-                    errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
+                self.progress = QProgressDialog("Adding game", "", 0, 0, self)
+                self.progress.setCancelButton(None)
+                self.progress.show()
+                self.progress.setWindowModality(Qt.WindowModal)
+                start_new_thread(self.addGameBackground, (url,))
                     
     def removeGame(self):
         indexes = self.table.selectionModel().selectedRows()
