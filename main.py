@@ -75,6 +75,7 @@ class Window(QMainWindow):
                 req = urllib2.Request(self.url, headers={'User-Agent' : "Magic Browser"}) 
                 response = urllib2.urlopen(req)
                 self.html = response.read().decode('ascii','ignore')
+                self.emit(SIGNAL("htmlRead(QString)"), self.html)
             except urllib2.URLError as e:
                 print e.reason   
                 errorMessage=QErrorMessage(self)
@@ -109,16 +110,16 @@ class Window(QMainWindow):
                 self.progress.setCancelButton(None)
                 self.progress.show()
                 self.progress.setWindowModality(Qt.WindowModal)
-                self.thread = self.AddGameWorker(self.url)
-                self.connect(self.thread, SIGNAL("finished()"), self.updateAddGame)
-                self.connect(self.thread, SIGNAL("terminated()"), self.updateAddGame)
+                self.thread = self.AddGameWorker(self.url, self.table)
+                self.connect(self.thread, SIGNAL("htmlRead(QString)"), self.updateAddGame)
                 self.thread.start()
     
-    def updateAddGame(self):
-                self.table.addGame(self.url, self.html)
+    def updateAddGame(self, html):
+                self.progress.close()
+                self.table.addGame(self.url, html)
                 self.table.scrollToBottom()
                 self.table.resizeColumnsToContents()
-                self.progress.close() 
+                 
                     
     def removeGame(self):
         indexes = self.table.selectionModel().selectedRows()
