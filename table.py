@@ -97,7 +97,7 @@ class Table(QTableWidget):
             found = False
             pos = 0
             while not found and pos < rows:
-                if self.item(pos,headers.index(COLUMN_NAME)).text() == data[COLUMN_NAME] and self.item(pos,headers.index(COLUMN_SYSTEM)).text() == data[COLUMN_SYSTEM]:
+                if self.item(pos,headers.index(COLUMN_URL)).text() == url:
                     found = True
                 pos = pos + 1
         
