@@ -116,7 +116,7 @@ class Window(QMainWindow):
     
     def updateAddGame(self, html):
                 self.progress.close()
-                self.table.addGame(self.url, html)
+                self.table.addGame(self.url, str(html))
                 self.table.scrollToBottom()
                 self.table.resizeColumnsToContents()
                  
