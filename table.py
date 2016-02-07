@@ -304,6 +304,7 @@ class Table(QTableWidget):
             super(Table, self).sortByColumn(column, order)
         
             for row in range(0,self.rowCount()):
-                self.setItem(row, column, None)        
+                self.setItem(row, column, None)   
         else:
             super(Table, self).sortByColumn(column, order)
+        self.changed = True
