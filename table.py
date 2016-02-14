@@ -7,6 +7,7 @@ from label_widget import LabelWidget
 from date_widget import DateWidget
 from status_widget import StatusWidget
 import urllib2
+import numpy as np
 
 COLUMN_NAME = 'Name'
 COLUMN_SYSTEM = 'System'
@@ -63,7 +64,7 @@ class Table(QTableWidget):
         self.resizeRowsToContents()
         
     def addGame(self, url, html):
-        try:
+        #try:
             doc = fromstring(html)
             data = dict()
             # Game's name
@@ -113,9 +114,9 @@ class Table(QTableWidget):
                 self.addGameRow(data)
                 # And recomputing weighted ratins
                 self.compute_final_rating()
-        except:
-            errorMessage=QErrorMessage(self)
-            errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
+        #except:
+        #    errorMessage=QErrorMessage(self)
+        #    errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
     
     def addGameRow(self, data, row=None):
             # Adding the row, and disabling some of the fields, so
@@ -184,29 +185,27 @@ class Table(QTableWidget):
         
     def compute_final_rating(self):
         rows = self.rowCount()
-        elements = 0
-        
         # Computing the mean
-        mean = 0
+        ratings_i = []
+        votes_i = []
         for i in range(0,rows):
-            rating_i = float(self.item(i,headers.index(COLUMN_RATING)).text())
-            votes_i = float(self.item(i,headers.index(COLUMN_VOTES)).text())
-            if votes_i != 0:
-                mean = mean + rating_i
-                elements = elements + 1
-        if elements > 0:
-            mean = mean / elements
+            ratings_i.append(float(self.item(i,headers.index(COLUMN_RATING)).text()))
+            votes_i.append(float(self.item(i,headers.index(COLUMN_VOTES)).text()))
+        ratings_i = np.array(ratings_i)
+        votes_i = np.array(votes_i)
+        non_zeros = np.where(votes_i != 0)[0]  
+        mean = np.mean(ratings_i[non_zeros])
+
+        wr = np.zeros((rows))
+        wr[non_zeros] = (votes_i[non_zeros]/(votes_i[non_zeros] + self.minimum))*ratings_i[non_zeros]
+        wr[non_zeros] = wr[non_zeros] + (self.minimum / (votes_i[non_zeros] + self.minimum))*mean
+        
+        wr_str = np.empty((rows),dtype=str).tolist()
+        wr_str[non_zeros] = ["%.2f" % x for x in wr[non_zeros]]
+        print(wr_str)
         # Computing the weighted rating for all the games again
         for i in range(0,rows):
-            rating_i = float(self.item(i,headers.index(COLUMN_RATING)).text())
-            votes_i = float(self.item(i,headers.index(COLUMN_VOTES)).text())
-            if votes_i != 0:
-                wr = (votes_i/(votes_i + self.minimum))*rating_i
-                wr = wr + (self.minimum / (votes_i + self.minimum))*mean
-                wr = '%.2f' % wr
-            else:
-                wr = ''
-            item = QtGui.QTableWidgetItem(wr)
+            item = QtGui.QTableWidgetItem(wr_str[i])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(i, headers.index(COLUMN_WEIGHTED), item)
          
