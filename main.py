@@ -118,9 +118,7 @@ class Window(QMainWindow):
                 self.progress.close()
                 self.table.addGame(self.url, str(html))
                 self.table.scrollToBottom()
-                self.table.setVisible(False)
-                self.table.resizeColumnsToContents()
-                self.table.setVisible(True)
+                self.table.resizeColumns()
                  
                     
     def removeGame(self):
@@ -146,9 +144,7 @@ class Window(QMainWindow):
             if reply == QtGui.QMessageBox.Yes:
                 for i in range(len(actual_indexes) - 1, -1, -1):
                     self.table.removeRow(actual_indexes[i])
-                self.setVisible(False)
-                self.table.resizeColumnsToContents()
-                self.setVisible(True)
+                self.table.resizeColumns()
                 self.table.changed = True
         else:
             error = QErrorMessage()
@@ -205,9 +201,7 @@ class Window(QMainWindow):
                         i = i + 1
                     self.table.changed = False
                     self.table.loading = False
-                    self.table.setVisible(False)
-                    self.table.resizeColumnsToContents()
-                    self.table.setVisible(True)
+                    self.table.resizeColumns()
                     
     def reloadScores(self):
         if not self.checkEmpty():

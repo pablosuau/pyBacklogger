@@ -47,7 +47,7 @@ class Table(QTableWidget):
         self.itemChanged.connect(self.item_changed_callback)
         
         self.changed = False
-        self.already_selected = False
+        self.already_selected = None
         self.already_selected_status = False
         self.loading = False
         
@@ -60,10 +60,7 @@ class Table(QTableWidget):
                 self.setItem(m, n, newitem)
         self.setHorizontalHeaderLabels(horHeaders)
         
-        self.setVisible(False)
-        self.resizeColumnsToContents()
-        self.resizeRowsToContents()
-        self.setVisible(True)
+        self.resizeColumns()
         
     def addGame(self, url, html):
         try:
@@ -116,6 +113,7 @@ class Table(QTableWidget):
                 self.addGameRow(data)
                 # And recomputing weighted ratins
                 self.compute_final_rating()
+                self.resizeColumns()
         except:
             errorMessage=QErrorMessage(self)
             errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
@@ -258,9 +256,7 @@ class Table(QTableWidget):
     def item_changed_callback(self):
         # resizing
         if not self.loading:
-            self.setVisible(False)
-            self.resizeColumnsToContents()
-            self.setVisible(True)
+            self.resizeColumns()
         
     def hide_rows(self, labels, status):
         self.already_selected = labels
@@ -314,3 +310,9 @@ class Table(QTableWidget):
         else:
             super(Table, self).sortByColumn(column, order)
         self.changed = True
+        
+    def resizeColumns(self):
+        self.setVisible(False)
+        self.resizeColumnsToContents()
+        self.resizeRowsToContents()
+        self.setVisible(True)
