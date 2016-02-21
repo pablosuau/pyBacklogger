@@ -64,7 +64,7 @@ class Table(QTableWidget):
         self.resizeRowsToContents()
         
     def addGame(self, url, html):
-        #try:
+        try:
             doc = fromstring(html)
             data = dict()
             # Game's name
@@ -114,9 +114,9 @@ class Table(QTableWidget):
                 self.addGameRow(data)
                 # And recomputing weighted ratins
                 self.compute_final_rating()
-        #except:
-        #    errorMessage=QErrorMessage(self)
-        #    errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
+        except:
+            errorMessage=QErrorMessage(self)
+            errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
     
     def addGameRow(self, data, row=None):
             # Adding the row, and disabling some of the fields, so
@@ -200,14 +200,12 @@ class Table(QTableWidget):
         wr[non_zeros] = (votes_i[non_zeros]/(votes_i[non_zeros] + self.minimum))*ratings_i[non_zeros]
         wr[non_zeros] = wr[non_zeros] + (self.minimum / (votes_i[non_zeros] + self.minimum))*mean
         
-        wr_str = np.empty((rows),dtype=str).tolist()
+        wr_str = np.zeros((rows),dtype='S4')
         wr_str[non_zeros] = ["%.2f" % x for x in wr[non_zeros]]
-        print(wr_str)
         # Computing the weighted rating for all the games again
         for i in range(0,rows):
-            item = QtGui.QTableWidgetItem(wr_str[i])
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(i, headers.index(COLUMN_WEIGHTED), item)
+            self.item(i, headers.index(COLUMN_WEIGHTED)).setText(wr_str[i])
+            
          
     def reload_scores(self):
         rows = self.rowCount()
