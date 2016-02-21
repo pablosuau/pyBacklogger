@@ -60,8 +60,10 @@ class Table(QTableWidget):
                 self.setItem(m, n, newitem)
         self.setHorizontalHeaderLabels(horHeaders)
         
+        self.setVisible(False)
         self.resizeColumnsToContents()
         self.resizeRowsToContents()
+        self.setVisible(True)
         
     def addGame(self, url, html):
         try:
@@ -251,7 +253,9 @@ class Table(QTableWidget):
     def item_changed_callback(self):
         # resizing
         if not self.loading:
+            self.setVisible(False)
             self.resizeColumnsToContents()
+            self.setVisible(True)
         
     def hide_rows(self, labels, status):
         self.already_selected = labels
