@@ -3,9 +3,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from lxml.html.soupparser import fromstring
 import re
-from label_widget import LabelWidget
-from date_widget import DateWidget
-from status_widget import StatusWidget
+from widgets.label_widget import LabelWidget
+from widgets.date_widget import DateWidget
+from widgets.status_widget import StatusWidget
 import urllib2
 import numpy as np
 

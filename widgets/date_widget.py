@@ -1,7 +1,7 @@
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from date_dialog import DateDialog
+from dialogs.date_dialog import DateDialog
 
 class DateWidget(QtGui.QWidget):
     def __init__(self, text, father):

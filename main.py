@@ -8,9 +8,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from table import *
-from add_game_form import *
-from filter_dialog import FilterDialog
-from sort_dialog import *
+from dialogs.add_game_form import *
+from dialogs.filter_dialog import FilterDialog
+from dialogs.sort_dialog import *
 
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 

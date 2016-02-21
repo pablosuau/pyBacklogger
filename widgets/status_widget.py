@@ -1,7 +1,7 @@
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from status_dialog import StatusDialog
+from dialogs.status_dialog import StatusDialog
 
 class StatusWidget(QtGui.QWidget):
     def __init__(self, text, father):
