@@ -222,6 +222,11 @@ class Table(QTableWidget):
                 response = urllib2.urlopen(req)
                 html = response.read().decode('ascii','ignore') 
                 doc = fromstring(html)
+                # Updating the name, in case it changed
+                el = doc.xpath("//h1[@class='page-title']")
+                name = el[0].findtext('a')
+                self.item(i,headers.index(COLUMN_NAME)).setText(name)
+                # Updating the score
                 el = doc.xpath("//fieldset[@id='js_mygames_rate']")
                 if len(el)>0:
                     rating_str = el[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
