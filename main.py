@@ -9,10 +9,12 @@ from PyQt4.QtGui import *
 
 from table import *
 from dialogs.add_game_form import *
+from dialogs.search_game_form import *
 from dialogs.filter_dialog import FilterDialog
 from dialogs.sort_dialog import *
 
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
+SEARCH_URL = GAMEFAQS_URL + 'search?game='
 
 class Window(QMainWindow):
     def __init__(self, parent=None):   
@@ -98,6 +100,7 @@ class Window(QMainWindow):
         
         if window.ok:
             if window.radio_url.isChecked():
+                self.add_by_url = True
                 # Search by URL
                 self.url = str(window.line_edit.text())
                 if not re.match(r'^[a-zA-Z]+://', self.url):
@@ -108,22 +111,33 @@ class Window(QMainWindow):
                     errorMessage.showMessage('The URL is not a valid GameFAQs one')
                 else:
                     # Download the content of the page
-                    self.progress = QProgressDialog("Adding game", "", 0, 0, self)
-                    self.progress.setCancelButton(None)
-                    self.progress.show()
-                    self.progress.setWindowModality(Qt.WindowModal)
-                    self.thread = self.AddGameWorker(self.url, self.table)
-                    self.connect(self.thread, SIGNAL("htmlRead(QString)"), self.updateAddGame)
-                    self.thread.start()
+                     self.launchAddGameWorker()           
             else:
+                self.add_by_url = False
                 # Search by name
-                pass
+                self.url = SEARCH_URL + str(window.line_edit.text()).replace(' ','+')
+                # Download the content of the page
+                self.launchAddGameWorker()
+                
+    def launchAddGameWorker(self):
+        self.progress = QProgressDialog("Adding game", "", 0, 0, self)
+        self.progress.setCancelButton(None)
+        self.progress.show()
+        self.progress.setWindowModality(Qt.WindowModal)
+        self.thread = self.AddGameWorker(self.url, self.table)
+        self.connect(self.thread, SIGNAL("htmlRead(QString)"), self.updateAddGame)
+        self.thread.start()
     
     def updateAddGame(self, html):
-                self.progress.close()
-                self.table.addGame(self.url, str(html))
-                self.table.scrollToBottom()
-                self.table.resizeColumns()
+        self.progress.close()
+        if self.add_by_url:
+            self.table.addGame(self.url, str(html))
+            self.table.scrollToBottom()
+            self.table.resizeColumns()
+        else:
+            window = SearchGameForm(str(html), self)
+            window.exec_()
+            print(str(html))
                  
                     
     def removeGame(self):
