@@ -9,7 +9,13 @@ class AddGameForm(QtGui.QDialog):
         self.setWindowTitle('Add game')
         self.main_frame = QWidget()
         
-        self.url = QtGui.QLineEdit()
+        radio_group = QtGui.QButtonGroup(self.main_frame) 
+        self.radio_url = QtGui.QRadioButton("GameFAQs' url")
+        radio_group.addButton(self.radio_url)
+        self.radio_url.setChecked(True)
+        self.radio_name = QtGui.QRadioButton("GameFAQs' name search")
+        radio_group.addButton(self.radio_name)
+        self.line_edit = QtGui.QLineEdit()
         self.button_ok = QtGui.QPushButton('Ok')
         self.button_cancel = QtGui.QPushButton('Cancel')
         layout_buttons = QtGui.QHBoxLayout()
@@ -17,8 +23,10 @@ class AddGameForm(QtGui.QDialog):
         layout_buttons.addWidget(self.button_cancel)        
         
         layout = QtGui.QVBoxLayout()
-        layout.addWidget(QLabel("GameFAQs' url:"))
-        layout.addWidget(self.url)
+        layout.addWidget(QLabel("Add by:"))
+        layout.addWidget(self.radio_url)
+        layout.addWidget(self.radio_name)
+        layout.addWidget(self.line_edit)
         layout.addLayout(layout_buttons)
         
         self.setLayout(layout)

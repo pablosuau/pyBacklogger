@@ -97,22 +97,27 @@ class Window(QMainWindow):
         window.exec_()
         
         if window.ok:
-            self.url = str(window.url.text())
-            if not re.match(r'^[a-zA-Z]+://', self.url):
-                self.url = 'http://' + self.url
-            if not self.url.startswith(GAMEFAQS_URL):
-                errorMessage=QErrorMessage(self)
-                errorMessage.setWindowTitle('Add game')
-                errorMessage.showMessage('The URL is not a valid GameFAQs one')
+            if window.radio_url.isChecked():
+                # Search by URL
+                self.url = str(window.line_edit.text())
+                if not re.match(r'^[a-zA-Z]+://', self.url):
+                    self.url = 'http://' + self.url
+                if not self.url.startswith(GAMEFAQS_URL):
+                    errorMessage=QErrorMessage(self)
+                    errorMessage.setWindowTitle('Add game')
+                    errorMessage.showMessage('The URL is not a valid GameFAQs one')
+                else:
+                    # Download the content of the page
+                    self.progress = QProgressDialog("Adding game", "", 0, 0, self)
+                    self.progress.setCancelButton(None)
+                    self.progress.show()
+                    self.progress.setWindowModality(Qt.WindowModal)
+                    self.thread = self.AddGameWorker(self.url, self.table)
+                    self.connect(self.thread, SIGNAL("htmlRead(QString)"), self.updateAddGame)
+                    self.thread.start()
             else:
-                # Download the content of the page
-                self.progress = QProgressDialog("Adding game", "", 0, 0, self)
-                self.progress.setCancelButton(None)
-                self.progress.show()
-                self.progress.setWindowModality(Qt.WindowModal)
-                self.thread = self.AddGameWorker(self.url, self.table)
-                self.connect(self.thread, SIGNAL("htmlRead(QString)"), self.updateAddGame)
-                self.thread.start()
+                # Search by name
+                pass
     
     def updateAddGame(self, html):
                 self.progress.close()
