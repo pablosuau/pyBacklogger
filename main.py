@@ -137,7 +137,6 @@ class Window(QMainWindow):
         else:
             window = SearchGameForm(str(html), self)
             window.exec_()
-            print(str(html))
                  
                     
     def removeGame(self):
