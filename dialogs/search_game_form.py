@@ -38,28 +38,33 @@ class SearchGameForm(QtGui.QDialog):
         self.listView.setModel(model)
         
         
-        self.button_ok = QtGui.QPushButton('Ok')
-        self.button_cancel = QtGui.QPushButton('Cancel')
-        layout_buttons = QtGui.QHBoxLayout()
-        layout_buttons.addWidget(self.button_ok)        
-        layout_buttons.addWidget(self.button_cancel)   
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
+            Qt.Horizontal, self)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
         
         layout = QtGui.QVBoxLayout()
         layout.addWidget(QtGui.QLabel('Select the game or games to add to your backlog'))
         layout.addWidget(self.listView)
-        layout.addLayout(layout_buttons)
+        layout.addWidget(buttons)
         
         self.setLayout(layout)
         
         self.ok = False
+        self.urls = urls
         
-        self.button_ok.clicked.connect(self.okClicked)
-        self.button_cancel.clicked.connect(self.cancelClicked)
+    # static method to create the dialog and return a list of urls
+    @staticmethod
+    def getSearchResult(html, parent = None):
+        dialog = SearchGameForm(html, parent)
+        result = dialog.exec_()
         
-    def okClicked(self):
-        self.ok = True
-        self.close()
-    
-    def cancelClicked(self):
-        self.ok = False
-        self.close()
+        selected = []
+        model = dialog.listView.model()
+        for index in range(model.rowCount()):
+            item = model.item(index)
+            if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
+                selected.append(dialog.urls[index])
+        
+        return (selected, result == QDialog.Accepted)

@@ -135,8 +135,11 @@ class Window(QMainWindow):
             self.table.scrollToBottom()
             self.table.resizeColumns()
         else:
-            window = SearchGameForm(str(html), self)
-            window.exec_()
+            (selected, result) = SearchGameForm.getSearchResult(html, parent = None)
+            print(selected)
+            print(result)
+            if result:
+                print(selected)
                  
                     
     def removeGame(self):
