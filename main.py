@@ -136,11 +136,8 @@ class Window(QMainWindow):
             self.table.resizeColumns()
         else:
             (selected, result) = SearchGameForm.getSearchResult(html, parent = None)
-            print(selected)
-            print(result)
             if result:
                 print(selected)
-                 
                     
     def removeGame(self):
         indexes = self.table.selectionModel().selectedRows()
