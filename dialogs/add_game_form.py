@@ -16,7 +16,9 @@ class AddGameForm(QtGui.QDialog):
         self.radio_name = QtGui.QRadioButton("GameFAQs' name search")
         radio_group.addButton(self.radio_name)
         self.line_edit = QtGui.QLineEdit()
+        self.line_edit.textChanged.connect(self.textChanged)
         self.button_ok = QtGui.QPushButton('Ok')
+        self.button_ok.setEnabled(False)
         self.button_cancel = QtGui.QPushButton('Cancel')
         layout_buttons = QtGui.QHBoxLayout()
         layout_buttons.addWidget(self.button_ok)        
@@ -43,4 +45,10 @@ class AddGameForm(QtGui.QDialog):
     def cancelClicked(self):
         self.ok = False
         self.close()
+        
+    def textChanged(self):
+        if len(str(self.line_edit.text()))>0:
+            self.button_ok.setEnabled(True)
+        else:
+            self.button_ok.setEnabled(False)
         
