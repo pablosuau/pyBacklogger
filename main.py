@@ -2,6 +2,7 @@ import sys
 import re
 import urllib2
 import csv
+import pandas as pd
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
@@ -300,7 +301,13 @@ class Window(QMainWindow):
         (source, ok) = ImportSourceDialog.getImportSource(self)
         if ok:
             if source == 'Darkadia':
-                pass
+                fileName = QtGui.QFileDialog.getOpenFileName(self, 'Import Darkadia backlog from CSV file', '', '*.csv')
+                if fileName:
+                    self.games = pd.read_csv(fileName)
+                    for i in range(0,self.games.shape[0]):
+                        print(self.games.ix[i])
+                        # Next step: dialog showing the name and the system, and
+                        # asking about the options.
             
     def checkEmpty(self):
         empty = self.table.rowCount() == 0
