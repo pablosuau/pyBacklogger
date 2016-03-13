@@ -28,26 +28,32 @@ class SearchGameForm(QtGui.QDialog):
                 names.append(row.getchildren()[1].findtext('a'))
                 urls.append(GAMEFAQS_URL + row.getchildren()[1].getchildren()[0].attrib['href'])
                 
-        # Displaying search results
-        model = QStandardItemModel()
-        for i in range(0,len(systems)):
-            item = QStandardItem('(' + systems[i] + ') ' + names[i])
-            item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-            item.setData(Qt.Unchecked, Qt.CheckStateRole)
-            model.appendRow(item)   
-        model.itemChanged.connect(self.on_item_changed)
-        self.listView = QListView()
-        self.listView.setModel(model)
-        
         buttons = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
             Qt.Horizontal, self)
         buttons.accepted.connect(self.accept)
-        buttons.rejected.connect(self.reject)
-        
-        layout = QtGui.QVBoxLayout()
-        layout.addWidget(QtGui.QLabel('Select the game or games to add to your backlog'))
-        layout.addWidget(self.listView)
+        buttons.rejected.connect(self.reject)  
+
+        layout = QtGui.QVBoxLayout()              
+
+        # Displaying search results        
+        if len(systems) > 0:
+            model = QStandardItemModel()
+            for i in range(0,len(systems)):
+                item = QStandardItem('(' + systems[i] + ') ' + names[i])
+                item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+                item.setData(Qt.Unchecked, Qt.CheckStateRole)
+                model.appendRow(item)   
+            model.itemChanged.connect(self.on_item_changed)
+            self.listView = QListView()
+            self.listView.setModel(model)
+            layout.addWidget(QtGui.QLabel('Select the game or games to add to your backlog'))
+            layout.addWidget(self.listView)
+        else:
+            layout.addWidget(QtGui.QLabel('No game was found'))          
+            buttons.button(QDialogButtonBox.Ok).setEnabled(False)
+            self.listView = None
+            
         layout.addWidget(buttons)
         
         self.setLayout(layout)
@@ -66,10 +72,11 @@ class SearchGameForm(QtGui.QDialog):
         result = dialog.exec_()
         
         selected = []
-        model = dialog.listView.model()
-        for index in range(model.rowCount()):
-            item = model.item(index)
-            if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
-                selected.append(dialog.urls[index])
-        
+        if dialog.listView != None:
+            model = dialog.listView.model()
+            for index in range(model.rowCount()):
+                item = model.item(index)
+                if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
+                    selected.append(dialog.urls[index])
+            
         return (selected, result == QDialog.Accepted)
