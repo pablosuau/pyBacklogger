@@ -136,7 +136,6 @@ class Window(QMainWindow):
             self.table.scrollToBottom()
             self.table.resizeColumns()
             if self.pending_selected != None:
-                print(self.pending_selected)
                 self.url = self.pending_selected[0]
                 del(self.pending_selected[0])   
                 if len(self.pending_selected) == 0:

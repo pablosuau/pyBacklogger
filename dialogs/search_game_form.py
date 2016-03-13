@@ -9,7 +9,7 @@ class SearchGameForm(QtGui.QDialog):
     def __init__(self, html, parent=None):
         super(SearchGameForm, self).__init__(parent)
         self.setWindowTitle('Search results')
-        self.main_frame = QWidget()
+        self.main_frame = QWidget()      
         
         # search results
         html = str(html)
@@ -28,11 +28,11 @@ class SearchGameForm(QtGui.QDialog):
                 names.append(row.getchildren()[1].findtext('a'))
                 urls.append(GAMEFAQS_URL + row.getchildren()[1].getchildren()[0].attrib['href'])
                 
-        buttons = QDialogButtonBox(
+        self.buttons = QDialogButtonBox(
             QDialogButtonBox.Ok | QDialogButtonBox.Cancel,
             Qt.Horizontal, self)
-        buttons.accepted.connect(self.accept)
-        buttons.rejected.connect(self.reject)  
+        self.buttons.accepted.connect(self.accept)
+        self.buttons.rejected.connect(self.reject)  
 
         layout = QtGui.QVBoxLayout()              
 
@@ -51,26 +51,27 @@ class SearchGameForm(QtGui.QDialog):
             layout.addWidget(self.listView)
         else:
             layout.addWidget(QtGui.QLabel('No game was found'))          
-            buttons.button(QDialogButtonBox.Ok).setEnabled(False)
             self.listView = None
             
-        layout.addWidget(buttons)
+        self.buttons.button(QDialogButtonBox.Ok).setEnabled(False)
+        layout.addWidget(self.buttons)
         
         self.setLayout(layout)
         
         self.ok = False
         self.urls = urls
+        self.checked = 0
      
     # Modification of the behaviour of the items, so they behave like radio buttons 
-    def on_item_changed(item):
-        print(item)
-#        items = 0
-#        
-#        model = self.listView.model()
-#        for index in range(model.rowCount()):
-#            item = model.item(index)
-#            if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
-#                items = items + 1
+    def on_item_changed(self, item):
+        if item.checkState() == QtCore.Qt.Checked:
+            self.checked = self.checked + 1
+            if self.checked == 1:
+                self.buttons.button(QDialogButtonBox.Ok).setEnabled(True)
+        else:
+            self.checked = self.checked - 1
+            if self.checked == 0:
+                self.buttons.button(QDialogButtonBox.Ok).setEnabled(False)
             
     # static method to create the dialog and return a list of urls
     @staticmethod
