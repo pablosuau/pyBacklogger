@@ -63,7 +63,14 @@ class SearchGameForm(QtGui.QDialog):
      
     # Modification of the behaviour of the items, so they behave like radio buttons 
     def on_item_changed(item):
-        print("hello")
+        print(item)
+#        items = 0
+#        
+#        model = self.listView.model()
+#        for index in range(model.rowCount()):
+#            item = model.item(index)
+#            if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
+#                items = items + 1
             
     # static method to create the dialog and return a list of urls
     @staticmethod
