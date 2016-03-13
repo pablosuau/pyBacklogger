@@ -133,8 +133,8 @@ class Window(QMainWindow):
         self.progress.close()
         if self.add_by_url:
             self.table.addGame(self.url, str(html))
-            self.table.scrollToBottom()
             self.table.resizeColumns()
+            self.table.scrollToBottom()
             if self.pending_selected != None:
                 self.url = self.pending_selected[0]
                 del(self.pending_selected[0])   
