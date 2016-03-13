@@ -14,6 +14,7 @@ from dialogs.search_game_form import *
 from dialogs.filter_dialog import FilterDialog
 from dialogs.sort_dialog import *
 from dialogs.import_source_dialog import *
+from dialogs.import_game_dialog import *
 
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 SEARCH_URL = GAMEFAQS_URL + 'search?game='
@@ -305,9 +306,10 @@ class Window(QMainWindow):
                 if fileName:
                     self.games = pd.read_csv(fileName)
                     for i in range(0,self.games.shape[0]):
-                        print(self.games.ix[i])
-                        # Next step: dialog showing the name and the system, and
-                        # asking about the options.
+                        text = str(self.games['Name'].ix[i]) + ' (' + str(self.games['Platforms'].ix[i]) + ')'
+                        (option, result) = ImportGameDialog.getImportGame(text, self)
+                        if result: # In the case that the user closes the window, is over
+                            print(option, result)
             
     def checkEmpty(self):
         empty = self.table.rowCount() == 0
