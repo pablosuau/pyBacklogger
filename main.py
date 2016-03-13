@@ -12,6 +12,7 @@ from dialogs.add_game_form import *
 from dialogs.search_game_form import *
 from dialogs.filter_dialog import FilterDialog
 from dialogs.sort_dialog import *
+from dialogs.import_source_dialog import *
 
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 SEARCH_URL = GAMEFAQS_URL + 'search?game='
@@ -33,6 +34,7 @@ class Window(QMainWindow):
         self.buttonSort = QtGui.QPushButton('Sort data')
         self.buttonFilter = QtGui.QPushButton('Filter data')
         self.buttonSearch = QtGui.QPushButton('Search game')
+        self.buttonImport = QtGui.QPushButton('Import backlog')
         layoutButtons = QtGui.QVBoxLayout()
         layoutButtons.setAlignment(Qt.AlignTop)
         layoutButtons.addWidget(self.buttonAdd)
@@ -43,6 +45,7 @@ class Window(QMainWindow):
         layoutButtons.addWidget(self.buttonSort)
         layoutButtons.addWidget(self.buttonFilter)
         layoutButtons.addWidget(self.buttonSearch)
+        layoutButtons.addWidget(self.buttonImport)
         self.buttonAdd.clicked.connect(self.addGame)
         self.buttonRemove.clicked.connect(self.removeGame)
         self.buttonSave.clicked.connect(self.saveBacklog)
@@ -51,6 +54,7 @@ class Window(QMainWindow):
         self.buttonSort.clicked.connect(self.sortGames)
         self.buttonFilter.clicked.connect(self.filterGames)
         self.buttonSearch.clicked.connect(self.searchGames)
+        self.buttonImport.clicked.connect(self.importGames)
         
         layout = QtGui.QHBoxLayout()
         layout.addWidget(self.table)
@@ -291,6 +295,12 @@ class Window(QMainWindow):
             else:
                 self.previous_search = ''
                 self.table.show_all_rows()
+                
+    def importGames(self):
+        (source, ok) = ImportSourceDialog.getImportSource(self)
+        if ok:
+            if source == 'Darkadia':
+                pass
             
     def checkEmpty(self):
         empty = self.table.rowCount() == 0
