@@ -12,6 +12,7 @@ class SearchGameForm(QtGui.QDialog):
         self.main_frame = QWidget()
         
         # search results
+        html = str(html)
         systems = []
         names = []
         urls = []
