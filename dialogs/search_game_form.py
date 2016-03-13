@@ -33,10 +33,7 @@ class SearchGameForm(QtGui.QDialog):
         for i in range(0,len(systems)):
             item = QStandardItem('(' + systems[i] + ') ' + names[i])
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
-            if i == 0:
-                item.setData(Qt.Checked, Qt.CheckStateRole)
-            else:
-                item.setData(Qt.Unchecked, Qt.CheckStateRole)
+            item.setData(Qt.Unchecked, Qt.CheckStateRole)
             model.appendRow(item)   
         model.itemChanged.connect(self.on_item_changed)
         self.listView = QListView()
@@ -60,7 +57,7 @@ class SearchGameForm(QtGui.QDialog):
      
     # Modification of the behaviour of the items, so they behave like radio buttons 
     def on_item_changed(item):
-        print(item.index())
+        print("hello")
             
     # static method to create the dialog and return a list of urls
     @staticmethod

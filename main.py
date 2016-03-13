@@ -64,6 +64,7 @@ class Window(QMainWindow):
         self.already_selected_status = None
         self.already_sorted = None
         self.already_sort_order = None
+        self.pending_selected = None
         self.previous_search = ''
     
     class AddGameWorker(QThread):
@@ -134,10 +135,21 @@ class Window(QMainWindow):
             self.table.addGame(self.url, str(html))
             self.table.scrollToBottom()
             self.table.resizeColumns()
+            if self.pending_selected != None:
+                self.url = self.pending_selected[0]
+                del(self.pending_selected[0])   
+                if len(self.pending_selected) == 0:
+                    self.pending_selected = None
+                self.launchAddGameWorker()
         else:
             (selected, result) = SearchGameForm.getSearchResult(html, parent = None)
             if result:
-                print(selected)
+                self.add_by_url = True
+                self.pending_selected = selected
+                self.url = self.pending_selected[0]
+                del(self.pending_selected[0])     
+                self.launchAddGameWorker()
+                
                     
     def removeGame(self):
         indexes = self.table.selectionModel().selectedRows()
