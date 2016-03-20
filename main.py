@@ -303,6 +303,7 @@ class Window(QMainWindow):
         if ok:
             if source == 'Darkadia':
                 fileName = QtGui.QFileDialog.getOpenFileName(self, 'Import Darkadia backlog from CSV file', '', '*.csv')
+                fileName = str(fileName)
                 if fileName:
                     self.games = pd.read_csv(fileName)
                     for i in range(0,self.games.shape[0]):
