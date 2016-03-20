@@ -310,7 +310,16 @@ class Window(QMainWindow):
                         text = str(self.games['Name'].ix[i]) + ' (' + str(self.games['Platforms'].ix[i]) + ')'
                         (option, result) = ImportGameDialog.getImportGame(text, self)
                         if result: # In the case that the user closes the window, is over
-                            print(option, result)
+                            if option == -2: # Import
+                                pass
+                            elif option == -3: # Ignore
+                                pass
+                            elif option == -4: # Keep
+                                pass
+                            elif option == -5: # Stop
+                                pass
+                        else:
+                            break
             
     def checkEmpty(self):
         empty = self.table.rowCount() == 0

@@ -14,6 +14,7 @@ class ImportGameDialog(QDialog):
         layout = QtGui.QVBoxLayout(self)
 
         text = QtGui.QLabel(text)
+        layout.addWidget(text)
                 
         # Options
         self.options = QtGui.QButtonGroup(self) 
