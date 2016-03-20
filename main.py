@@ -72,6 +72,7 @@ class Window(QMainWindow):
         self.already_sort_order = None
         self.pending_selected = None
         self.previous_search = ''
+        self.importing = None
     
     class AddGameWorker(QThread):
         def __init__(self, url, parent=None):
@@ -147,6 +148,8 @@ class Window(QMainWindow):
                 if len(self.pending_selected) == 0:
                     self.pending_selected = None
                 self.launchAddGameWorker()
+            elif self.importing != None:
+                self.importGames()
         else:
             (selected, result) = SearchGameForm.getSearchResult(html, parent = None)
             if result:
@@ -157,6 +160,8 @@ class Window(QMainWindow):
                 if len(self.pending_selected) == 0:
                     self.pending_selected = None
                 self.launchAddGameWorker()
+            elif self.importing != None:
+                self.importGames()
                 
                     
     def removeGame(self):
@@ -299,27 +304,36 @@ class Window(QMainWindow):
                 self.table.show_all_rows()
                 
     def importGames(self):
-        (source, ok) = ImportSourceDialog.getImportSource(self)
-        if ok:
-            if source == 'Darkadia':
-                fileName = QtGui.QFileDialog.getOpenFileName(self, 'Import Darkadia backlog from CSV file', '', '*.csv')
-                fileName = str(fileName)
-                if fileName:
-                    self.games = pd.read_csv(fileName)
-                    for i in range(0,self.games.shape[0]):
-                        text = str(self.games['Name'].ix[i]) + ' (' + str(self.games['Platforms'].ix[i]) + ')'
-                        (option, result) = ImportGameDialog.getImportGame(text, self)
-                        if result: # In the case that the user closes the window, is over
-                            if option == -2: # Import
-                                pass
-                            elif option == -3: # Ignore
-                                pass
-                            elif option == -4: # Keep
-                                pass
-                            elif option == -5: # Stop
-                                pass
-                        else:
-                            break
+        if self.importing == None:
+            (source, ok) = ImportSourceDialog.getImportSource(self)
+            if ok:
+                if source == 'Darkadia':
+                    fileName = QtGui.QFileDialog.getOpenFileName(self, 'Import Darkadia backlog from CSV file', '', '*.csv')
+                    fileName = str(fileName)
+                    if fileName:
+                        self.games = pd.read_csv(fileName)
+                        self.importing = 0
+        if self.importing != None:
+            if self.importing < self.games.shape[0]:
+                text = str(self.games['Name'].ix[self.importing]) + ' (' + str(self.games['Platforms'].ix[self.importing]) + ')'
+                self.importing = self.importing + 1
+                (option, result) = ImportGameDialog.getImportGame(text, self)
+                if result: # In the case that the user closes the window, is over
+                    if option == -2: # Import
+                        self.url = SEARCH_URL + str(self.games['Name'].ix[self.importing-1]).replace(' ','+')        
+                        self.add_by_url = False
+                        self.launchAddGameWorker()
+                    elif option == -3: # Ignore
+                        self.importGames()
+                    elif option == -4: # Stop
+                        self.importing = self.games.shape[0]
+                        self.importGames()
+                else:
+                    self.importing = self.games.shape[0]
+                    self.importGames()
+            else:
+                self.importing = None
+                self.games = None
             
     def checkEmpty(self):
         empty = self.table.rowCount() == 0

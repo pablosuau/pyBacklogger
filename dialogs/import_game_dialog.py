@@ -10,6 +10,7 @@ STOP = 3
 class ImportGameDialog(QDialog):
     def __init__(self, text, parent = None):
         super(ImportGameDialog, self).__init__(parent)
+        self.setWindowTitle('Importing games')
 
         layout = QtGui.QVBoxLayout(self)
 
@@ -23,14 +24,11 @@ class ImportGameDialog(QDialog):
         self.options.addButton(self.importGame)
         self.ignoreGame = QtGui.QRadioButton("Ignore")
         self.options.addButton(self.ignoreGame)
-        self.keepGame = QtGui.QRadioButton("Keep")
-        self.options.addButton(self.keepGame)
         self.stopGame = QtGui.QRadioButton("Stop")
         self.options.addButton(self.stopGame)
 
         layout.addWidget(self.importGame)
         layout.addWidget(self.ignoreGame)
-        layout.addWidget(self.keepGame)
         layout.addWidget(self.stopGame)
     
         # OK and Cancel buttons
