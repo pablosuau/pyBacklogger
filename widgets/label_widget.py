@@ -3,13 +3,14 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 class LabelWidget(QtGui.QWidget):
-    def __init__(self, father):
+    def __init__(self, item, father):
         super(LabelWidget, self).__init__()
         self.layout = QtGui.QHBoxLayout()
         self.layout.setAlignment(QtCore.Qt.AlignLeft)
         self.setLayout(self.layout)
         self.style = 'QLabel { background-color : #AAAAAA; color: black; }'
         self.father = father
+        self.item = item
         
     def labelsToString(self):
          if self.layout.count() > 0:
@@ -31,15 +32,17 @@ class LabelWidget(QtGui.QWidget):
         
         # Adding the labels
         labels = text.split(',')
-        if not (len(labels) == 1 and labels[0] == ''):
-            # removing duplicates and sorting
-            labels = list(set(labels))
-            
-            # Adding label widgets
-            for i in range(0,len(labels)):
-                label = QtGui.QLabel(str(labels[i]).strip())
-                label.setStyleSheet(self.style)
-                self.layout.addWidget(label)
+        #if not (len(labels) == 1 and labels[0] == ''):
+        # removing duplicates and sorting
+        labels = list(set(labels))
+        
+        # Adding label widgets
+        for i in range(0,len(labels)):
+            label = QtGui.QLabel(str(labels[i]).strip())
+            label.setStyleSheet(self.style)
+            self.layout.addWidget(label)
+                
+        self.item.setData(Qt.UserRole, text)
                 
     def getLabels(self):
         labels = []
@@ -54,6 +57,7 @@ class LabelWidget(QtGui.QWidget):
         text, ok = QtGui.QInputDialog.getText(self, 'Labels', 'Enter labels (comma-separated)', QtGui.QLineEdit.Normal, labels)        
         if ok:
             self.stringToLabels(text)
+
         
         QtGui.qApp.processEvents() # this line makes the labels to be
                                    # painted before resizing the table's

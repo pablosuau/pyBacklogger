@@ -154,7 +154,10 @@ class Table(QTableWidget):
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_STATUS), item)
             # labels
-            widget = LabelWidget(self)
+            item = QtGui.QTableWidgetItem('')
+            item.setFlags(QtCore.Qt.ItemIsEnabled)
+            self.setItem(rows, headers.index(COLUMN_LABELS), item)
+            widget = LabelWidget(item, self)
             widget.stringToLabels(data[COLUMN_LABELS])
             self.setCellWidget(rows, headers.index(COLUMN_LABELS), widget)
             # Notes
@@ -307,6 +310,3 @@ class Table(QTableWidget):
                 self.item(row, column).setText(status)
                 self.hide_rows_already()
                 self.resizeColumns()
-        elif column == headers.index(COLUMN_LABELS):
-            pass
-            
