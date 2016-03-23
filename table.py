@@ -26,8 +26,8 @@ widget_columns = [headers.index(COLUMN_YEAR), headers.index(COLUMN_STATUS), head
 
 class NumericWidgetItem(QtGui.QTableWidgetItem):
     def __lt__(self, other):
-        return (float(self.text().encode('ascii','ignore')) <
-                float(other.text().encode('ascii','ignore')))
+        return (float(str(self.text()).encode('ascii','ignore')) <
+                float(str(other.text()).encode('ascii','ignore')))
 
 class Table(QTableWidget):
     def __init__(self, *args):
