@@ -4,8 +4,8 @@ from PyQt4.QtGui import *
 from lxml.html.soupparser import fromstring
 import re
 from widgets.label_widget import LabelWidget
-from widgets.date_widget import DateWidget
-from widgets.status_widget import StatusWidget
+from dialogs.date_dialog import DateDialog
+from dialogs.status_dialog import StatusDialog
 import urllib2
 import numpy as np
 
@@ -22,8 +22,6 @@ COLUMN_URL = 'URL'
 
 headers = [COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL]
 
-widget_columns = [headers.index(COLUMN_YEAR), headers.index(COLUMN_STATUS), headers.index(COLUMN_LABELS)]
-
 class NumericWidgetItem(QtGui.QTableWidgetItem):
     def __lt__(self, other):
         return (float(str(self.text()).encode('ascii','ignore')) <
@@ -32,6 +30,7 @@ class NumericWidgetItem(QtGui.QTableWidgetItem):
 class Table(QTableWidget):
     def __init__(self, *args):
         QTableWidget.__init__(self, *args)
+        self.clicked.connect(self.cellClicked)
         
         self.setHorizontalHeaderLabels(headers)
         self.setRowCount(0)
@@ -135,8 +134,9 @@ class Table(QTableWidget):
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_SYSTEM), item)
             # date
-            widget = DateWidget(data[COLUMN_YEAR], self)
-            self.setCellWidget(rows, headers.index(COLUMN_YEAR), widget)
+            item = QtGui.QTableWidgetItem(data[COLUMN_YEAR])
+            item.setFlags(QtCore.Qt.ItemIsEnabled)
+            self.setItem(rows, headers.index(COLUMN_YEAR), item)
             # rating
             item = QtGui.QTableWidgetItem(data[COLUMN_RATING])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -150,8 +150,9 @@ class Table(QTableWidget):
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_WEIGHTED), item)
             # Status
-            widget = StatusWidget(data[COLUMN_STATUS], self)
-            self.setCellWidget(rows, headers.index(COLUMN_STATUS), widget)
+            item = QtGui.QTableWidgetItem(data[COLUMN_STATUS])
+            item.setFlags(QtCore.Qt.ItemIsEnabled)
+            self.setItem(rows, headers.index(COLUMN_STATUS), item)
             # labels
             widget = LabelWidget(self)
             widget.stringToLabels(data[COLUMN_LABELS])
@@ -285,34 +286,27 @@ class Table(QTableWidget):
     def show_all_rows(self):
         for row in range(0,self.rowCount()):
             self.setRowHidden(row, False)
-             
-    # New definition of sortByColumn so we can sort widget columns
-    def sortByColumn(self, column, order):
-        if column in widget_columns:
-            # Getting string from elements
-            strings = []
-            widgets = []
-            for row in range(0,self.rowCount()):
-                widget = self.cellWidget(row, column)
-                strings.append(str(widget.toString()))
-                widgets.append(widget)
-        
-            # Replace original elements by strings
-            for row in range(0,self.rowCount()):
-                item = QtGui.QTableWidgetItem(strings[row])
-                self.setItem(row, column, item)
-        
-            # Ordering
-            super(Table, self).sortByColumn(column, order)
-        
-            for row in range(0,self.rowCount()):
-                self.setItem(row, column, None)   
-        else:
-            super(Table, self).sortByColumn(column, order)
-        self.changed = True
         
     def resizeColumns(self):
         self.setVisible(False)
         self.resizeColumnsToContents()
         self.resizeRowsToContents()
         self.setVisible(True)
+        
+    def cellClicked(self, tableItem):
+        row = tableItem.row()
+        column = tableItem.column()        
+        
+        if column == headers.index(COLUMN_YEAR):
+            (date, result) = DateDialog.getDate(self.item(row, column).text())
+            if result:
+                self.item(row, column).setText(date)
+        elif column == headers.index(COLUMN_STATUS):
+            (status, accepted) = StatusDialog.getStatus(self.item(row, column).text())
+            if accepted:
+                self.item(row, column).setText(status)
+                self.hide_rows_already()
+                self.resizeColumns()
+        elif column == headers.index(COLUMN_LABELS):
+            pass
+            
