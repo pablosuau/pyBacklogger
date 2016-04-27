@@ -278,7 +278,7 @@ class Table(QTableWidget):
                      if labels_row[i] in self.already_selected:
                          filtered_out = False
                      i = i + 1
-                 filtered_out = filtered_out or not self.cellWidget(row, headers.index(COLUMN_STATUS)).toString() in self.already_selected_status
+                 filtered_out = filtered_out or not self.item(row, headers.index(COLUMN_STATUS)).text() in self.already_selected_status
                  self.setRowHidden(row, filtered_out)
 
     def hide_rows_search(self, text):
