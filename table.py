@@ -42,8 +42,6 @@ class Table(QTableWidget):
         # Scrollbar policy
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        # Controlling chagning items
-        self.itemChanged.connect(self.item_changed_callback)
         
         self.changed = False
         self.already_selected = None
@@ -58,8 +56,6 @@ class Table(QTableWidget):
                 newitem = QTableWidgetItem(item)
                 self.setItem(m, n, newitem)
         self.setHorizontalHeaderLabels(horHeaders)
-        
-        self.resizeColumns()
         
     def addGame(self, url, html):
         try:
@@ -112,7 +108,6 @@ class Table(QTableWidget):
                 self.addGameRow(data)
                 # And recomputing weighted ratins
                 self.compute_final_rating()
-                self.resizeColumns()
         except:
             errorMessage=QErrorMessage(self)
             errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
@@ -257,11 +252,6 @@ class Table(QTableWidget):
             errorMessage=QErrorMessage(self)
             errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
         
-    def item_changed_callback(self):
-        # resizing
-        if not self.loading:
-            self.resizeColumns()
-        
     def hide_rows(self, labels, status):
         self.already_selected = labels
         self.already_selected_status = status
@@ -309,4 +299,3 @@ class Table(QTableWidget):
             if accepted:
                 self.item(row, column).setText(status)
                 self.hide_rows_already()
-                self.resizeColumns()

@@ -140,7 +140,6 @@ class Window(QMainWindow):
         self.progress.close()
         if self.add_by_url:
             self.table.addGame(self.url, str(html))
-            self.table.resizeColumns()
             self.table.scrollToBottom()
             if self.pending_selected != None:
                 self.url = self.pending_selected[0]
@@ -187,7 +186,6 @@ class Window(QMainWindow):
             if reply == QtGui.QMessageBox.Yes:
                 for i in range(len(actual_indexes) - 1, -1, -1):
                     self.table.removeRow(actual_indexes[i])
-                self.table.resizeColumns()
                 self.table.changed = True
         else:
             error = QErrorMessage()
