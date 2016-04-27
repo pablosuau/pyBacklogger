@@ -4,6 +4,7 @@ from PyQt4.QtGui import *
 from lxml.html.soupparser import fromstring
 import re
 from widgets.label_widget import LabelWidget
+import dialogs
 from dialogs.date_dialog import DateDialog
 from dialogs.status_dialog import StatusDialog
 import urllib2
@@ -148,6 +149,7 @@ class Table(QTableWidget):
             item = QtGui.QTableWidgetItem(data[COLUMN_STATUS])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_STATUS), item)
+            item.setTextColor(dialogs.status_dialog.colors[dialogs.status_dialog.options.index(data[COLUMN_STATUS])])
             # labels
             item = QtGui.QTableWidgetItem('')
             item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -295,7 +297,8 @@ class Table(QTableWidget):
             if result:
                 self.item(row, column).setText(date)
         elif column == headers.index(COLUMN_STATUS):
-            (status, accepted) = StatusDialog.getStatus(self.item(row, column).text())
+            (status, color, accepted) = StatusDialog.getStatus(self.item(row, column).text())
             if accepted:
                 self.item(row, column).setText(status)
+                self.item(row, column).setTextColor(color)
                 self.hide_rows_already()

@@ -9,6 +9,14 @@ options = [
             'completed',
             'shelved'
           ]
+          
+colors = [
+            QtGui.QColor(155,0,0),
+            QtGui.QColor(0,0,155),
+            QtGui.QColor(255,155,0),
+            QtGui.QColor(0,155,0),
+            QtGui.QColor(0,155,0)
+         ]
 
 class StatusDialog(QDialog):
     def __init__(self, option, parent = None):
@@ -40,5 +48,6 @@ class StatusDialog(QDialog):
         dialog = StatusDialog(status, parent)
         result = dialog.exec_()
         status = dialog.options.currentText()
+        color = colors[dialog.options.currentIndex()]
                       
-        return (status, result == QDialog.Accepted)        
+        return (status, color, result == QDialog.Accepted)        
