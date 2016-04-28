@@ -11,6 +11,7 @@ class LabelWidget(QtGui.QWidget):
         self.style = 'QLabel { background-color : #AAAAAA; color: black; }'
         self.father = father
         self.item = item
+        self.item.setTextColor(QtGui.QColor(255,255,255))
         
     def labelsToString(self):
          if self.layout.count() > 0:
@@ -42,7 +43,7 @@ class LabelWidget(QtGui.QWidget):
             label.setStyleSheet(self.style)
             self.layout.addWidget(label)
                 
-        self.item.setData(Qt.UserRole, text)
+        self.item.setText(text)
                 
     def getLabels(self):
         labels = []
@@ -62,8 +63,6 @@ class LabelWidget(QtGui.QWidget):
         QtGui.qApp.processEvents() # this line makes the labels to be
                                    # painted before resizing the table's
                                    # columns
-        self.father.hide_rows_already()
-        self.father.resizeColumnsToContents()
         
         
         
