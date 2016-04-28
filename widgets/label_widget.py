@@ -47,7 +47,7 @@ class LabelWidget(QtGui.QWidget):
                 label.setStyleSheet(self.style)
                 self.layout.addWidget(label)
                 
-        self.item.setText(text)
+        self.item.setText(self.labelsToString())
                 
     def getLabels(self):
         labels = []

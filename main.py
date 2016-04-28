@@ -274,6 +274,7 @@ class Window(QMainWindow):
             # multiple column ordering, we order from the last
             # selected column to the first
             if result:
+                self.table.setVisible(False)
                 for i in range(0,len(sort_fields)):
                     j = len(sort_fields) - i - 1
                     index_column = headers.index(sort_fields[j])
@@ -284,6 +285,7 @@ class Window(QMainWindow):
                     self.table.sortByColumn(index_column, order)
                 self.already_sorted = sort_fields
                 self.already_sort_order = sort_order
+                self.table.setVisible(True)
                 
     def searchGames(self):
         if not self.checkEmpty():
