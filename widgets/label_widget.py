@@ -12,6 +12,8 @@ class LabelWidget(QtGui.QWidget):
         self.father = father
         self.item = item
         self.item.setTextColor(QtGui.QColor(255,255,255))
+        self.setContentsMargins(0, 0, 0, 0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         
     def labelsToString(self):
          if self.layout.count() > 0:
@@ -39,9 +41,11 @@ class LabelWidget(QtGui.QWidget):
         
         # Adding label widgets
         for i in range(0,len(labels)):
-            label = QtGui.QLabel(str(labels[i]).strip())
-            label.setStyleSheet(self.style)
-            self.layout.addWidget(label)
+            label_text = str(labels[i]).strip()
+            if label_text != '':
+                label = QtGui.QLabel(label_text)
+                label.setStyleSheet(self.style)
+                self.layout.addWidget(label)
                 
         self.item.setText(text)
                 
