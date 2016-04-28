@@ -254,13 +254,14 @@ class Table(QTableWidget):
             errorMessage=QErrorMessage(self)
             errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
         
-    def hide_rows(self, labels, status):
+    def hide_rows(self, labels, status, systems):
         self.already_selected = labels
         self.already_selected_status = status
+        self.already_selected_systems = systems
         self.hide_rows_already()
     
     def hide_rows_already(self):
-        if self.already_selected != None and self.already_selected_status != None:
+        if self.already_selected != None and self.already_selected_status != None and self.already_selected_systems != None:
             none = '[None]' in self.already_selected
             for row in range(0,self.rowCount()):
                  labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
@@ -270,7 +271,7 @@ class Table(QTableWidget):
                      if labels_row[i] in self.already_selected:
                          filtered_out = False
                      i = i + 1
-                 filtered_out = filtered_out or not self.item(row, headers.index(COLUMN_STATUS)).text() in self.already_selected_status
+                 filtered_out = filtered_out or not self.item(row, headers.index(COLUMN_STATUS)).text() in self.already_selected_status or not self.item(row, headers.index(COLUMN_SYSTEM)).text() in self.already_selected_systems
                  self.setRowHidden(row, filtered_out)
 
     def hide_rows_search(self, text):

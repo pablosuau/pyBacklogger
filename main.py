@@ -68,6 +68,7 @@ class Window(QMainWindow):
         
         self.already_selected = None
         self.already_selected_status = None
+        self.already_selected_systems = None
         self.already_sorted = None
         self.already_sort_order = None
         self.pending_selected = None
@@ -220,6 +221,7 @@ class Window(QMainWindow):
             fileName = QtGui.QFileDialog.getOpenFileName(self, 'Load backlog', '', '*.blg')
             self.already_selected = None
             self.already_selected_status = None
+            self.already_selected_systems = None
             if fileName:
                 for i in reversed(range(self.table.rowCount())):
                     self.table.removeRow(i)
@@ -257,14 +259,25 @@ class Window(QMainWindow):
                 for j in range(0,len(labels_widget)):
                     if not str(labels_widget[j]) in labels:
                         labels.append(str(labels_widget[j]))
+            labels.sort()
+            
+                        
+            # We get the systems
+            systems = []
+            for i in range(0,self.table.rowCount()):
+                system = self.table.item(i, headers.index(COLUMN_SYSTEM)).text()
+                if not str(system) in systems:
+                    systems.append(str(system))
+            systems.sort()
                         
             # and show a dialog to select the labels
-            (selected, selected_status, result) = FilterDialog.getFilter(labels, self.already_selected, self.already_selected_status, self)
+            (selected, selected_status, selected_systems, result) = FilterDialog.getFilter(labels, self.already_selected, self.already_selected_status, systems, self.already_selected_systems, self)
             # Finally we hide or show rows depending on the labels
             if result:
-                self.table.hide_rows(selected, selected_status)
+                self.table.hide_rows(selected, selected_status, selected_systems)
                 self.already_selected = selected
                 self.already_selected_status = selected_status
+                self.already_selected_systems = selected_systems
             
     def sortGames(self): 
         if not self.checkEmpty():
