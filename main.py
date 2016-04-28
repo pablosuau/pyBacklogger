@@ -130,8 +130,8 @@ class Window(QMainWindow):
     def launchAddGameWorker(self):
         self.progress = QProgressDialog("Adding game", "", 0, 0, self)
         self.progress.setCancelButton(None)
-        self.progress.show()
         self.progress.setWindowModality(Qt.WindowModal)
+        self.progress.show()
         self.thread = self.AddGameWorker(self.url, self.table)
         self.connect(self.thread, SIGNAL("htmlRead(QString)"), self.updateAddGame)
         self.thread.start()

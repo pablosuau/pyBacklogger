@@ -73,7 +73,7 @@ class Table(QTableWidget):
             # Year
             el = doc.xpath("//div[@class='pod pod_gameinfo']")
             year = el[0].getchildren()[1].getchildren()[0].getchildren()[3].findtext('a')
-            data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled', year).group()
+            data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', year).group()
             # Rating, votes and final rating
             el = doc.xpath("//fieldset[@id='js_mygames_rate']")
             if len(el)>0:
@@ -285,7 +285,6 @@ class Table(QTableWidget):
     def resizeColumns(self):
         self.setVisible(False)
         self.resizeColumnsToContents()
-        self.resizeRowsToContents()
         self.setVisible(True)
         
     def cellClicked(self, tableItem):
