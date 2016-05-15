@@ -16,6 +16,8 @@ from dialogs.sort_dialog import *
 from dialogs.import_source_dialog import *
 from dialogs.import_game_dialog import *
 
+import models.table_model as table_model
+
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 SEARCH_URL = GAMEFAQS_URL + 'search?game='
 
@@ -207,7 +209,7 @@ class Window(QMainWindow):
                     for i in range(0,rows):
                         data = self.table.getGameData(i)
                         data_list = []
-                        for h in headers: # defined in the table file
+                        for h in table_model.headers: # defined in the table file
                             data_list.append(str(data[h]))
                         writer.writerows([data_list])
                         progress.setValue(i+1)
@@ -237,8 +239,8 @@ class Window(QMainWindow):
                     self.table.loading = True
                     for row in reader:
                         row_dict = dict()
-                        for j in range(0,len(headers)): # defined in the table file
-                            row_dict[headers[j]] = row[j]
+                        for j in range(0,len(table_model.headers)): # defined in the table file
+                            row_dict[table_model.headers[j]] = row[j]
                         self.table.addGameRow(row_dict, i)
                         progress.setValue(i+1)
                         i = i + 1
@@ -255,7 +257,7 @@ class Window(QMainWindow):
             # We get the labels
             labels = []
             for i in range(0,self.table.rowCount()):
-                labels_widget = self.table.cellWidget(i,headers.index(COLUMN_LABELS)).getLabels()
+                labels_widget = self.table.cellWidget(i,table_model.headers.index(table_model.COLUMN_LABELS)).getLabels()
                 for j in range(0,len(labels_widget)):
                     if not str(labels_widget[j]) in labels:
                         labels.append(str(labels_widget[j]))
@@ -265,7 +267,7 @@ class Window(QMainWindow):
             # We get the systems
             systems = []
             for i in range(0,self.table.rowCount()):
-                system = self.table.item(i, headers.index(COLUMN_SYSTEM)).text()
+                system = self.table.item(i, table_model.headers.index(table_model.COLUMN_SYSTEM)).text()
                 if not str(system) in systems:
                     systems.append(str(system))
             systems.sort()
@@ -290,7 +292,7 @@ class Window(QMainWindow):
                 self.table.setVisible(False)
                 for i in range(0,len(sort_fields)):
                     j = len(sort_fields) - i - 1
-                    index_column = headers.index(sort_fields[j])
+                    index_column = table_model.headers.index(sort_fields[j])
                     if sort_order[j] == ASCENDING:
                         order = Qt.AscendingOrder
                     else:
