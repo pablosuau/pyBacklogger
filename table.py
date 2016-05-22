@@ -9,9 +9,19 @@ from dialogs.date_dialog import DateDialog
 from dialogs.status_dialog import StatusDialog
 import urllib2
 import numpy as np
-import models.table_model as table_model
 
+COLUMN_NAME = 'Name'
+COLUMN_SYSTEM = 'System'
+COLUMN_YEAR = 'Year'
+COLUMN_RATING = 'Rating'
+COLUMN_VOTES = 'Votes'
+COLUMN_WEIGHTED = 'Weighted Rating'
+COLUMN_STATUS = 'Status'
+COLUMN_LABELS = 'Labels'
+COLUMN_NOTES = 'Notes'
+COLUMN_URL = 'URL'
 
+headers = [COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL]
 
 class NumericWidgetItem(QtGui.QTableWidgetItem):
     def __lt__(self, other):
@@ -23,10 +33,10 @@ class Table(QTableWidget):
         QTableWidget.__init__(self, *args)
         self.clicked.connect(self.cellClicked)
         
-        self.setHorizontalHeaderLabels(table_model.headers)
+        self.setHorizontalHeaderLabels(headers)
         self.setRowCount(0)
-        self.setColumnCount(len(table_model.headers))
-        self.setHorizontalHeaderLabels(table_model.headers)
+        self.setColumnCount(len(headers))
+        self.setHorizontalHeaderLabels(headers)
         
         # Weighted rating initialization
         self.minimum = 100
@@ -54,48 +64,48 @@ class Table(QTableWidget):
             data = dict()
             # Game's name
             el = doc.xpath("//h1[@class='page-title']")
-            data[table_model.COLUMN_NAME] = el[0].findtext('a')
+            data[COLUMN_NAME] = el[0].findtext('a')
             # Game's system
             el = doc.xpath("//title")
             system = el[0].text
-            system = system.split(data[table_model.COLUMN_NAME] + ' for ')[1]
-            data[table_model.COLUMN_SYSTEM] = system.split(' - GameFAQs')[0]
+            system = system.split(data[COLUMN_NAME] + ' for ')[1]
+            data[COLUMN_SYSTEM] = system.split(' - GameFAQs')[0]
             # Year
             el = doc.xpath("//div[@class='pod pod_gameinfo']")
             year = el[0].getchildren()[1].getchildren()[0].getchildren()[3].findtext('a')
-            data[table_model.COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', year).group()
+            data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', year).group()
             # Rating, votes and final rating
             el = doc.xpath("//fieldset[@id='js_mygames_rate']")
             if len(el)>0:
                 rating_str = el[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
                 if rating_str == None:
-                    data[table_model.COLUMN_RATING] = '0.00'
-                    data[table_model.COLUMN_VOTES] = '0'
+                    data[COLUMN_RATING] = '0.00'
+                    data[COLUMN_VOTES] = '0'
                 else:
-                    data[table_model.COLUMN_RATING] = rating_str.split(' / ')[0]
+                    data[COLUMN_RATING] = rating_str.split(' / ')[0]
                     votes_str = el[0].getchildren()[0].getchildren()[0].getchildren()[2].text
-                    data[table_model.COLUMN_VOTES] = votes_str.split(' ')[0]   
+                    data[COLUMN_VOTES] = votes_str.split(' ')[0]   
             else:
-                data[table_model.COLUMN_RATING] = '0.00'
-                data[table_model.COLUMN_VOTES] = '0'
+                data[COLUMN_RATING] = '0.00'
+                data[COLUMN_VOTES] = '0'
             # Checking that the game is not already in the database
             rows = self.rowCount()
             found = False
             pos = 0
             while not found and pos < rows:
-                if self.item(pos,table_model.headers.index(table_model.COLUMN_URL)).text() == url:
+                if self.item(pos,headers.index(COLUMN_URL)).text() == url:
                     found = True
                 pos = pos + 1
         
             if found:
                 errorMessage=QErrorMessage(self)
-                errorMessage.showMessage(data[table_model.COLUMN_NAME] + ' (' + data[table_model.COLUMN_SYSTEM] + ') is already in the database')
+                errorMessage.showMessage(data[COLUMN_NAME] + ' (' + data[COLUMN_SYSTEM] + ') is already in the database')
             else:
-                data[table_model.COLUMN_WEIGHTED] = ''
-                data[table_model.COLUMN_STATUS] = 'unplayed'
-                data[table_model.COLUMN_LABELS] = ''
-                data[table_model.COLUMN_NOTES] = ''
-                data[table_model.COLUMN_URL] = url
+                data[COLUMN_WEIGHTED] = ''
+                data[COLUMN_STATUS] = 'unplayed'
+                data[COLUMN_LABELS] = ''
+                data[COLUMN_NOTES] = ''
+                data[COLUMN_URL] = url
                 self.addGameRow(data)
                 # And recomputing weighted ratins
                 self.compute_final_rating()
@@ -112,48 +122,48 @@ class Table(QTableWidget):
                 self.setRowCount(rows + 1)
             else:
                 rows = row
-            item = QtGui.QTableWidgetItem(data[table_model.COLUMN_NAME])
+            item = QtGui.QTableWidgetItem(data[COLUMN_NAME])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_NAME), item)
+            self.setItem(rows, headers.index(COLUMN_NAME), item)
             # system
-            item = QtGui.QTableWidgetItem(data[table_model.COLUMN_SYSTEM])
+            item = QtGui.QTableWidgetItem(data[COLUMN_SYSTEM])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_SYSTEM), item)
+            self.setItem(rows, headers.index(COLUMN_SYSTEM), item)
             # date
-            item = QtGui.QTableWidgetItem(data[table_model.COLUMN_YEAR])
+            item = QtGui.QTableWidgetItem(data[COLUMN_YEAR])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_YEAR), item)
+            self.setItem(rows, headers.index(COLUMN_YEAR), item)
             # rating
-            item = QtGui.QTableWidgetItem(data[table_model.COLUMN_RATING])
+            item = QtGui.QTableWidgetItem(data[COLUMN_RATING])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_RATING), item)
+            self.setItem(rows, headers.index(COLUMN_RATING), item)
             # votes
-            item = NumericWidgetItem(data[table_model.COLUMN_VOTES])
+            item = NumericWidgetItem(data[COLUMN_VOTES])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_VOTES), item)
+            self.setItem(rows, headers.index(COLUMN_VOTES), item)
             # Weighted rating
-            item = QtGui.QTableWidgetItem(data[table_model.COLUMN_WEIGHTED])
+            item = QtGui.QTableWidgetItem(data[COLUMN_WEIGHTED])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_WEIGHTED), item)
+            self.setItem(rows, headers.index(COLUMN_WEIGHTED), item)
             # Status
-            item = QtGui.QTableWidgetItem(data[table_model.COLUMN_STATUS])
+            item = QtGui.QTableWidgetItem(data[COLUMN_STATUS])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_STATUS), item)
-            item.setTextColor(dialogs.status_dialog.colors[dialogs.status_dialog.options.index(data[table_model.COLUMN_STATUS])])
+            self.setItem(rows, headers.index(COLUMN_STATUS), item)
+            item.setTextColor(dialogs.status_dialog.colors[dialogs.status_dialog.options.index(data[COLUMN_STATUS])])
             # labels
             item = QtGui.QTableWidgetItem('')
             item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_LABELS), item)
+            self.setItem(rows, headers.index(COLUMN_LABELS), item)
             widget = LabelWidget(item, self)
-            widget.stringToLabels(data[table_model.COLUMN_LABELS])
-            self.setCellWidget(rows, table_model.headers.index(table_model.COLUMN_LABELS), widget)
+            widget.stringToLabels(data[COLUMN_LABELS])
+            self.setCellWidget(rows, headers.index(COLUMN_LABELS), widget)
             # Notes
-            item = QtGui.QTableWidgetItem(data[table_model.COLUMN_NOTES])
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_NOTES), item)
+            item = QtGui.QTableWidgetItem(data[COLUMN_NOTES])
+            self.setItem(rows, headers.index(COLUMN_NOTES), item)
             # Url
-            item = QtGui.QTableWidgetItem(data[table_model.COLUMN_URL])
+            item = QtGui.QTableWidgetItem(data[COLUMN_URL])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, table_model.headers.index(table_model.COLUMN_URL), item)
+            self.setItem(rows, headers.index(COLUMN_URL), item)
             
             self.changed = True
             
@@ -161,16 +171,16 @@ class Table(QTableWidget):
         
     def getGameData(self, row):
         data = dict()
-        data[table_model.COLUMN_NAME] = self.item(row, table_model.headers.index(table_model.COLUMN_NAME)).text()
-        data[table_model.COLUMN_SYSTEM] = self.item(row,table_model.headers.index(table_model.COLUMN_SYSTEM)).text()
-        data[table_model.COLUMN_YEAR] = self.item(row,table_model.headers.index(table_model.COLUMN_YEAR)).text()
-        data[table_model.COLUMN_RATING] = self.item(row,table_model.headers.index(table_model.COLUMN_RATING)).text()
-        data[table_model.COLUMN_VOTES] = self.item(row,table_model.headers.index(table_model.COLUMN_VOTES)).text()
-        data[table_model.COLUMN_WEIGHTED] = self.item(row,table_model.headers.index(table_model.COLUMN_WEIGHTED)).text()
-        data[table_model.COLUMN_STATUS] = self.item(row, table_model.headers.index(table_model.COLUMN_STATUS)).text()
-        data[table_model.COLUMN_LABELS] = self.cellWidget(row,table_model.headers.index(table_model.COLUMN_LABELS)).labelsToString()
-        data[table_model.COLUMN_NOTES] = self.item(row,table_model.headers.index(table_model.COLUMN_NOTES)).text()
-        data[table_model.COLUMN_URL] = self.item(row,table_model.headers.index(table_model.COLUMN_URL)).text()
+        data[COLUMN_NAME] = self.item(row, headers.index(COLUMN_NAME)).text()
+        data[COLUMN_SYSTEM] = self.item(row,headers.index(COLUMN_SYSTEM)).text()
+        data[COLUMN_YEAR] = self.item(row,headers.index(COLUMN_YEAR)).text()
+        data[COLUMN_RATING] = self.item(row,headers.index(COLUMN_RATING)).text()
+        data[COLUMN_VOTES] = self.item(row,headers.index(COLUMN_VOTES)).text()
+        data[COLUMN_WEIGHTED] = self.item(row,headers.index(COLUMN_WEIGHTED)).text()
+        data[COLUMN_STATUS] = self.item(row, headers.index(COLUMN_STATUS)).text()
+        data[COLUMN_LABELS] = self.cellWidget(row,headers.index(COLUMN_LABELS)).labelsToString()
+        data[COLUMN_NOTES] = self.item(row,headers.index(COLUMN_NOTES)).text()
+        data[COLUMN_URL] = self.item(row,headers.index(COLUMN_URL)).text()
                  
         return data
         
@@ -180,8 +190,8 @@ class Table(QTableWidget):
         ratings_i = []
         votes_i = []
         for i in range(0,rows):
-            ratings_i.append(float(self.item(i,table_model.headers.index(table_model.COLUMN_RATING)).text()))
-            votes_i.append(float(self.item(i,table_model.headers.index(table_model.COLUMN_VOTES)).text()))
+            ratings_i.append(float(self.item(i,headers.index(COLUMN_RATING)).text()))
+            votes_i.append(float(self.item(i,headers.index(COLUMN_VOTES)).text()))
         ratings_i = np.array(ratings_i)
         votes_i = np.array(votes_i)
         non_zeros = np.where(votes_i != 0)[0]  
@@ -195,7 +205,7 @@ class Table(QTableWidget):
         wr_str[non_zeros] = ["%.2f" % x for x in wr[non_zeros]]
         # Computing the weighted rating for all the games again
         for i in range(0,rows):
-            self.item(i, table_model.headers.index(table_model.COLUMN_WEIGHTED)).setText(wr_str[i])
+            self.item(i, headers.index(COLUMN_WEIGHTED)).setText(wr_str[i])
             
          
     def reload_scores(self):
@@ -206,7 +216,7 @@ class Table(QTableWidget):
         progress.setWindowModality(Qt.WindowModal)
         try:
             for i in range(0,rows):
-                url = self.item(i,table_model.headers.index(table_model.COLUMN_URL)).text()        
+                url = self.item(i,headers.index(COLUMN_URL)).text()        
                 req = urllib2.Request(str(url), headers={'User-Agent' : "Magic Browser"}) 
                 response = urllib2.urlopen(req)
                 html = response.read().decode('ascii','ignore') 
@@ -214,7 +224,7 @@ class Table(QTableWidget):
                 # Updating the name, in case it changed
                 el = doc.xpath("//h1[@class='page-title']")
                 name = el[0].findtext('a')
-                self.item(i,table_model.headers.index(table_model.COLUMN_NAME)).setText(name)
+                self.item(i,headers.index(COLUMN_NAME)).setText(name)
                 # Updating the score
                 el = doc.xpath("//fieldset[@id='js_mygames_rate']")
                 if len(el)>0:
@@ -229,8 +239,8 @@ class Table(QTableWidget):
                 else:
                     rating = '0.00'
                     votes = '0'
-                self.item(i,table_model.headers.index(table_model.COLUMN_RATING)).setText(rating)
-                self.item(i,table_model.headers.index(table_model.COLUMN_VOTES)).setText(votes)
+                self.item(i,headers.index(COLUMN_RATING)).setText(rating)
+                self.item(i,headers.index(COLUMN_VOTES)).setText(votes)
                 progress.setValue(i+1)
             self.compute_final_rating()
             self.changed = True
@@ -254,19 +264,19 @@ class Table(QTableWidget):
         if self.already_selected != None and self.already_selected_status != None and self.already_selected_systems != None:
             none = '[None]' in self.already_selected
             for row in range(0,self.rowCount()):
-                 labels_row = self.cellWidget(row,table_model.headers.index(table_model.COLUMN_LABELS)).getLabels()
+                 labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
                  filtered_out = not (none and len(labels_row) == 0)
                  i = 0                          
                  while filtered_out and i<len(labels_row):
                      if labels_row[i] in self.already_selected:
                          filtered_out = False
                      i = i + 1
-                 filtered_out = filtered_out or not self.item(row, table_model.headers.index(table_model.COLUMN_STATUS)).text() in self.already_selected_status or not self.item(row, table_model.headers.index(table_model.COLUMN_SYSTEM)).text() in self.already_selected_systems
+                 filtered_out = filtered_out or not self.item(row, headers.index(COLUMN_STATUS)).text() in self.already_selected_status or not self.item(row, headers.index(COLUMN_SYSTEM)).text() in self.already_selected_systems
                  self.setRowHidden(row, filtered_out)
 
     def hide_rows_search(self, text):
         for row in range(0,self.rowCount()):
-            item_text = str(self.item(row, table_model.headers.index(table_model.COLUMN_NAME)).text()).lower()
+            item_text = str(self.item(row, headers.index(COLUMN_NAME)).text()).lower()
             self.setRowHidden(row, not text in item_text)
             
     def show_all_rows(self):
@@ -282,11 +292,11 @@ class Table(QTableWidget):
         row = tableItem.row()
         column = tableItem.column()        
         
-        if column == table_model.headers.index(table_model.COLUMN_YEAR):
+        if column == headers.index(COLUMN_YEAR):
             (date, result) = DateDialog.getDate(self.item(row, column).text())
             if result:
                 self.item(row, column).setText(date)
-        elif column == table_model.headers.index(table_model.COLUMN_STATUS):
+        elif column == headers.index(COLUMN_STATUS):
             (status, color, accepted) = StatusDialog.getStatus(self.item(row, column).text())
             if accepted:
                 self.item(row, column).setText(status)

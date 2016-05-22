@@ -2,7 +2,6 @@ from PyQt4 import QtGui, QtCore, Qt
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import table
-import models.table_model as table_model
 
 order = ['ascending', 'descending']
 ASCENDING = 0
@@ -19,7 +18,7 @@ class SortDialog(QDialog):
         self.layouts = QtGui.QVBoxLayout()
         layout = QtGui.QHBoxLayout()
         combo_header = QtGui.QComboBox()
-        for header in table_model.headers:
+        for header in table.headers:
             combo_header.addItem(header)
         combo_order = QtGui.QComboBox()
         for o in order:
