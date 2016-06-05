@@ -1,6 +1,4 @@
 import sys
-import re
-import urllib2
 import csv
 import pandas as pd
 
@@ -15,6 +13,7 @@ from dialogs.filter_dialog import FilterDialog
 from dialogs.sort_dialog import *
 from dialogs.import_source_dialog import *
 from dialogs.import_game_dialog import *
+from controllers.add_game_controller import *
 
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 SEARCH_URL = GAMEFAQS_URL + 'search?game='
@@ -73,97 +72,12 @@ class Window(QMainWindow):
         self.already_sort_order = None
         self.pending_selected = None
         self.previous_search = ''
-        self.importing = None
-    
-    class AddGameWorker(QThread):
-        def __init__(self, url, parent=None):
-            QThread.__init__(self, parent)
-            self.exiting = False
-            self.url = url
-        
-        def run(self):
-            try:
-                req = urllib2.Request(self.url, headers={'User-Agent' : "Magic Browser"}) 
-                response = urllib2.urlopen(req)
-                self.html = response.read().decode('ascii','ignore')
-                self.emit(SIGNAL("htmlRead(QString)"), self.html)
-            except urllib2.URLError as e:
-                print e.reason   
-                errorMessage=QErrorMessage(self)
-                errorMessage.setWindowTitle('Add game')
-                errorMessage.showMessage('Incorrect URL or not Internet connection')
-            except urllib2.HTTPError as e:
-                print e.code
-                print e.read() 
-                errorMessage=QErrorMessage(self)
-                errorMessage.setWindowTitle('Add game')
-                errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())   
-        def __del__(self):
-            self.exiting = True
-            self.wait()
             
     def addGame(self):
         # Asking the user for an url
-        window = AddGameForm(self)
-        window.exec_()
+        addGameController = AddGameController(self.table, self)
+        addGameController.show()
         
-        if window.ok:
-            if window.radio_url.isChecked():
-                self.add_by_url = True
-                # Search by URL
-                self.url = str(window.line_edit.text())
-                if not re.match(r'^[a-zA-Z]+://', self.url):
-                    self.url = 'http://' + self.url
-                if not self.url.startswith(GAMEFAQS_URL):
-                    errorMessage=QErrorMessage(self)
-                    errorMessage.setWindowTitle('Add game')
-                    errorMessage.showMessage('The URL is not a valid GameFAQs one')
-                else:
-                    # Download the content of the page
-                     self.launchAddGameWorker()           
-            else:
-                self.add_by_url = False
-                # Search by name
-                self.url = SEARCH_URL + str(window.line_edit.text()).replace(' ','+')
-                # Download the content of the page
-                self.launchAddGameWorker()
-                
-    def launchAddGameWorker(self):
-        self.progress = QProgressDialog("Adding game", "", 0, 0, self)
-        self.progress.setCancelButton(None)
-        self.progress.setWindowModality(Qt.WindowModal)
-        self.progress.show()
-        self.thread = self.AddGameWorker(self.url, self.table)
-        self.connect(self.thread, SIGNAL("htmlRead(QString)"), self.updateAddGame)
-        self.thread.start()
-    
-    def updateAddGame(self, html):
-        self.progress.close()
-        if self.add_by_url:
-            self.table.addGame(self.url, str(html))
-            self.table.scrollToBottom()
-            if self.pending_selected != None:
-                self.url = self.pending_selected[0]
-                del(self.pending_selected[0])   
-                if len(self.pending_selected) == 0:
-                    self.pending_selected = None
-                self.launchAddGameWorker()
-            elif self.importing != None:
-                self.importGames()
-        else:
-            (selected, result) = SearchGameForm.getSearchResult(html, parent = None)
-            if result:
-                self.add_by_url = True
-                self.pending_selected = selected
-                self.url = self.pending_selected[0]
-                del(self.pending_selected[0])   
-                if len(self.pending_selected) == 0:
-                    self.pending_selected = None
-                self.launchAddGameWorker()
-            elif self.importing != None:
-                self.importGames()
-                
-                    
     def removeGame(self):
         indexes = self.table.selectionModel().selectedRows()
         if len(indexes) > 0:
