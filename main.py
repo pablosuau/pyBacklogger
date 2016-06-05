@@ -7,7 +7,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from table import *
-from dialogs.add_game_form import *
 from dialogs.search_game_form import *
 from dialogs.filter_dialog import FilterDialog
 from dialogs.sort_dialog import *
