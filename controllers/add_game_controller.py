@@ -3,6 +3,7 @@ import re
 import urllib2
 from views.add_game_dialog import Ui_AddGameDialog
 from dialogs.search_game_form import SearchGameForm
+from util import util
 
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 SEARCH_URL = GAMEFAQS_URL + 'search?game='
@@ -48,9 +49,7 @@ class AddGameController(QtGui.QDialog):
             if not re.match(r'^[a-zA-Z]+://', self.url):
                 self.url = 'http://' + self.url
             if not self.url.startswith(GAMEFAQS_URL):
-                errorMessage = QtGui.QErrorMessage(self.parent())
-                errorMessage.setWindowTitle('Add game')
-                errorMessage.showMessage('The URL is not a valid GameFAQs one')
+                util.showErrorMessage(self, 'The URL is not a valid GameFAQs one')
             else:
                 # Download the content of the page
                  self.launchAddGameWorker()           
@@ -110,15 +109,11 @@ class AddGameController(QtGui.QDialog):
                 self.emit(QtCore.SIGNAL("htmlRead(QString)"), self.html)
             except urllib2.URLError as e:
                 print e.reason   
-                errorMessage = QtGui.QErrorMessage(self.parent())
-                errorMessage.setWindowTitle('Add game')
-                errorMessage.showMessage('Incorrect URL or not Internet connection')
+                util.showErrorMessage(self, 'Incorrect URL or not Internet connection')
             except urllib2.HTTPError as e:
                 print e.code
-                print e.read() 
-                errorMessage = QtGui.QErrorMessage(self.parent())
-                errorMessage.setWindowTitle('Add game')
-                errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())   
+                print e.read()
+                util.showErrorMessage(self, 'Connection error: ' + e.code + ' ' + e.read())   
         def __del__(self):
             self.exiting = True
             self.wait()
