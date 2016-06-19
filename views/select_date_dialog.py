@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'select_date_dialog.ui'
 #
-# Created: Sun Jun 12 15:48:03 2016
+# Created: Sun Jun 19 08:52:43 2016
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -55,9 +55,9 @@ class Ui_SelectDateDialog(object):
         self.sliderYear.setOrientation(QtCore.Qt.Horizontal)
         self.sliderYear.setObjectName(_fromUtf8("sliderYear"))
         self.lineEditYear = QtGui.QLineEdit(SelectDateDialog)
-        self.lineEditYear.setGeometry(QtCore.QRect(60, 50, 41, 20))
+        self.lineEditYear.setGeometry(QtCore.QRect(60, 50, 51, 20))
         self.lineEditYear.setText(_fromUtf8(""))
-        self.lineEditYear.setMaxLength(4)
+        self.lineEditYear.setMaxLength(8)
         self.lineEditYear.setAlignment(QtCore.Qt.AlignCenter)
         self.lineEditYear.setObjectName(_fromUtf8("lineEditYear"))
 

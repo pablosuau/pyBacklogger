@@ -5,7 +5,7 @@ from lxml.html.soupparser import fromstring
 import re
 from widgets.label_widget import LabelWidget
 import dialogs
-from dialogs.date_dialog import DateDialog
+from controllers.select_date_controller import SelectDateController
 from dialogs.status_dialog import StatusDialog
 import urllib2
 import numpy as np
@@ -293,8 +293,10 @@ class Table(QTableWidget):
         column = tableItem.column()        
         
         if column == headers.index(COLUMN_YEAR):
-            (date, result) = DateDialog.getDate(self.item(row, column).text())
-            if result:
+            sdc = SelectDateController(self.item(row, column).text(), self)
+            sdc.exec_()
+            date = sdc.getDate()
+            if date != None:
                 self.item(row, column).setText(date)
         elif column == headers.index(COLUMN_STATUS):
             (status, color, accepted) = StatusDialog.getStatus(self.item(row, column).text())

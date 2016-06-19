@@ -49,7 +49,7 @@ class AddGameController(QtGui.QDialog):
             if not re.match(r'^[a-zA-Z]+://', self.url):
                 self.url = 'http://' + self.url
             if not self.url.startswith(GAMEFAQS_URL):
-                util.showErrorMessage(self, 'The URL is not a valid GameFAQs one')
+                util.showErrorMessage(self.parent(), 'The URL is not a valid GameFAQs one')
             else:
                 # Download the content of the page
                  self.launchAddGameWorker()           
@@ -109,11 +109,11 @@ class AddGameController(QtGui.QDialog):
                 self.emit(QtCore.SIGNAL("htmlRead(QString)"), self.html)
             except urllib2.URLError as e:
                 print e.reason   
-                util.showErrorMessage(self, 'Incorrect URL or not Internet connection')
+                util.showErrorMessage(self.parent(), 'Incorrect URL or not Internet connection')
             except urllib2.HTTPError as e:
                 print e.code
                 print e.read()
-                util.showErrorMessage(self, 'Connection error: ' + e.code + ' ' + e.read())   
+                util.showErrorMessage(self.parent(), 'Connection error: ' + e.code + ' ' + e.read())   
         def __del__(self):
             self.exiting = True
             self.wait()
