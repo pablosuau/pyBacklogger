@@ -38,7 +38,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tabSystem">
     <attribute name="title">
@@ -68,16 +68,6 @@
      </property>
      <property name="text">
       <string>Select all</string>
-     </property>
-    </widget>
-    <widget class="QListWidget" name="listSystem">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>231</width>
-       <height>241</height>
-      </rect>
      </property>
     </widget>
    </widget>
@@ -111,16 +101,6 @@
       <string>Select all</string>
      </property>
     </widget>
-    <widget class="QListWidget" name="listStatus">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>231</width>
-       <height>241</height>
-      </rect>
-     </property>
-    </widget>
    </widget>
    <widget class="QWidget" name="tabLabel">
     <attribute name="title">
@@ -152,16 +132,6 @@
       <string>Select all</string>
      </property>
     </widget>
-    <widget class="QListWidget" name="listLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>231</width>
-       <height>241</height>
-      </rect>
-     </property>
-    </widget>
    </widget>
   </widget>
   <widget class="QPushButton" name="pushButtonCancel">
@@ -188,6 +158,16 @@
    </property>
    <property name="text">
     <string>Ok</string>
+   </property>
+  </widget>
+  <widget class="QListView" name="listLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>231</width>
+     <height>241</height>
+    </rect>
    </property>
   </widget>
  </widget>

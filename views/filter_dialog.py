@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'filter_dialog.ui'
 #
-# Created: Sun Jun 26 10:35:57 2016
+# Created: Sun Jun 26 11:15:03 2016
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -41,9 +41,6 @@ class Ui_FilterDialog(object):
         self.pushButtonSelectAllSystem = QtGui.QPushButton(self.tabSystem)
         self.pushButtonSelectAllSystem.setGeometry(QtCore.QRect(10, 7, 75, 23))
         self.pushButtonSelectAllSystem.setObjectName(_fromUtf8("pushButtonSelectAllSystem"))
-        self.listSystem = QtGui.QListWidget(self.tabSystem)
-        self.listSystem.setGeometry(QtCore.QRect(10, 40, 231, 241))
-        self.listSystem.setObjectName(_fromUtf8("listSystem"))
         self.tabCategory.addTab(self.tabSystem, _fromUtf8(""))
         self.tabStatus = QtGui.QWidget()
         self.tabStatus.setObjectName(_fromUtf8("tabStatus"))
@@ -53,9 +50,6 @@ class Ui_FilterDialog(object):
         self.pushButtonSelectAllStatus = QtGui.QPushButton(self.tabStatus)
         self.pushButtonSelectAllStatus.setGeometry(QtCore.QRect(10, 7, 75, 23))
         self.pushButtonSelectAllStatus.setObjectName(_fromUtf8("pushButtonSelectAllStatus"))
-        self.listStatus = QtGui.QListWidget(self.tabStatus)
-        self.listStatus.setGeometry(QtCore.QRect(10, 40, 231, 241))
-        self.listStatus.setObjectName(_fromUtf8("listStatus"))
         self.tabCategory.addTab(self.tabStatus, _fromUtf8(""))
         self.tabLabel = QtGui.QWidget()
         self.tabLabel.setObjectName(_fromUtf8("tabLabel"))
@@ -65,9 +59,6 @@ class Ui_FilterDialog(object):
         self.pushButtonSelectAllLabel = QtGui.QPushButton(self.tabLabel)
         self.pushButtonSelectAllLabel.setGeometry(QtCore.QRect(10, 7, 75, 23))
         self.pushButtonSelectAllLabel.setObjectName(_fromUtf8("pushButtonSelectAllLabel"))
-        self.listLabel = QtGui.QListWidget(self.tabLabel)
-        self.listLabel.setGeometry(QtCore.QRect(10, 40, 231, 241))
-        self.listLabel.setObjectName(_fromUtf8("listLabel"))
         self.tabCategory.addTab(self.tabLabel, _fromUtf8(""))
         self.pushButtonCancel = QtGui.QPushButton(FilterDialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(170, 330, 75, 23))
@@ -75,9 +66,12 @@ class Ui_FilterDialog(object):
         self.pushButtonOk = QtGui.QPushButton(FilterDialog)
         self.pushButtonOk.setGeometry(QtCore.QRect(90, 330, 75, 23))
         self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
+        self.listLabel = QtGui.QListView(FilterDialog)
+        self.listLabel.setGeometry(QtCore.QRect(10, 60, 231, 241))
+        self.listLabel.setObjectName(_fromUtf8("listLabel"))
 
         self.retranslateUi(FilterDialog)
-        self.tabCategory.setCurrentIndex(0)
+        self.tabCategory.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(FilterDialog)
 
     def retranslateUi(self, FilterDialog):
