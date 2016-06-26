@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'filter_dialog.ui'
 #
-# Created: Sun Jun 26 11:18:59 2016
+# Created: Sun Jun 26 11:20:43 2016
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -77,7 +77,7 @@ class Ui_FilterDialog(object):
         self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
 
         self.retranslateUi(FilterDialog)
-        self.tabCategory.setCurrentIndex(2)
+        self.tabCategory.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(FilterDialog)
 
     def retranslateUi(self, FilterDialog):
