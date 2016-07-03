@@ -8,11 +8,11 @@ from PyQt4.QtGui import *
 
 from table import *
 from dialogs.search_game_form import *
-from dialogs.filter_dialog import FilterDialog
 from dialogs.sort_dialog import *
 from dialogs.import_source_dialog import *
 from dialogs.import_game_dialog import *
 from controllers.add_game_controller import *
+from controllers.filter_games_controller import *
 
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 SEARCH_URL = GAMEFAQS_URL + 'search?game='
@@ -36,7 +36,7 @@ class Window(QMainWindow):
         self.buttonSearch = QtGui.QPushButton('Search game')
         self.buttonImport = QtGui.QPushButton('Import backlog')
         layoutButtons = QtGui.QVBoxLayout()
-        layoutButtons.setAlignment(Qt.AlignTop)
+        layoutButtons.setAlignment(QtCore.Qt.AlignTop)
         layoutButtons.addWidget(self.buttonAdd)
         layoutButtons.addWidget(self.buttonRemove)
         layoutButtons.addWidget(self.buttonLoad)
@@ -116,7 +116,7 @@ class Window(QMainWindow):
                     rows = self.table.rowCount()
                     progress = QProgressDialog("Saving backlog", "", 0, rows, self)
                     progress.setCancelButton(None)
-                    progress.setWindowModality(Qt.WindowModal)
+                    progress.setWindowModality(QtCore.Qt.WindowModal)
                     for i in range(0,rows):
                         data = self.table.getGameData(i)
                         data_list = []
@@ -144,7 +144,7 @@ class Window(QMainWindow):
                     fp.seek(0)
                     progress = QProgressDialog("Loading backlog", "", 0, rows, self)
                     progress.setCancelButton(None)
-                    progress.setWindowModality(Qt.WindowModal)
+                    progress.setWindowModality(QtCore.Qt.WindowModal)
                     i = 0
                     self.table.setRowCount(rows)
                     self.table.loading = True
@@ -184,14 +184,10 @@ class Window(QMainWindow):
             systems.sort()
                         
             # and show a dialog to select the labels
-            (selected, selected_status, selected_systems, result) = FilterDialog.getFilter(labels, self.already_selected, self.already_selected_status, systems, self.already_selected_systems, self)
-            # Finally we hide or show rows depending on the labels
-            if result:
-                self.table.hide_rows(selected, selected_status, selected_systems)
-                self.already_selected = selected
-                self.already_selected_status = selected_status
-                self.already_selected_systems = selected_systems
-            
+            fgc = FilterGamesController(self.table, labels, self.already_selected, self.already_selected_status, systems, self.already_selected_systems, self)
+            fgc.exec_()
+            (self.already_selected, self.already_selected_status, self.already_selected_systems) = fgc.getFilter()
+           
     def sortGames(self): 
         if not self.checkEmpty():
             # Show the dialog to select the sorting criteria
@@ -205,9 +201,9 @@ class Window(QMainWindow):
                     j = len(sort_fields) - i - 1
                     index_column = headers.index(sort_fields[j])
                     if sort_order[j] == ASCENDING:
-                        order = Qt.AscendingOrder
+                        order = QtCore.Qt.AscendingOrder
                     else:
-                        order = Qt.DescendingOrder
+                        order = QtCore.Qt.DescendingOrder
                     self.table.sortByColumn(index_column, order)
                 self.already_sorted = sort_fields
                 self.already_sort_order = sort_order
