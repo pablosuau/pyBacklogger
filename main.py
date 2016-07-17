@@ -9,8 +9,6 @@ from PyQt4.QtGui import *
 from table import *
 from dialogs.search_game_form import *
 from dialogs.sort_dialog import *
-from dialogs.import_source_dialog import *
-from dialogs.import_game_dialog import *
 from controllers.add_game_controller import *
 from controllers.filter_games_controller import *
 
