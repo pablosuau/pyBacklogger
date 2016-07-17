@@ -1,24 +1,37 @@
-import bisect
+FILTERED = 'filtered'
+COUNT = 'count'
 
-class SystemList():    
+class SystemListModel():    
     def __init__(self):
-        self.system_list = []
-        self.system_filtered = []
+        self.system_list = dict()
+        
+    def clear(self):
+        self.system_list = dict()
 
     def add_system(self, system):
-        # System names are sorted
         if not system in self.system_list:
-            index = bisect.bisect_left(self.system_list, system)
-            self.system_list.insert(index, system)
-            self.system_filtered.insert(index, False)        
+            self.system_list[system] = dict()
+            self.system_list[system][FILTERED] = False
+            self.system_list[system][COUNT] = 1
+        else:
+            self.system_list[system][COUNT] = self.system_list[system][COUNT] + 1
         
     def remove_system(self, system):
         if system in self.system_list:
-            index = self.system_list.index(system)
-            del self.system_list[index]
-            del self.system_filtered[index]
+            if self.system_list[system][COUNT] > 1:
+                self.system_list[system][COUNT] = self.system_list[system][COUNT] - 1
+            else:
+                del self.system_list[system]
+        
+    def get_system_list(self):
+        return sorted(list(self.system_list.keys()))
             
-    def modify_status(self, system, status):
-        index = self.system_list.index(system)
-        self.system_filtered[index] = status
+    def set_filtered(self, system, filtered):
+        self.system_list[system][FILTERED] = filtered
+        
+    def get_filtered(self, system):
+        return (self.system_list[system][FILTERED])
+        
+    def is_any_filtered(self):
+        return True in [self.system_list[k][FILTERED] for k in self.system_list.keys()]
             

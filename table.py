@@ -9,6 +9,7 @@ from controllers.select_date_controller import SelectDateController
 from dialogs.status_dialog import StatusDialog
 import urllib2
 import numpy as np
+from models.system_list_model import SystemListModel
 
 COLUMN_NAME = 'Name'
 COLUMN_SYSTEM = 'System'
@@ -49,6 +50,9 @@ class Table(QTableWidget):
         self.already_selected_status = False
         self.loading = False
         
+        # Models initialization
+        self.system_list_model = SystemListModel()
+        
     def setmydata(self, data): 
         horHeaders = []
         for n, key in enumerate(sorted(self.data.keys())):
@@ -69,7 +73,8 @@ class Table(QTableWidget):
             el = doc.xpath("//title")
             system = el[0].text
             system = system.split(data[COLUMN_NAME] + ' for ')[1]
-            data[COLUMN_SYSTEM] = system.split(' - GameFAQs')[0]
+            system = system.split(' - GameFAQs')[0]
+            data[COLUMN_SYSTEM] = system
             # Year
             el = doc.xpath("//div[@class='pod pod_gameinfo']")
             year = el[0].getchildren()[1].getchildren()[0].getchildren()[3].findtext('a')
@@ -129,6 +134,7 @@ class Table(QTableWidget):
             item = QtGui.QTableWidgetItem(data[COLUMN_SYSTEM])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_SYSTEM), item)
+            self.system_list_model.add_system(data[COLUMN_SYSTEM])
             # date
             item = QtGui.QTableWidgetItem(data[COLUMN_YEAR])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -254,14 +260,13 @@ class Table(QTableWidget):
             errorMessage=QErrorMessage(self)
             errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
         
-    def hide_rows(self, labels, status, systems):
+    def hide_rows(self, labels, status):
         self.already_selected = labels
         self.already_selected_status = status
-        self.already_selected_systems = systems
         self.hide_rows_already()
     
     def hide_rows_already(self):
-        if self.already_selected != None and self.already_selected_status != None and self.already_selected_systems != None:
+        if self.already_selected != None and self.already_selected_status != None and self.system_list_model.is_any_filtered():
             none = '[None]' in self.already_selected
             for row in range(0,self.rowCount()):
                  labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
@@ -271,7 +276,8 @@ class Table(QTableWidget):
                      if labels_row[i] in self.already_selected:
                          filtered_out = False
                      i = i + 1
-                 filtered_out = filtered_out or not self.item(row, headers.index(COLUMN_STATUS)).text() in self.already_selected_status or not self.item(row, headers.index(COLUMN_SYSTEM)).text() in self.already_selected_systems
+                 filtered_out = filtered_out or not self.item(row, headers.index(COLUMN_STATUS)).text() in self.already_selected_status
+                 filtered_out = filtered_out or self.system_list_model.get_filtered(self.item(row, headers.index(COLUMN_SYSTEM)).text())
                  self.setRowHidden(row, filtered_out)
 
     def hide_rows_search(self, text):

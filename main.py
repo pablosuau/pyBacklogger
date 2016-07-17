@@ -34,7 +34,6 @@ class Window(QMainWindow):
         self.buttonSort = QtGui.QPushButton('Sort data')
         self.buttonFilter = QtGui.QPushButton('Filter data')
         self.buttonSearch = QtGui.QPushButton('Search game')
-        self.buttonImport = QtGui.QPushButton('Import backlog')
         layoutButtons = QtGui.QVBoxLayout()
         layoutButtons.setAlignment(QtCore.Qt.AlignTop)
         layoutButtons.addWidget(self.buttonAdd)
@@ -45,7 +44,6 @@ class Window(QMainWindow):
         layoutButtons.addWidget(self.buttonSort)
         layoutButtons.addWidget(self.buttonFilter)
         layoutButtons.addWidget(self.buttonSearch)
-        layoutButtons.addWidget(self.buttonImport)
         self.buttonAdd.clicked.connect(self.addGame)
         self.buttonRemove.clicked.connect(self.removeGame)
         self.buttonSave.clicked.connect(self.saveBacklog)
@@ -54,7 +52,6 @@ class Window(QMainWindow):
         self.buttonSort.clicked.connect(self.sortGames)
         self.buttonFilter.clicked.connect(self.filterGames)
         self.buttonSearch.clicked.connect(self.searchGames)
-        self.buttonImport.clicked.connect(self.importGames)
         
         layout = QtGui.QHBoxLayout()
         layout.addWidget(self.table)
@@ -66,7 +63,6 @@ class Window(QMainWindow):
         
         self.already_selected = None
         self.already_selected_status = None
-        self.already_selected_systems = None
         self.already_sorted = None
         self.already_sort_order = None
         self.pending_selected = None
@@ -99,6 +95,8 @@ class Window(QMainWindow):
         
             if reply == QtGui.QMessageBox.Yes:
                 for i in range(len(actual_indexes) - 1, -1, -1):
+                    system = self.table.getGameData(actual_indexes[i])[COLUMN_SYSTEM]
+                    self.table.system_list_model.remove_system(system)
                     self.table.removeRow(actual_indexes[i])
                 self.table.changed = True
         else:
@@ -136,6 +134,7 @@ class Window(QMainWindow):
             self.already_selected_status = None
             self.already_selected_systems = None
             if fileName:
+                self.table.system_list_model.clear()
                 for i in reversed(range(self.table.rowCount())):
                     self.table.removeRow(i)
                 with open(fileName, 'r') as fp:
@@ -175,18 +174,9 @@ class Window(QMainWindow):
             labels.sort()
             
                         
-            # We get the systems
-            systems = []
-            for i in range(0,self.table.rowCount()):
-                system = self.table.item(i, headers.index(COLUMN_SYSTEM)).text()
-                if not str(system) in systems:
-                    systems.append(str(system))
-            systems.sort()
-                        
-            # and show a dialog to select the labels
-            fgc = FilterGamesController(self.table, labels, self.already_selected, self.already_selected_status, systems, self.already_selected_systems, self)
+            fgc = FilterGamesController(self.table, labels, self.already_selected, self.already_selected_status, self)
             fgc.exec_()
-            (self.already_selected, self.already_selected_status, self.already_selected_systems) = fgc.getFilter()
+            (self.already_selected, self.already_selected_status) = fgc.applyFiltering()
            
     def sortGames(self): 
         if not self.checkEmpty():
@@ -224,38 +214,6 @@ class Window(QMainWindow):
             else:
                 self.previous_search = ''
                 self.table.show_all_rows()
-                
-    def importGames(self):
-        if self.importing == None:
-            (source, ok) = ImportSourceDialog.getImportSource(self)
-            if ok:
-                if source == 'Darkadia':
-                    fileName = QtGui.QFileDialog.getOpenFileName(self, 'Import Darkadia backlog from CSV file', '', '*.csv')
-                    fileName = str(fileName)
-                    if fileName:
-                        self.games = pd.read_csv(fileName)
-                        self.importing = 0
-        if self.importing != None:
-            if self.importing < self.games.shape[0]:
-                text = str(self.games['Name'].ix[self.importing]) + ' (' + str(self.games['Platforms'].ix[self.importing]) + ')'
-                self.importing = self.importing + 1
-                (option, result) = ImportGameDialog.getImportGame(text, self)
-                if result: # In the case that the user closes the window, is over
-                    if option == -2: # Import
-                        self.url = SEARCH_URL + str(self.games['Name'].ix[self.importing-1]).replace(' ','+')        
-                        self.add_by_url = False
-                        self.launchAddGameWorker()
-                    elif option == -3: # Ignore
-                        self.importGames()
-                    elif option == -4: # Stop
-                        self.importing = self.games.shape[0]
-                        self.importGames()
-                else:
-                    self.importing = self.games.shape[0]
-                    self.importGames()
-            else:
-                self.importing = None
-                self.games = None
             
     def checkEmpty(self):
         empty = self.table.rowCount() == 0

@@ -3,29 +3,26 @@ from views.filter_dialog import Ui_FilterDialog
 from dialogs.status_dialog import options
 
 class FilterGamesController(QtGui.QDialog):
-    def __init__(self, table, labels, already_selected, already_selected_status, systems, already_selected_systems, parent = None):
+    def __init__(self, table, labels, already_selected, already_selected_status, parent = None):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_FilterDialog()
         self.ui.setupUi(self)
         
-        self.initializeUi(labels, already_selected, already_selected_status, systems, already_selected_systems)
-        
-        self.setupSignals()
-        
         self.table = table
         self.canceled = False
         self.already_selected = already_selected
-        self.already_selected_status = already_selected_status
-        self.already_selected_systems = already_selected_systems
+        
+        self.initializeUi(labels, already_selected, already_selected_status)
+        self.setupSignals()
 
-    def initializeUi(self, labels, already_selected, already_selected_status, systems, already_selected_systems):
-         
+    def initializeUi(self, labels, already_selected, already_selected_status):
         model_system = Qt.QStandardItemModel()
-        for system in systems:
+        systems_list = self.table.system_list_model.get_system_list()
+        for system in systems_list:
             item = Qt.QStandardItem(system)
             item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
-            if already_selected_systems != None and not system in already_selected_systems:
+            if self.table.system_list_model.get_filtered(system):
                 item.setCheckState(QtCore.Qt.Unchecked)
             model_system.appendRow(item)          
         self.ui.listSystem.setModel(model_system)
@@ -111,14 +108,12 @@ class FilterGamesController(QtGui.QDialog):
         self.canceled = True
         self.hide()
 
-    def getFilter(self):
-        if not self.canceled:
-            selected_systems = []
-            model = self.ui.listSystem.model()
-            for index in range(model.rowCount()):
-                item = model.item(index)
-                if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
-                    selected_systems.append(str(item.text()))        
+    def applyFiltering(self):
+        if not self.canceled:            
+            model_system = self.ui.listSystem.model()
+            for index in range(model_system.rowCount()):
+                item = model_system.item(index)
+                self.table.system_list_model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)
             
             selected_status = []
             model = self.ui.listStatus.model()
@@ -134,8 +129,8 @@ class FilterGamesController(QtGui.QDialog):
                 if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
                     selected.append(str(item.text()))
                     
-            self.table.hide_rows(selected, selected_status, selected_systems)
+            self.table.hide_rows(selected, selected_status)
             
-            return (selected, selected_status, selected_systems)
+            return (selected, selected_status)
         else:
-            return (self.already_selected, self.already_selected_status, self.already_selected_systems)
+            return (self.already_selected, self.already_selected_status)
