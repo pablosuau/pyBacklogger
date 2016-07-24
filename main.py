@@ -59,7 +59,6 @@ class Window(QMainWindow):
         self.setCentralWidget(self.main_frame)      
         self.setWindowState(QtCore.Qt.WindowMaximized)
         
-        self.already_selected = None
         self.already_selected_status = None
         self.already_sorted = None
         self.already_sort_order = None
@@ -94,7 +93,10 @@ class Window(QMainWindow):
             if reply == QtGui.QMessageBox.Yes:
                 for i in range(len(actual_indexes) - 1, -1, -1):
                     system = self.table.getGameData(actual_indexes[i])[COLUMN_SYSTEM]
+                    labels = self.table.cellWidget(actual_indexes[i],headers.index(COLUMN_LABELS)).getLabels()
                     self.table.system_list_model.remove_system(system)
+                    for label in labels:
+                        self.table.label_list_model.remove_label(label)
                     self.table.removeRow(actual_indexes[i])
                 self.table.changed = True
         else:
@@ -162,19 +164,9 @@ class Window(QMainWindow):
         
     def filterGames(self):
         if not self.checkEmpty():
-            # We get the labels
-            labels = []
-            for i in range(0,self.table.rowCount()):
-                labels_widget = self.table.cellWidget(i,headers.index(COLUMN_LABELS)).getLabels()
-                for j in range(0,len(labels_widget)):
-                    if not str(labels_widget[j]) in labels:
-                        labels.append(str(labels_widget[j]))
-            labels.sort()
-            
-                        
-            fgc = FilterGamesController(self.table, labels, self.already_selected, self.already_selected_status, self)
+            fgc = FilterGamesController(self.table, self.already_selected_status, self)
             fgc.exec_()
-            (self.already_selected, self.already_selected_status) = fgc.applyFiltering()
+            self.already_selected_status = fgc.applyFiltering()
            
     def sortGames(self): 
         if not self.checkEmpty():

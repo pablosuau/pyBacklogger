@@ -3,19 +3,18 @@ from views.filter_dialog import Ui_FilterDialog
 from dialogs.status_dialog import options
 
 class FilterGamesController(QtGui.QDialog):
-    def __init__(self, table, labels, already_selected, already_selected_status, parent = None):
+    def __init__(self, table, already_selected_status, parent = None):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_FilterDialog()
         self.ui.setupUi(self)
         
         self.table = table
         self.canceled = False
-        self.already_selected = already_selected
         
-        self.initializeUi(labels, already_selected, already_selected_status)
+        self.initializeUi(already_selected_status)
         self.setupSignals()
 
-    def initializeUi(self, labels, already_selected, already_selected_status):
+    def initializeUi(self, already_selected_status):
         model_system = Qt.QStandardItemModel()
         systems_list = self.table.system_list_model.get_system_list()
         for system in systems_list:
@@ -35,18 +34,18 @@ class FilterGamesController(QtGui.QDialog):
             if already_selected_status != None and not option in already_selected_status:
                 item.setCheckState(QtCore.Qt.Unchecked)
             model_status.appendRow(item)          
-        self.ui.listStatus.setModel(model_status)        
-
-        model = Qt.QStandardItemModel()
-        labels.insert(0,'[None]')
-        for label in labels:
+        self.ui.listStatus.setModel(model_status)  
+        
+        model_label = Qt.QStandardItemModel()
+        labels_list = self.table.label_list_model.get_label_list()
+        for label in labels_list:
             item = Qt.QStandardItem(label)
             item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
-            if already_selected != None and not label in already_selected:
+            if self.table.label_list_model.get_filtered(label):
                 item.setCheckState(QtCore.Qt.Unchecked)
-            model.appendRow(item)          
-        self.ui.listLabel.setModel(model)
+            model_label.appendRow(item)          
+        self.ui.listLabel.setModel(model_label)
 
     def setupSignals(self):
         self.ui.pushButtonSelectAllSystem.clicked.connect(self.select_all_system)
@@ -121,16 +120,14 @@ class FilterGamesController(QtGui.QDialog):
                 item = model.item(index)
                 if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
                     selected_status.append(str(item.text()))
-                    
-            selected = []
-            model = self.ui.listLabel.model()
-            for index in range(model.rowCount()):
-                item = model.item(index)
-                if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
-                    selected.append(str(item.text()))
-                    
-            self.table.hide_rows(selected, selected_status)
+               
+               
+            model_label = self.ui.listLabel.model()
+            for index in range(model_label.rowCount()):
+                item = model_label.item(index)
+                self.table.label_list_model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)   
+            self.table.hide_rows(selected_status)
             
-            return (selected, selected_status)
+            return selected_status
         else:
-            return (self.already_selected, self.already_selected_status)
+            return (self.already_selected_status)

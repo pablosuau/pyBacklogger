@@ -10,6 +10,7 @@ from dialogs.status_dialog import StatusDialog
 import urllib2
 import numpy as np
 from models.system_list_model import SystemListModel
+from models.label_list_model import LabelListModel
 
 COLUMN_NAME = 'Name'
 COLUMN_SYSTEM = 'System'
@@ -46,12 +47,12 @@ class Table(QTableWidget):
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         
         self.changed = False
-        self.already_selected = None
         self.already_selected_status = False
         self.loading = False
         
         # Models initialization
         self.system_list_model = SystemListModel()
+        self.label_list_model = LabelListModel()
         
     def setmydata(self, data): 
         horHeaders = []
@@ -163,6 +164,9 @@ class Table(QTableWidget):
             widget = LabelWidget(item, self)
             widget.stringToLabels(data[COLUMN_LABELS])
             self.setCellWidget(rows, headers.index(COLUMN_LABELS), widget)
+            new_labels = widget.getLabels()
+            for label in new_labels:
+                self.label_list_model.add_label(label)  
             # Notes
             item = QtGui.QTableWidgetItem(data[COLUMN_NOTES])
             self.setItem(rows, headers.index(COLUMN_NOTES), item)
@@ -260,25 +264,22 @@ class Table(QTableWidget):
             errorMessage=QErrorMessage(self)
             errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
         
-    def hide_rows(self, labels, status):
-        self.already_selected = labels
+    def hide_rows(self, status):
         self.already_selected_status = status
         self.hide_rows_already()
     
     def hide_rows_already(self):
-        if self.already_selected != None and self.already_selected_status != None and self.system_list_model.is_any_filtered():
-            none = '[None]' in self.already_selected
-            for row in range(0,self.rowCount()):
-                 labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
-                 filtered_out = not (none and len(labels_row) == 0)
-                 i = 0                          
-                 while filtered_out and i<len(labels_row):
-                     if labels_row[i] in self.already_selected:
-                         filtered_out = False
-                     i = i + 1
-                 filtered_out = filtered_out or not self.item(row, headers.index(COLUMN_STATUS)).text() in self.already_selected_status
-                 filtered_out = filtered_out or self.system_list_model.get_filtered(self.item(row, headers.index(COLUMN_SYSTEM)).text())
-                 self.setRowHidden(row, filtered_out)
+        none = self.label_list_model.get_filtered('---None---')
+        for row in range(0,self.rowCount()):
+             labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
+             filtered_out = none and len(labels_row) == 0
+             i = 0                          
+             while not filtered_out and i<len(labels_row):
+                 filtered_out = self.label_list_model.get_filtered(labels_row[i])
+                 i = i + 1
+             filtered_out = filtered_out or not self.item(row, headers.index(COLUMN_STATUS)).text() in self.already_selected_status
+             filtered_out = filtered_out or self.system_list_model.get_filtered(self.item(row, headers.index(COLUMN_SYSTEM)).text())
+             self.setRowHidden(row, filtered_out)
 
     def hide_rows_search(self, text):
         for row in range(0,self.rowCount()):
