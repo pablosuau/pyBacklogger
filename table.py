@@ -11,6 +11,7 @@ import urllib2
 import numpy as np
 from models.system_list_model import SystemListModel
 from models.label_list_model import LabelListModel
+from models.status_list_model import StatusListModel
 
 COLUMN_NAME = 'Name'
 COLUMN_SYSTEM = 'System'
@@ -47,12 +48,12 @@ class Table(QTableWidget):
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         
         self.changed = False
-        self.already_selected_status = False
         self.loading = False
         
         # Models initialization
         self.system_list_model = SystemListModel()
         self.label_list_model = LabelListModel()
+        self.status_list_model = StatusListModel()
         
     def setmydata(self, data): 
         horHeaders = []
@@ -157,6 +158,7 @@ class Table(QTableWidget):
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_STATUS), item)
             item.setTextColor(dialogs.status_dialog.colors[dialogs.status_dialog.options.index(data[COLUMN_STATUS])])
+            self.status_list_model.add_status(data[COLUMN_STATUS])
             # labels
             item = QtGui.QTableWidgetItem('')
             item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -264,11 +266,7 @@ class Table(QTableWidget):
             errorMessage=QErrorMessage(self)
             errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
         
-    def hide_rows(self, status):
-        self.already_selected_status = status
-        self.hide_rows_already()
-    
-    def hide_rows_already(self):
+    def hide_rows(self):
         none = self.label_list_model.get_filtered('---None---')
         for row in range(0,self.rowCount()):
              labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
@@ -277,8 +275,8 @@ class Table(QTableWidget):
              while not filtered_out and i<len(labels_row):
                  filtered_out = self.label_list_model.get_filtered(labels_row[i])
                  i = i + 1
-             filtered_out = filtered_out or not self.item(row, headers.index(COLUMN_STATUS)).text() in self.already_selected_status
              filtered_out = filtered_out or self.system_list_model.get_filtered(self.item(row, headers.index(COLUMN_SYSTEM)).text())
+             filtered_out = filtered_out or self.status_list_model.get_filtered(self.item(row, headers.index(COLUMN_STATUS)).text())
              self.setRowHidden(row, filtered_out)
 
     def hide_rows_search(self, text):

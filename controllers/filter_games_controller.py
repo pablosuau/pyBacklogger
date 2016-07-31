@@ -1,9 +1,8 @@
 from PyQt4 import QtGui, QtCore, Qt
 from views.filter_dialog import Ui_FilterDialog
-from dialogs.status_dialog import options
 
 class FilterGamesController(QtGui.QDialog):
-    def __init__(self, table, already_selected_status, parent = None):
+    def __init__(self, table, parent = None):
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_FilterDialog()
         self.ui.setupUi(self)
@@ -11,10 +10,10 @@ class FilterGamesController(QtGui.QDialog):
         self.table = table
         self.canceled = False
         
-        self.initializeUi(already_selected_status)
+        self.initializeUi()
         self.setupSignals()
 
-    def initializeUi(self, already_selected_status):
+    def initializeUi(self):
         model_system = Qt.QStandardItemModel()
         systems_list = self.table.system_list_model.get_system_list()
         for system in systems_list:
@@ -27,11 +26,12 @@ class FilterGamesController(QtGui.QDialog):
         self.ui.listSystem.setModel(model_system)
         
         model_status = Qt.QStandardItemModel()
-        for option in options: # Imported from dialog.status_dialog
-            item = Qt.QStandardItem(option)
+        statuses_list = self.table.status_list_model.get_status_list()
+        for status in statuses_list: # Imported from dialog.status_dialog
+            item = Qt.QStandardItem(status)
             item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
             item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
-            if already_selected_status != None and not option in already_selected_status:
+            if self.table.status_list_model.get_filtered(status):
                 item.setCheckState(QtCore.Qt.Unchecked)
             model_status.appendRow(item)          
         self.ui.listStatus.setModel(model_status)  
@@ -114,20 +114,15 @@ class FilterGamesController(QtGui.QDialog):
                 item = model_system.item(index)
                 self.table.system_list_model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)
             
-            selected_status = []
             model = self.ui.listStatus.model()
             for index in range(model.rowCount()):
                 item = model.item(index)
-                if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
-                    selected_status.append(str(item.text()))
+                self.table.status_list_model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)
                
                
             model_label = self.ui.listLabel.model()
             for index in range(model_label.rowCount()):
                 item = model_label.item(index)
                 self.table.label_list_model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)   
-            self.table.hide_rows(selected_status)
-            
-            return selected_status
-        else:
-            return (self.already_selected_status)
+                
+            self.table.hide_rows()

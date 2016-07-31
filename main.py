@@ -93,8 +93,10 @@ class Window(QMainWindow):
             if reply == QtGui.QMessageBox.Yes:
                 for i in range(len(actual_indexes) - 1, -1, -1):
                     system = self.table.getGameData(actual_indexes[i])[COLUMN_SYSTEM]
+                    status = self.table.getGameData(actual_indexes[i])[COLUMN_STATUS]
                     labels = self.table.cellWidget(actual_indexes[i],headers.index(COLUMN_LABELS)).getLabels()
                     self.table.system_list_model.remove_system(system)
+                    self.table.status_list_model.remove_status(status)
                     for label in labels:
                         self.table.label_list_model.remove_label(label)
                     self.table.removeRow(actual_indexes[i])
@@ -164,9 +166,9 @@ class Window(QMainWindow):
         
     def filterGames(self):
         if not self.checkEmpty():
-            fgc = FilterGamesController(self.table, self.already_selected_status, self)
+            fgc = FilterGamesController(self.table, self)
             fgc.exec_()
-            self.already_selected_status = fgc.applyFiltering()
+            fgc.applyFiltering()
            
     def sortGames(self): 
         if not self.checkEmpty():
