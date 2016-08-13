@@ -1,6 +1,5 @@
 import sys
 import csv
-import pandas as pd
 
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
