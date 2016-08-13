@@ -14,88 +14,43 @@ class FilterGamesController(QtGui.QDialog):
         self.setupSignals()
 
     def initializeUi(self):
-        model_system = Qt.QStandardItemModel()
-        systems_list = self.table.system_list_model.get_system_list()
-        for system in systems_list:
-            item = Qt.QStandardItem(system)
-            item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
-            if self.table.system_list_model.get_filtered(system):
-                item.setCheckState(QtCore.Qt.Unchecked)
-            model_system.appendRow(item)          
-        self.ui.listSystem.setModel(model_system)
+        def assign_model(model, list_widget):       
+            model_qt = Qt.QStandardItemModel()
+            values_list = model.get_list()
+            for value in values_list:
+                item = Qt.QStandardItem(value)
+                item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+                item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
+                if model.get_filtered(value):
+                    item.setCheckState(QtCore.Qt.Unchecked)
+                model_qt.appendRow(item)          
+            list_widget.setModel(model_qt)
         
-        model_status = Qt.QStandardItemModel()
-        statuses_list = self.table.status_list_model.get_status_list()
-        for status in statuses_list: # Imported from dialog.status_dialog
-            item = Qt.QStandardItem(status)
-            item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
-            if self.table.status_list_model.get_filtered(status):
-                item.setCheckState(QtCore.Qt.Unchecked)
-            model_status.appendRow(item)          
-        self.ui.listStatus.setModel(model_status)  
-        
-        model_label = Qt.QStandardItemModel()
-        labels_list = self.table.label_list_model.get_label_list()
-        for label in labels_list:
-            item = Qt.QStandardItem(label)
-            item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item.setData(QtCore.Qt.Checked, QtCore.Qt.CheckStateRole)
-            if self.table.label_list_model.get_filtered(label):
-                item.setCheckState(QtCore.Qt.Unchecked)
-            model_label.appendRow(item)          
-        self.ui.listLabel.setModel(model_label)
+        assign_model(self.table.system_list_model, self.ui.listSystem) 
+        assign_model(self.table.status_list_model, self.ui.listStatus)        
+        assign_model(self.table.label_list_model, self.ui.listLabel)
 
     def setupSignals(self):
-        self.ui.pushButtonSelectAllSystem.clicked.connect(self.select_all_system)
-        self.ui.pushButtonDeselectAllSystem.clicked.connect(self.deselect_all_system)
-        self.ui.pushButtonSelectAllStatus.clicked.connect(self.select_all_status)
-        self.ui.pushButtonDeselectAllStatus.clicked.connect(self.deselect_all_status)
-        self.ui.pushButtonSelectAllLabel.clicked.connect(self.select_all_labels)
-        self.ui.pushButtonDeselectAllLabel.clicked.connect(self.deselect_all_labels)
+        self.ui.pushButtonSelectAllSystem.clicked.connect(lambda: self.select_all(self.ui.listSystem))
+        self.ui.pushButtonDeselectAllSystem.clicked.connect(lambda: self.deselect_all(self.ui.listSystem))
+        self.ui.pushButtonSelectAllStatus.clicked.connect(lambda: self.select_all(self.ui.listStatus))
+        self.ui.pushButtonDeselectAllStatus.clicked.connect(lambda: self.deselect_all(self.ui.listStatus))
+        self.ui.pushButtonSelectAllLabel.clicked.connect(lambda: self.select_all(self.ui.listLabel))
+        self.ui.pushButtonDeselectAllLabel.clicked.connect(lambda: self.deselect_all(self.ui.listLabel))
         self.ui.pushButtonOk.clicked.connect(self.ok_clicked)
         self.ui.pushButtonCancel.clicked.connect(self.cancel_clicked)
         
-    def select_all_labels(self):
-        model = self.ui.listLabel.model()
-        for index in range(model.rowCount()):
-            item = model.item(index)
+    def select_all(self, list_view):
+        model_qt = list_view.model()
+        for index in range(model_qt.rowCount()):
+            item = model_qt.item(index)
             if item.isCheckable() and item.checkState() == QtCore.Qt.Unchecked:
                 item.setCheckState(QtCore.Qt.Checked)
-    
-    def deselect_all_labels(self):
-        model = self.ui.listLabel.model()
-        for index in range(model.rowCount()):
-            item = model.item(index)
-            if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
-                item.setCheckState(QtCore.Qt.Unchecked)
-                
-    def select_all_status(self):
-        model = self.ui.listStatus.model()
-        for index in range(model.rowCount()):
-            item = model.item(index)
-            if item.isCheckable() and item.checkState() == QtCore.Qt.Unchecked:
-                item.setCheckState(QtCore.Qt.Checked)
-    
-    def deselect_all_status(self):
-        model = self.ui.listStatus.model()
-        for index in range(model.rowCount()):
-            item = model.item(index)
-            if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
-                item.setCheckState(QtCore.Qt.Unchecked)
-                
-    def select_all_system(self):
-        model = self.ui.listSystem.model()
-        for index in range(model.rowCount()):
-            item = model.item(index)
-            if item.isCheckable() and item.checkState() == QtCore.Qt.Unchecked:
-                item.setCheckState(QtCore.Qt.Checked)
-    
-    def deselect_all_system(self):
-        model = self.ui.listSystem.model()
-        for index in range(model.rowCount()):
-            item = model.item(index)
+            
+    def deselect_all(self, list_view):
+        model_qt = list_view.model()
+        for index in range(model_qt.rowCount()):
+            item = model_qt.item(index)
             if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
                 item.setCheckState(QtCore.Qt.Unchecked)
                 
@@ -108,21 +63,14 @@ class FilterGamesController(QtGui.QDialog):
         self.hide()
 
     def applyFiltering(self):
-        if not self.canceled:            
-            model_system = self.ui.listSystem.model()
-            for index in range(model_system.rowCount()):
-                item = model_system.item(index)
-                self.table.system_list_model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)
+        def applyFilteringPerType(model, list_widget):
+            model_qt = list_widget.model()
+            for index in range(model_qt.rowCount()):
+                item = model_qt.item(index)
+                model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)
             
-            model = self.ui.listStatus.model()
-            for index in range(model.rowCount()):
-                item = model.item(index)
-                self.table.status_list_model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)
-               
-               
-            model_label = self.ui.listLabel.model()
-            for index in range(model_label.rowCount()):
-                item = model_label.item(index)
-                self.table.label_list_model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)   
-                
+        if not self.canceled:      
+            applyFilteringPerType(self.table.system_list_model, self.ui.listSystem)
+            applyFilteringPerType(self.table.status_list_model, self.ui.listStatus)
+            applyFilteringPerType(self.table.label_list_model, self.ui.listLabel)               
             self.table.hide_rows()

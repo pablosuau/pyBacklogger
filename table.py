@@ -9,9 +9,7 @@ from controllers.select_date_controller import SelectDateController
 from dialogs.status_dialog import StatusDialog
 import urllib2
 import numpy as np
-from models.system_list_model import SystemListModel
-from models.label_list_model import LabelListModel
-from models.status_list_model import StatusListModel
+from models.filter_list_model import FilterListModel
 
 COLUMN_NAME = 'Name'
 COLUMN_SYSTEM = 'System'
@@ -23,6 +21,8 @@ COLUMN_STATUS = 'Status'
 COLUMN_LABELS = 'Labels'
 COLUMN_NOTES = 'Notes'
 COLUMN_URL = 'URL'
+
+LABEL_NONE = '---None---'
 
 headers = [COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL]
 
@@ -51,9 +51,9 @@ class Table(QTableWidget):
         self.loading = False
         
         # Models initialization
-        self.system_list_model = SystemListModel()
-        self.label_list_model = LabelListModel()
-        self.status_list_model = StatusListModel()
+        self.system_list_model = FilterListModel()
+        self.label_list_model = FilterListModel(LABEL_NONE)
+        self.status_list_model = FilterListModel()
         
     def setmydata(self, data): 
         horHeaders = []
@@ -136,7 +136,7 @@ class Table(QTableWidget):
             item = QtGui.QTableWidgetItem(data[COLUMN_SYSTEM])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_SYSTEM), item)
-            self.system_list_model.add_system(data[COLUMN_SYSTEM])
+            self.system_list_model.add(data[COLUMN_SYSTEM])
             # date
             item = QtGui.QTableWidgetItem(data[COLUMN_YEAR])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -158,7 +158,7 @@ class Table(QTableWidget):
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_STATUS), item)
             item.setTextColor(dialogs.status_dialog.colors[dialogs.status_dialog.options.index(data[COLUMN_STATUS])])
-            self.status_list_model.add_status(data[COLUMN_STATUS])
+            self.status_list_model.add(data[COLUMN_STATUS])
             # labels
             item = QtGui.QTableWidgetItem('')
             item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -168,7 +168,7 @@ class Table(QTableWidget):
             self.setCellWidget(rows, headers.index(COLUMN_LABELS), widget)
             new_labels = widget.getLabels()
             for label in new_labels:
-                self.label_list_model.add_label(label)  
+                self.label_list_model.add(label)  
             # Notes
             item = QtGui.QTableWidgetItem(data[COLUMN_NOTES])
             self.setItem(rows, headers.index(COLUMN_NOTES), item)
@@ -267,7 +267,7 @@ class Table(QTableWidget):
             errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
         
     def hide_rows(self):
-        none = self.label_list_model.get_filtered('---None---')
+        none = self.label_list_model.get_filtered(LABEL_NONE)
         for row in range(0,self.rowCount()):
              labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
              filtered_out = none and len(labels_row) == 0

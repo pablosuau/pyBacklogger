@@ -59,10 +59,8 @@ class Window(QMainWindow):
         self.setCentralWidget(self.main_frame)      
         self.setWindowState(QtCore.Qt.WindowMaximized)
         
-        self.already_selected_status = None
         self.already_sorted = None
         self.already_sort_order = None
-        self.pending_selected = None
         self.previous_search = ''
             
     def addGame(self):
@@ -95,10 +93,10 @@ class Window(QMainWindow):
                     system = self.table.getGameData(actual_indexes[i])[COLUMN_SYSTEM]
                     status = self.table.getGameData(actual_indexes[i])[COLUMN_STATUS]
                     labels = self.table.cellWidget(actual_indexes[i],headers.index(COLUMN_LABELS)).getLabels()
-                    self.table.system_list_model.remove_system(system)
-                    self.table.status_list_model.remove_status(status)
+                    self.table.system_list_model.remove(system)
+                    self.table.status_list_model.remove(status)
                     for label in labels:
-                        self.table.label_list_model.remove_label(label)
+                        self.table.label_list_model.remove(label)
                     self.table.removeRow(actual_indexes[i])
                 self.table.changed = True
         else:
@@ -132,11 +130,10 @@ class Window(QMainWindow):
             confirm = self.showConfirmDialog()
         if confirm or not self.table.changed:    
             fileName = QtGui.QFileDialog.getOpenFileName(self, 'Load backlog', '', '*.blg')
-            self.already_selected = None
-            self.already_selected_status = None
-            self.already_selected_systems = None
             if fileName:
                 self.table.system_list_model.clear()
+                self.table.status_list_model.clear()
+                self.table.label_list_model.clear()
                 for i in reversed(range(self.table.rowCount())):
                     self.table.removeRow(i)
                 with open(fileName, 'r') as fp:

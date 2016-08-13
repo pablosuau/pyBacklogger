@@ -18,6 +18,7 @@ class AddGameController(QtGui.QDialog):
         self.table = table
         
         self.importing = None
+        self.pending_selected = None
         
         self.setupSignals()
         
