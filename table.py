@@ -4,12 +4,12 @@ from PyQt4.QtGui import *
 from lxml.html.soupparser import fromstring
 import re
 from widgets.label_widget import LabelWidget
-import dialogs
 from controllers.select_date_controller import SelectDateController
-from dialogs.status_dialog import StatusDialog
+from controllers.select_status_controller import SelectStatusController
 import urllib2
 import numpy as np
 from models.filter_list_model import FilterListModel
+from models.status_model import StatusModel
 
 COLUMN_NAME = 'Name'
 COLUMN_SYSTEM = 'System'
@@ -54,6 +54,7 @@ class Table(QTableWidget):
         self.system_list_model = FilterListModel()
         self.label_list_model = FilterListModel(LABEL_NONE)
         self.status_list_model = FilterListModel()
+        self.status_model = StatusModel()
         
     def setmydata(self, data): 
         horHeaders = []
@@ -157,7 +158,7 @@ class Table(QTableWidget):
             item = QtGui.QTableWidgetItem(data[COLUMN_STATUS])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_STATUS), item)
-            item.setTextColor(dialogs.status_dialog.colors[dialogs.status_dialog.options.index(data[COLUMN_STATUS])])
+            item.setTextColor(self.status_model.getColor(data[COLUMN_STATUS]))
             self.status_list_model.add(data[COLUMN_STATUS])
             # labels
             item = QtGui.QTableWidgetItem('')
@@ -304,8 +305,13 @@ class Table(QTableWidget):
             if date != None:
                 self.item(row, column).setText(date)
         elif column == headers.index(COLUMN_STATUS):
-            (status, color, accepted) = StatusDialog.getStatus(self.item(row, column).text())
-            if accepted:
+            ssc = SelectStatusController(self.item(row, column).text(), self)  
+            ssc.exec_()
+            status = ssc.getStatus()
+            if status != None:
                 self.item(row, column).setText(status)
-                self.item(row, column).setTextColor(color)
-                self.hide_rows_already()
+                self.item(row, column).setTextColor(self.status_model.getColor(status))
+                self.status_list_model.add(status)
+                self.status_list_model.remove(ssc.getPreviousStatus())
+                self.hide_rows()
+        

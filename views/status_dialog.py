@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'status_dialog.ui'
 #
-# Created: Sat Aug 13 09:13:30 2016
+# Created: Sat Aug 13 09:19:56 2016
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,27 +23,27 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName(_fromUtf8("Dialog"))
-        Dialog.resize(172, 72)
-        Dialog.setMinimumSize(QtCore.QSize(172, 72))
-        Dialog.setMaximumSize(QtCore.QSize(172, 72))
-        self.pushButtonOk = QtGui.QPushButton(Dialog)
+class Ui_StatusDialog(object):
+    def setupUi(self, StatusDialog):
+        StatusDialog.setObjectName(_fromUtf8("StatusDialog"))
+        StatusDialog.resize(172, 72)
+        StatusDialog.setMinimumSize(QtCore.QSize(172, 72))
+        StatusDialog.setMaximumSize(QtCore.QSize(172, 72))
+        self.pushButtonOk = QtGui.QPushButton(StatusDialog)
         self.pushButtonOk.setGeometry(QtCore.QRect(10, 40, 75, 23))
         self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
-        self.pushButtonCancel = QtGui.QPushButton(Dialog)
+        self.pushButtonCancel = QtGui.QPushButton(StatusDialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(90, 40, 75, 23))
         self.pushButtonCancel.setObjectName(_fromUtf8("pushButtonCancel"))
-        self.comboBoxStatus = QtGui.QComboBox(Dialog)
+        self.comboBoxStatus = QtGui.QComboBox(StatusDialog)
         self.comboBoxStatus.setGeometry(QtCore.QRect(10, 10, 151, 22))
         self.comboBoxStatus.setObjectName(_fromUtf8("comboBoxStatus"))
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(StatusDialog)
+        QtCore.QMetaObject.connectSlotsByName(StatusDialog)
 
-    def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(_translate("Dialog", "Status", None))
-        self.pushButtonOk.setText(_translate("Dialog", "Ok", None))
-        self.pushButtonCancel.setText(_translate("Dialog", "Cancel", None))
+    def retranslateUi(self, StatusDialog):
+        StatusDialog.setWindowTitle(_translate("StatusDialog", "Status", None))
+        self.pushButtonOk.setText(_translate("StatusDialog", "Ok", None))
+        self.pushButtonCancel.setText(_translate("StatusDialog", "Cancel", None))
 
