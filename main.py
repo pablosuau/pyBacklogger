@@ -7,9 +7,9 @@ from PyQt4.QtGui import *
 
 from table import *
 from dialogs.search_game_form import *
-from dialogs.sort_dialog import *
 from controllers.add_game_controller import *
 from controllers.filter_games_controller import *
+from controllers.sort_games_controller import *
 
 GAMEFAQS_URL = 'http://www.gamefaqs.com/'
 SEARCH_URL = GAMEFAQS_URL + 'search?game='
@@ -58,8 +58,6 @@ class Window(QMainWindow):
         self.setCentralWidget(self.main_frame)      
         self.setWindowState(QtCore.Qt.WindowMaximized)
         
-        self.already_sorted = None
-        self.already_sort_order = None
         self.previous_search = ''
             
     def addGame(self):
@@ -168,24 +166,9 @@ class Window(QMainWindow):
            
     def sortGames(self): 
         if not self.checkEmpty():
-            # Show the dialog to select the sorting criteria
-            (sort_fields, sort_order, result) = SortDialog.getSortingCriteria(self.already_sorted, self.already_sort_order)
-            # We apply the order if required. In order to apply
-            # multiple column ordering, we order from the last
-            # selected column to the first
-            if result:
-                self.table.setVisible(False)
-                for i in range(0,len(sort_fields)):
-                    j = len(sort_fields) - i - 1
-                    index_column = headers.index(sort_fields[j])
-                    if sort_order[j] == ASCENDING:
-                        order = QtCore.Qt.AscendingOrder
-                    else:
-                        order = QtCore.Qt.DescendingOrder
-                    self.table.sortByColumn(index_column, order)
-                self.already_sorted = sort_fields
-                self.already_sort_order = sort_order
-                self.table.setVisible(True)
+            sgc = SortGamesController(self.table, self)
+            sgc.exec_()
+            sgc.applySorting()
                 
     def searchGames(self):
         if not self.checkEmpty():

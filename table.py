@@ -10,21 +10,8 @@ import urllib2
 import numpy as np
 from models.filter_list_model import FilterListModel
 from models.status_model import StatusModel
-
-COLUMN_NAME = 'Name'
-COLUMN_SYSTEM = 'System'
-COLUMN_YEAR = 'Year'
-COLUMN_RATING = 'Rating'
-COLUMN_VOTES = 'Votes'
-COLUMN_WEIGHTED = 'Weighted Rating'
-COLUMN_STATUS = 'Status'
-COLUMN_LABELS = 'Labels'
-COLUMN_NOTES = 'Notes'
-COLUMN_URL = 'URL'
-
-LABEL_NONE = '---None---'
-
-headers = [COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL]
+from models.sort_list_model import SortListModel
+from models.constants import *
 
 class NumericWidgetItem(QtGui.QTableWidgetItem):
     def __lt__(self, other):
@@ -55,6 +42,7 @@ class Table(QTableWidget):
         self.label_list_model = FilterListModel(LABEL_NONE)
         self.status_list_model = FilterListModel()
         self.status_model = StatusModel()
+        self.sort_list_model = SortListModel()
         
     def setmydata(self, data): 
         horHeaders = []

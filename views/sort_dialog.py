@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'sort_dialog.ui'
 #
-# Created: Tue Aug 16 11:22:09 2016
+# Created: Sun Oct 02 08:28:30 2016
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -61,6 +61,7 @@ class Ui_SortDialog(object):
         self.pushButtonUp.setIcon(icon1)
         self.pushButtonUp.setObjectName(_fromUtf8("pushButtonUp"))
         self.pushButtonLeft = QtGui.QPushButton(SortDialog)
+        self.pushButtonLeft.setEnabled(False)
         self.pushButtonLeft.setGeometry(QtCore.QRect(230, 120, 21, 23))
         self.pushButtonLeft.setText(_fromUtf8(""))
         icon2 = QtGui.QIcon()
@@ -79,7 +80,7 @@ class Ui_SortDialog(object):
         self.pushButtonCancel.setGeometry(QtCore.QRect(390, 310, 75, 23))
         self.pushButtonCancel.setObjectName(_fromUtf8("pushButtonCancel"))
         self.pushButtonOk = QtGui.QPushButton(SortDialog)
-        self.pushButtonOk.setEnabled(False)
+        self.pushButtonOk.setEnabled(True)
         self.pushButtonOk.setGeometry(QtCore.QRect(300, 310, 75, 23))
         self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
 

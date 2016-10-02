@@ -122,6 +122,9 @@
    </property>
   </widget>
   <widget class="QPushButton" name="pushButtonLeft">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>230</x>
@@ -173,7 +176,7 @@
   </widget>
   <widget class="QPushButton" name="pushButtonOk">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="geometry">
     <rect>
