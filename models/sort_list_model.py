@@ -1,4 +1,4 @@
-from constants import headers
+import constants
 from PyQt4.QtGui import *
 
 class SortListModel():
@@ -8,37 +8,44 @@ class SortListModel():
     def clear(self):
         self.sort = QStandardItemModel()
         self.available = QStandardItemModel()
-        for h in headers:
+        for h in constants.headers:
             item = QStandardItem(h)
+            item.setEditable(False)
             self.available.appendRow(item)
         self.in_sort = []
             
     def to_sort(self, list_indexes):
         for index in list_indexes:
-            item = self.available.itemFromIndex(index).text()
-            self.sort.appendRow(QStandardItem(item))
+            item = self.available.itemFromIndex(index).text() + ' (' + constants.ORDER_ASCENDING + ')'
+            item = QStandardItem(item)
+            item.setEditable(False)
+            self.sort.appendRow(item)
             self.available.removeRows(index.row(),1)
             
     def to_available(self, list_indexes): # A bit different, because I'd like the elements to be 
                                           # inserted back in the original order
         for index in list_indexes:
-            item = self.sort.itemFromIndex(index).text()
+            item = ' '.join(self.sort.itemFromIndex(index).text().split(' ')[:-1])
             placed = False
             i = 0
             while not placed and i < self.available.rowCount():
                 item_i = self.available.item(i).text()
-                if headers.index(item_i)>headers.index(item):
+                if constants.headers.index(item_i)>constants.headers.index(item):
                     placed = True
                 else:
                     i = i + 1
-            self.available.insertRow(i, QStandardItem(item))
+            item = QStandardItem(item)
+            item.setEditable(False)
+            self.available.insertRow(i, item)
             self.sort.removeRows(index.row(),1)
             
     def sort_up_down(self, index, mod):
         item = self.sort.itemFromIndex(index).text()
         row = index.row()
         self.sort.removeRows(row,1)
-        self.sort.insertRow(row+mod, QStandardItem(item))
+        item = QStandardItem(item)
+        item.setEditable(False)
+        self.sort.insertRow(row+mod, item)
         index = self.sort.index(row+mod,0)
         return index
             
@@ -48,11 +55,26 @@ class SortListModel():
     def sort_up(self, index):
         return self.sort_up_down(index, -1)
         
+    def get_sort_order(self, list_indexes):
+        item = self.sort.itemFromIndex(list_indexes[0]).text().split(' ')
+        return item[-1].split('(')[1].split(')')[0]
+    
+    def set_sort_order(self, list_indexes, order):
+        item = self.sort.itemFromIndex(list_indexes[0]).text().split(' ')
+        item_text = ' '.join(item[:-1]) + ' (' + order + ')'
+        new_item = QStandardItem(item_text)
+        new_item.setEditable(False)
+        row = list_indexes[0].row()
+        self.sort.setItem(row, new_item)
+        
     def get_sort_fields(self):
         fields = []
+        order = []
         for r in range(0, self.sort.rowCount()):
-            fields.append(self.sort.item(r).text())
-        return fields        
+            item = self.sort.item(r).text().split(' ')
+            fields.append(' '.join(item[:-1]))
+            order.append(item[-1].split('(')[1].split(')')[0])
+        return (fields, order)        
     
     
             

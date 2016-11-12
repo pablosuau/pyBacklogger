@@ -190,6 +190,26 @@
     <string>Ok</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButtonSort">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>10</y>
+     <width>21</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons/sort_dialog.qrc">
+     <normaloff>:/arrow_icons/sort.png</normaloff>:/arrow_icons/sort.png</iconset>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="../icons/sort_dialog.qrc"/>

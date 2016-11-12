@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="arrow_icons">
+    <file>sort.png</file>
     <file>arrow_down.png</file>
     <file>arrow_left.png</file>
     <file>arrow_right.png</file>
