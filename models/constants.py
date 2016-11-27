@@ -1,3 +1,6 @@
+GAMEFAQS_URL = 'http://www.gamefaqs.com'
+SEARCH_URL = GAMEFAQS_URL + '/search?game='
+
 COLUMN_NAME = 'Name'
 COLUMN_SYSTEM = 'System'
 COLUMN_YEAR = 'Year'

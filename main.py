@@ -6,13 +6,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from table import *
-from dialogs.search_game_form import *
 from controllers.add_game_controller import *
 from controllers.filter_games_controller import *
 from controllers.sort_games_controller import *
-
-GAMEFAQS_URL = 'http://www.gamefaqs.com/'
-SEARCH_URL = GAMEFAQS_URL + 'search?game='
 
 class Window(QMainWindow):
     def __init__(self, parent=None):   

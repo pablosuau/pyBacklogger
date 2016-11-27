@@ -2,11 +2,9 @@ from PyQt4 import QtGui, QtCore
 import re
 import urllib2
 from views.add_game_dialog import Ui_AddGameDialog
-from dialogs.search_game_form import SearchGameForm
+from controllers.search_results_controller import *
 from util import util
-
-GAMEFAQS_URL = 'http://www.gamefaqs.com/'
-SEARCH_URL = GAMEFAQS_URL + 'search?game='
+from models.constants import SEARCH_URL, GAMEFAQS_URL
 
 class AddGameController(QtGui.QDialog):
     # UI and signal setup
@@ -84,8 +82,10 @@ class AddGameController(QtGui.QDialog):
             elif self.importing != None:
                 self.importGames()
         else:
-            (selected, result) = SearchGameForm.getSearchResult(html, parent = None)
-            if result:
+            src = SearchResultsController(html)
+            src.exec_()
+            selected = src.get_search_results()
+            if len(selected) > 0:
                 self.add_by_url = True
                 self.pending_selected = selected
                 self.url = self.pending_selected[0]
