@@ -47,13 +47,6 @@ class SortGamesController(QtGui.QDialog):
         self.ui.pushButtonDown.setEnabled(False)
         self.ui.pushButtonSort.setEnabled(True)
         self.set_up_down()
-        
-        #index = self.ui.sortByList.selectedIndexes()
-        #order = self.table.sort_list_model.get_sort_order(index)
-        #if order == constants.ORDER_ASCENDING:
-        #    self.ui.ascendingRadio.setChecked(True)
-        #else:
-        #    self.ui.descendingRadio.setChecked(True)
 
     def clear_clicked(self):
         self.ui.availableFieldsList.clearSelection()
