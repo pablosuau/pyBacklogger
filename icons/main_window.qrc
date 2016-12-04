@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>filter.png</file>
+    <file>sort.png</file>
+    <file>reload.png</file>
+    <file>save.png</file>
+    <file>load.png</file>
+    <file>delete.png</file>
+    <file>add.png</file>
+  </qresource>
+</RCC>
