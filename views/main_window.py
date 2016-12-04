@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created: Sun Dec 04 07:55:28 2016
+# Created: Sun Dec 04 08:11:47 2016
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,18 +23,18 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName(_fromUtf8("Dialog"))
-        Dialog.resize(640, 480)
-        Dialog.setMinimumSize(QtCore.QSize(640, 480))
-        self.verticalLayout = QtGui.QVBoxLayout(Dialog)
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName(_fromUtf8("MainWindow"))
+        MainWindow.resize(640, 480)
+        MainWindow.setMinimumSize(QtCore.QSize(640, 480))
+        self.verticalLayout = QtGui.QVBoxLayout(MainWindow)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.pushButtonAddGame = QtGui.QPushButton(Dialog)
+        self.pushButtonAddGame = QtGui.QPushButton(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -48,7 +48,7 @@ class Ui_Dialog(object):
         self.pushButtonAddGame.setIcon(icon)
         self.pushButtonAddGame.setObjectName(_fromUtf8("pushButtonAddGame"))
         self.horizontalLayout.addWidget(self.pushButtonAddGame)
-        self.pushButtonRemoveGame = QtGui.QPushButton(Dialog)
+        self.pushButtonRemoveGame = QtGui.QPushButton(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -62,7 +62,7 @@ class Ui_Dialog(object):
         self.pushButtonRemoveGame.setIcon(icon1)
         self.pushButtonRemoveGame.setObjectName(_fromUtf8("pushButtonRemoveGame"))
         self.horizontalLayout.addWidget(self.pushButtonRemoveGame)
-        self.pushButtonLoadBacklog = QtGui.QPushButton(Dialog)
+        self.pushButtonLoadBacklog = QtGui.QPushButton(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -76,7 +76,7 @@ class Ui_Dialog(object):
         self.pushButtonLoadBacklog.setIcon(icon2)
         self.pushButtonLoadBacklog.setObjectName(_fromUtf8("pushButtonLoadBacklog"))
         self.horizontalLayout.addWidget(self.pushButtonLoadBacklog)
-        self.pushButtonSaveBacklog = QtGui.QPushButton(Dialog)
+        self.pushButtonSaveBacklog = QtGui.QPushButton(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -90,7 +90,7 @@ class Ui_Dialog(object):
         self.pushButtonSaveBacklog.setIcon(icon3)
         self.pushButtonSaveBacklog.setObjectName(_fromUtf8("pushButtonSaveBacklog"))
         self.horizontalLayout.addWidget(self.pushButtonSaveBacklog)
-        self.pushButtonReloadScores = QtGui.QPushButton(Dialog)
+        self.pushButtonReloadScores = QtGui.QPushButton(MainWindow)
         self.pushButtonReloadScores.setEnabled(False)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -105,7 +105,7 @@ class Ui_Dialog(object):
         self.pushButtonReloadScores.setIcon(icon4)
         self.pushButtonReloadScores.setObjectName(_fromUtf8("pushButtonReloadScores"))
         self.horizontalLayout.addWidget(self.pushButtonReloadScores)
-        self.pushButtonSortData = QtGui.QPushButton(Dialog)
+        self.pushButtonSortData = QtGui.QPushButton(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -119,7 +119,7 @@ class Ui_Dialog(object):
         self.pushButtonSortData.setIcon(icon5)
         self.pushButtonSortData.setObjectName(_fromUtf8("pushButtonSortData"))
         self.horizontalLayout.addWidget(self.pushButtonSortData)
-        self.pushButtonFilterData = QtGui.QPushButton(Dialog)
+        self.pushButtonFilterData = QtGui.QPushButton(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -133,7 +133,7 @@ class Ui_Dialog(object):
         self.pushButtonFilterData.setIcon(icon6)
         self.pushButtonFilterData.setObjectName(_fromUtf8("pushButtonFilterData"))
         self.horizontalLayout.addWidget(self.pushButtonFilterData)
-        self.label = QtGui.QLabel(Dialog)
+        self.label = QtGui.QLabel(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -143,7 +143,7 @@ class Ui_Dialog(object):
         self.label.setMaximumSize(QtCore.QSize(46, 13))
         self.label.setObjectName(_fromUtf8("label"))
         self.horizontalLayout.addWidget(self.label)
-        self.lineEditSearchGame = QtGui.QLineEdit(Dialog)
+        self.lineEditSearchGame = QtGui.QLineEdit(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -157,25 +157,25 @@ class Ui_Dialog(object):
         spacerItem = QtGui.QSpacerItem(208, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
-        self.table = Table(Dialog)
+        self.table = Table(MainWindow)
         self.table.setObjectName(_fromUtf8("table"))
         self.table.setColumnCount(0)
         self.table.setRowCount(0)
         self.verticalLayout.addWidget(self.table)
 
-        self.retranslateUi(Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog", None))
-        self.pushButtonAddGame.setToolTip(_translate("Dialog", "Add game/s", None))
-        self.pushButtonRemoveGame.setToolTip(_translate("Dialog", "Delete game/s", None))
-        self.pushButtonLoadBacklog.setToolTip(_translate("Dialog", "Load backlog", None))
-        self.pushButtonSaveBacklog.setToolTip(_translate("Dialog", "Save backlog", None))
-        self.pushButtonReloadScores.setToolTip(_translate("Dialog", "Reload scores", None))
-        self.pushButtonSortData.setToolTip(_translate("Dialog", "Sort games", None))
-        self.pushButtonFilterData.setToolTip(_translate("Dialog", "Filter games", None))
-        self.label.setText(_translate("Dialog", "Search:", None))
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(_translate("MainWindow", "Dialog", None))
+        self.pushButtonAddGame.setToolTip(_translate("MainWindow", "Add game/s", None))
+        self.pushButtonRemoveGame.setToolTip(_translate("MainWindow", "Delete game/s", None))
+        self.pushButtonLoadBacklog.setToolTip(_translate("MainWindow", "Load backlog", None))
+        self.pushButtonSaveBacklog.setToolTip(_translate("MainWindow", "Save backlog", None))
+        self.pushButtonReloadScores.setToolTip(_translate("MainWindow", "Reload scores", None))
+        self.pushButtonSortData.setToolTip(_translate("MainWindow", "Sort games", None))
+        self.pushButtonFilterData.setToolTip(_translate("MainWindow", "Filter games", None))
+        self.label.setText(_translate("MainWindow", "Search:", None))
 
 from table import Table
 import main_window_rc
