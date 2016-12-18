@@ -11,7 +11,7 @@ import numpy as np
 from models.filter_list_model import FilterListModel
 from models.status_model import StatusModel
 from models.sort_list_model import SortListModel
-from models.constants import *
+from models.constants import headers, LABEL_NONE, COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL
 
 class NumericWidgetItem(QtGui.QTableWidgetItem):
     def __lt__(self, other):
@@ -19,11 +19,9 @@ class NumericWidgetItem(QtGui.QTableWidgetItem):
                 float(str(other.text()).encode('ascii','ignore')))
 
 class Table(QTableWidget):
-    def __init__(self, *args):
-        QTableWidget.__init__(self, *args)
+    def initialize(self, *args):
         self.clicked.connect(self.cellClicked)
         
-        self.setHorizontalHeaderLabels(headers)
         self.setRowCount(0)
         self.setColumnCount(len(headers))
         self.setHorizontalHeaderLabels(headers)
@@ -54,7 +52,7 @@ class Table(QTableWidget):
         self.setHorizontalHeaderLabels(horHeaders)
         
     def addGame(self, url, html):
-        try:
+        #try:
             doc = fromstring(html)
             data = dict()
             # Game's name
@@ -105,9 +103,9 @@ class Table(QTableWidget):
                 self.addGameRow(data)
                 # And recomputing weighted ratins
                 self.compute_final_rating()
-        except:
-            errorMessage=QErrorMessage(self)
-            errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
+        #except:
+        #    errorMessage=QErrorMessage(self)
+        #    errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
     
     def addGameRow(self, data, row=None):
             # Adding the row, and disabling some of the fields, so
@@ -118,6 +116,7 @@ class Table(QTableWidget):
                 self.setRowCount(rows + 1)
             else:
                 rows = row
+
             item = QtGui.QTableWidgetItem(data[COLUMN_NAME])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_NAME), item)

@@ -44,10 +44,12 @@ class AddGameController(QtGui.QDialog):
         if self.ui.radioButtonUrl.isChecked():
             self.add_by_url = True
             # Search by URL
-            self.url = str(self.ui.lineEditSearch.text())
+            self.url = str(self.ui.lineEditSearch.text()).strip()
             if not re.match(r'^[a-zA-Z]+://', self.url):
                 self.url = 'http://' + self.url
             if not self.url.startswith(GAMEFAQS_URL):
+                print self.url
+                print(GAMEFAQS_URL)
                 util.showErrorMessage(self.parent(), 'The URL is not a valid GameFAQs one')
             else:
                 # Download the content of the page
