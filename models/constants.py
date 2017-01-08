@@ -1,3 +1,5 @@
+from PyQt4 import QtGui
+
 GAMEFAQS_URL = 'http://www.gamefaqs.com'
 SEARCH_URL = GAMEFAQS_URL + '/search?game='
 
