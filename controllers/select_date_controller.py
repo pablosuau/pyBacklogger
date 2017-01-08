@@ -2,8 +2,7 @@ from PyQt4 import QtGui
 from views.select_date_dialog import Ui_SelectDateDialog
 from util import util
 
-INITIAL_YEAR = 1940
-FINAL_YEAR = 2100
+from models.constants import INITIAL_YEAR, FINAL_YEAR
 
 class SelectDateController(QtGui.QDialog):
     # UI and signal setup

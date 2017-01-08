@@ -1,5 +1,4 @@
-FILTERED = 'filtered'
-COUNT = 'count'
+from models.constants import FILTERED, COUNT
 
 class FilterListModel():    
     def __init__(self, initial_entries=None):

@@ -18,3 +18,17 @@ headers = [COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES,
 
 ORDER_ASCENDING = 'ascending'
 ORDER_DESCENDING = 'descending'
+
+INITIAL_YEAR = 1940
+FINAL_YEAR = 2100
+
+FILTERED = 'filtered'
+COUNT = 'count'
+
+OPTIONS = {
+            'unplayed':  QtGui.QColor(155,0,0),
+            'playing':   QtGui.QColor(0,0,155),
+            'played':    QtGui.QColor(255,155,0),
+            'completed': QtGui.QColor(0,155,0),
+            'shelved':   QtGui.QColor(0,155,0)
+}
