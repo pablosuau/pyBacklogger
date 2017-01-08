@@ -303,4 +303,5 @@ class Table(QTableWidget):
                 self.status_list_model.remove(ssc.getPreviousStatus())
                 self.hide_rows()
                 self.hide_rows_search()
+                self.changed = True
         
