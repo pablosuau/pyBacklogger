@@ -34,6 +34,7 @@ class Table(QTableWidget):
         
         self.changed = False
         self.loading = False
+        self.search_string = ''
         
         # Models initialization
         self.system_list_model = FilterListModel()
@@ -267,10 +268,10 @@ class Table(QTableWidget):
              filtered_out = filtered_out or self.status_list_model.get_filtered(self.item(row, headers.index(COLUMN_STATUS)).text())
              self.setRowHidden(row, filtered_out)
 
-    def hide_rows_search(self, text):
+    def hide_rows_search(self):
         for row in range(0,self.rowCount()):
             item_text = str(self.item(row, headers.index(COLUMN_NAME)).text()).lower()
-            self.setRowHidden(row, not text in item_text)
+            self.setRowHidden(row, not self.search_string in item_text)
             
     def show_all_rows(self):
         for row in range(0,self.rowCount()):
@@ -301,4 +302,5 @@ class Table(QTableWidget):
                 self.status_list_model.add(status)
                 self.status_list_model.remove(ssc.getPreviousStatus())
                 self.hide_rows()
+                self.hide_rows_search()
         
