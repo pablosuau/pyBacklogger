@@ -69,6 +69,9 @@ class SearchResultsController(QtGui.QDialog):
     def cancelClicked(self):
         self.close()   
         self.canceled = True
+        
+    def closeEvent(self, event):
+        self.canceled = True
     
     # Modification of the behaviour of the items, so they behave like radio buttons 
     def on_item_changed(self, item):

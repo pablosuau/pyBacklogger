@@ -84,6 +84,9 @@ class SelectDateController(QtGui.QDialog):
     def pushButtonCancelClicked(self):
         self.canceled = True
         self.hide()
+        
+    def closeEvent(self, event):
+        self.canceled = True
 
     def getDate(self):
         if self.canceled == True:

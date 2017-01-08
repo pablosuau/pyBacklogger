@@ -103,6 +103,9 @@ class SortGamesController(QtGui.QDialog):
     def cancel_clicked(self):
         self.canceled = True
         self.hide()
+        
+    def closeEvent(self, event):
+        self.canceled = True
     
     def applySorting(self):
         if not self.canceled:

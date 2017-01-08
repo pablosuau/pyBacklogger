@@ -36,6 +36,9 @@ class SelectStatusController(QtGui.QDialog):
     def pushButtonCancelClicked(self):
         self.canceled = True
         self.hide()
+        
+    def closeEvent(self, event):
+        self.canceled = True
     
     def getStatus(self):
         if self.canceled == True:

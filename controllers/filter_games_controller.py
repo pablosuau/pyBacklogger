@@ -61,6 +61,9 @@ class FilterGamesController(QtGui.QDialog):
     def cancel_clicked(self):
         self.canceled = True
         self.hide()
+        
+    def closeEvent(self, event):
+        self.canceled = True
 
     def applyFiltering(self):
         def applyFilteringPerType(model, list_widget):
