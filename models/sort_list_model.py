@@ -13,6 +13,22 @@ class SortListModel():
             item.setEditable(False)
             self.available.appendRow(item)
         self.in_sort = []
+        
+    def save_model(self):
+        self.saved_sort = self.copy_model(self.sort)
+        self.saved_available = self.copy_model(self.available)
+        
+    def restore_model(self):
+        self.sort = self.copy_model(self.saved_sort)
+        self.saved = self.copy_model(self.saved_available)
+        
+    def copy_model(self, original):
+        res = QStandardItemModel()
+        for i in range(0,original.rowCount()):
+            item = QStandardItem(original.item(i).text())
+            item.setEditable(False)
+            res.appendRow(item)
+        return res
             
     def to_sort(self, list_indexes):
         for index in list_indexes:

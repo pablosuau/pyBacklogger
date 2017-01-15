@@ -11,6 +11,7 @@ class SortGamesController(QtGui.QDialog):
         self.ui.setupUi(self)
    
         self.table = table
+        self.table.sort_list_model.save_model()
         self.canceled = False
      
         self.initializeUi()     
@@ -120,4 +121,6 @@ class SortGamesController(QtGui.QDialog):
                     order = QtCore.Qt.DescendingOrder
                 self.table.sortByColumn(index_column, order)
             self.table.setVisible(True)
+        else:
+            self.table.sort_list_model.restore_model()
         
