@@ -20,7 +20,7 @@ class SortListModel():
         
     def restore_model(self):
         self.sort = self.copy_model(self.saved_sort)
-        self.saved = self.copy_model(self.saved_available)
+        self.available = self.copy_model(self.saved_available)
         
     def copy_model(self, original):
         res = QStandardItemModel()
