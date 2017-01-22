@@ -104,7 +104,7 @@ class MainWindowController(QtGui.QWidget):
                     for row in reader:
                         row_dict = dict()
                         for j in range(0,len(headers)): 
-                            row_dict[headers[j]] = row[j]
+                            row_dict[headers[j]] = row[j].decode('utf-8')
                         self.table.addGameRow(row_dict, i)
                         progress.setValue(i+1)
                         i = i + 1
@@ -126,7 +126,7 @@ class MainWindowController(QtGui.QWidget):
                         data = self.table.getGameData(i)
                         data_list = []
                         for h in headers: 
-                            data_list.append(str(data[h]))
+                            data_list.append(data[h].encode('utf-8'))
                         writer.writerows([data_list])
                         progress.setValue(i+1)
                     self.table.changed = False
