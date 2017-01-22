@@ -32,5 +32,5 @@ OPTIONS = {
             'playing':   QtGui.QColor(0,0,155),
             'played':    QtGui.QColor(255,155,0),
             'completed': QtGui.QColor(0,155,0),
-            'shelved':   QtGui.QColor(0,155,0)
+            'shelved':   QtGui.QColor(120,155,0)
 }
