@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../icons/app_icon.qrc">
+    <normaloff>:/app_icon/shelf.png</normaloff>:/app_icon/shelf.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -329,6 +333,7 @@
  </customwidgets>
  <resources>
   <include location="../icons/main_window.qrc"/>
+  <include location="../icons/app_icon.qrc"/>
  </resources>
  <connections/>
 </ui>

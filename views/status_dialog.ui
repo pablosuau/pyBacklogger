@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>Status</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../icons/app_icon.qrc">
+    <normaloff>:/app_icon/shelf.png</normaloff>:/app_icon/shelf.png</iconset>
+  </property>
   <widget class="QPushButton" name="pushButtonOk">
    <property name="geometry">
     <rect>
@@ -62,6 +66,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../icons/app_icon.qrc"/>
+ </resources>
  <connections/>
 </ui>
