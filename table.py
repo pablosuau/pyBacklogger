@@ -24,7 +24,12 @@ class Table(QTableWidget):
         
         self.setRowCount(0)
         self.setColumnCount(len(headers))
+        
         self.setHorizontalHeaderLabels(headers)
+        font = QFont()
+        font.setBold(True)
+        font.setPointSize(11)
+        self.horizontalHeader().setFont(font)        
         
         # Weighted rating initialization
         self.minimum = 100
