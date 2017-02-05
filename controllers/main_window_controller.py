@@ -111,6 +111,8 @@ class MainWindowController(QtGui.QWidget):
                     self.table.changed = False
                     self.table.loading = False
                     self.table.resizeColumns()
+        # TODO: REMOVE
+        self.table.update_colors()
     
     def save_backlog_clicked(self):
         if not self.checkEmpty():

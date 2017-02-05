@@ -3,6 +3,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from lxml.html.soupparser import fromstring
 import re
+import sys
 from widgets.label_widget import LabelWidget
 from controllers.select_date_controller import SelectDateController
 from controllers.select_status_controller import SelectStatusController
@@ -213,6 +214,31 @@ class Table(QTableWidget):
         for i in range(0,rows):
             self.item(i, headers.index(COLUMN_WEIGHTED)).setText(wr_str[i])
             
+    def update_colors(self):
+        max_weighted = -1
+        min_weighted = sys.float_info.max
+        all_weighted = []
+        # Computing colour ranges
+        for row in range(0, self.rowCount()):
+            try:
+                weighted = float(self.item(row, headers.index(COLUMN_WEIGHTED)).text())
+                max_weighted = max(max_weighted, weighted)
+                min_weighted = min(min_weighted, weighted)
+                all_weighted.append(weighted)
+            except:
+                all_weighted.append(-1)
+        # Assigning colour ranges
+        all_weighted = np.array(all_weighted)
+        weighted_indices = all_weighted == -1
+        all_weighted = 100*(all_weighted - min_weighted)/(max_weighted - min_weighted)
+        all_weighted[weighted_indices] = 0        
+        for row in range(0, self.rowCount()):
+            color = QtGui.QColor()    
+            color.setHsv(all_weighted[row], 255, 150)
+            self.item(row, headers.index(COLUMN_WEIGHTED)).setTextColor(color)
+        # TODO: add score, number of votes
+        # TODO: currently called from load backlog. Where should I invoke
+            # this method from?
          
     def reload_scores(self):
         rows = self.rowCount()
