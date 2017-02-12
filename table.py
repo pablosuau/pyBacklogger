@@ -215,6 +215,7 @@ class Table(QTableWidget):
             self.item(i, headers.index(COLUMN_WEIGHTED)).setText(wr_str[i])
             
     def update_colors(self):
+        # Gradient color for the year, rating, votes and weighted columns
         def update_colors_column(column):
             max_value = -1
             min_value = sys.float_info.max
@@ -242,6 +243,20 @@ class Table(QTableWidget):
         update_colors_column(COLUMN_YEAR)
         update_colors_column(COLUMN_VOTES)
         update_colors_column(COLUMN_RATING)
+        
+        # Colour code for different systems
+        systems = []
+        for row in range(0, self.rowCount()):
+            system = self.item(row, headers.index(COLUMN_SYSTEM)).text()
+            if system not in systems:
+                systems.append(system)
+        number_systems = len(systems)
+        step = int(360/float(number_systems))
+        for row in range(0, self.rowCount()):
+            system = self.item(row, headers.index(COLUMN_SYSTEM)).text()
+            color = QtGui.QColor()
+            color.setHsv(step*systems.index(system), 255, 150)
+            self.item(row, headers.index(COLUMN_SYSTEM)).setTextColor(color)
          
     def reload_scores(self):
         rows = self.rowCount()
