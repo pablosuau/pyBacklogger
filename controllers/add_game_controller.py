@@ -28,6 +28,7 @@ class AddGameController(QtGui.QDialog):
     # Signal slots 
     def okClicked(self):
         self.addGame()
+        self.table.update_colors()
         self.close()
     
     def cancelClicked(self):

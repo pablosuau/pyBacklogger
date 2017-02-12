@@ -71,6 +71,8 @@ class MainWindowController(QtGui.QWidget):
                         self.table.label_list_model.remove(label)
                     self.table.removeRow(actual_indexes[i])
                 self.table.changed = True
+                
+            self.table.update_colors()
         else:
             error = QErrorMessage()
             error.showMessage('No games were selected')
@@ -111,7 +113,7 @@ class MainWindowController(QtGui.QWidget):
                     self.table.changed = False
                     self.table.loading = False
                     self.table.resizeColumns()
-        # TODO: REMOVE
+        
         self.table.update_colors()
     
     def save_backlog_clicked(self):
@@ -136,6 +138,7 @@ class MainWindowController(QtGui.QWidget):
     def reload_scores_clicked(self):
         if not self.checkEmpty():
             self.table.reload_scores()
+            self.table.update_colors()
     
     def sort_data_clicked(self):
         if not self.checkEmpty():

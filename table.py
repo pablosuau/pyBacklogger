@@ -242,8 +242,6 @@ class Table(QTableWidget):
         update_colors_column(COLUMN_YEAR)
         update_colors_column(COLUMN_VOTES)
         update_colors_column(COLUMN_RATING)
-        # TODO: currently called from load backlog. Where should I invoke
-            # this method from?
          
     def reload_scores(self):
         rows = self.rowCount()
