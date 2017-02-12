@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'add_game_dialog.ui'
 #
-# Created: Sun Jun 05 09:22:48 2016
+# Created: Sun Jan 29 08:57:08 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,6 +35,9 @@ class Ui_AddGameDialog(object):
         AddGameDialog.setSizePolicy(sizePolicy)
         AddGameDialog.setMinimumSize(QtCore.QSize(249, 116))
         AddGameDialog.setMaximumSize(QtCore.QSize(249, 116))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        AddGameDialog.setWindowIcon(icon)
         AddGameDialog.setSizeGripEnabled(False)
         AddGameDialog.setModal(True)
         self.radioButtonUrl = QtGui.QRadioButton(AddGameDialog)
@@ -81,3 +84,4 @@ class Ui_AddGameDialog(object):
         self.pushButtonOk.setText(_translate("AddGameDialog", "Ok", None))
         self.pushButtonCancel.setText(_translate("AddGameDialog", "Cancel", None))
 
+import app_icon_rc

@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>Sort games</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../icons/app_icon.qrc">
+    <normaloff>:/app_icon/shelf.png</normaloff>:/app_icon/shelf.png</iconset>
+  </property>
   <widget class="QListView" name="listView">
    <property name="geometry">
     <rect>
@@ -213,6 +217,7 @@
  </widget>
  <resources>
   <include location="../icons/sort_dialog.qrc"/>
+  <include location="../icons/app_icon.qrc"/>
  </resources>
  <connections/>
 </ui>

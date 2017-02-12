@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'search_results_dialog.ui'
 #
-# Created: Sun Nov 20 08:44:08 2016
+# Created: Sun Jan 29 09:00:52 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,6 +29,9 @@ class Ui_SearchResultsDialog(object):
         SearchResultsDialog.resize(270, 286)
         SearchResultsDialog.setMinimumSize(QtCore.QSize(270, 286))
         SearchResultsDialog.setMaximumSize(QtCore.QSize(270, 286))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        SearchResultsDialog.setWindowIcon(icon)
         self.label = QtGui.QLabel(SearchResultsDialog)
         self.label.setGeometry(QtCore.QRect(10, 10, 301, 16))
         self.label.setObjectName(_fromUtf8("label"))
@@ -52,3 +55,4 @@ class Ui_SearchResultsDialog(object):
         self.pushButtonOk.setText(_translate("SearchResultsDialog", "Ok", None))
         self.pushButtonCancel.setText(_translate("SearchResultsDialog", "Cancel", None))
 
+import app_icon_rc

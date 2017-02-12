@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'status_dialog.ui'
 #
-# Created: Sat Aug 13 09:19:56 2016
+# Created: Sun Jan 29 08:58:27 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,6 +29,9 @@ class Ui_StatusDialog(object):
         StatusDialog.resize(172, 72)
         StatusDialog.setMinimumSize(QtCore.QSize(172, 72))
         StatusDialog.setMaximumSize(QtCore.QSize(172, 72))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        StatusDialog.setWindowIcon(icon)
         self.pushButtonOk = QtGui.QPushButton(StatusDialog)
         self.pushButtonOk.setGeometry(QtCore.QRect(10, 40, 75, 23))
         self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
@@ -47,3 +50,4 @@ class Ui_StatusDialog(object):
         self.pushButtonOk.setText(_translate("StatusDialog", "Ok", None))
         self.pushButtonCancel.setText(_translate("StatusDialog", "Cancel", None))
 
+import app_icon_rc

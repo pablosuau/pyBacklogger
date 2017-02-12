@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'sort_dialog.ui'
 #
-# Created: Sun Nov 06 08:25:51 2016
+# Created: Sun Jan 29 09:01:20 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,6 +29,9 @@ class Ui_SortDialog(object):
         SortDialog.resize(481, 343)
         SortDialog.setMinimumSize(QtCore.QSize(481, 343))
         SortDialog.setMaximumSize(QtCore.QSize(481, 343))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        SortDialog.setWindowIcon(icon)
         self.listView = QtGui.QListView(SortDialog)
         self.listView.setGeometry(QtCore.QRect(100, 500, 256, 192))
         self.listView.setObjectName(_fromUtf8("listView"))
@@ -48,33 +51,33 @@ class Ui_SortDialog(object):
         self.pushButtonDown.setEnabled(False)
         self.pushButtonDown.setGeometry(QtCore.QRect(170, 10, 21, 23))
         self.pushButtonDown.setText(_fromUtf8(""))
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_down.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButtonDown.setIcon(icon)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_down.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonDown.setIcon(icon1)
         self.pushButtonDown.setObjectName(_fromUtf8("pushButtonDown"))
         self.pushButtonUp = QtGui.QPushButton(SortDialog)
         self.pushButtonUp.setEnabled(False)
         self.pushButtonUp.setGeometry(QtCore.QRect(200, 10, 21, 23))
         self.pushButtonUp.setText(_fromUtf8(""))
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_up.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButtonUp.setIcon(icon1)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_up.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonUp.setIcon(icon2)
         self.pushButtonUp.setObjectName(_fromUtf8("pushButtonUp"))
         self.pushButtonLeft = QtGui.QPushButton(SortDialog)
         self.pushButtonLeft.setEnabled(False)
         self.pushButtonLeft.setGeometry(QtCore.QRect(230, 120, 21, 23))
         self.pushButtonLeft.setText(_fromUtf8(""))
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_left.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButtonLeft.setIcon(icon2)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_left.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonLeft.setIcon(icon3)
         self.pushButtonLeft.setObjectName(_fromUtf8("pushButtonLeft"))
         self.pushButtonRight = QtGui.QPushButton(SortDialog)
         self.pushButtonRight.setEnabled(False)
         self.pushButtonRight.setGeometry(QtCore.QRect(230, 150, 21, 23))
         self.pushButtonRight.setText(_fromUtf8(""))
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_right.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButtonRight.setIcon(icon3)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_right.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonRight.setIcon(icon4)
         self.pushButtonRight.setObjectName(_fromUtf8("pushButtonRight"))
         self.pushButtonCancel = QtGui.QPushButton(SortDialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(390, 310, 75, 23))
@@ -87,9 +90,9 @@ class Ui_SortDialog(object):
         self.pushButtonSort.setEnabled(False)
         self.pushButtonSort.setGeometry(QtCore.QRect(140, 10, 21, 23))
         self.pushButtonSort.setText(_fromUtf8(""))
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/sort.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButtonSort.setIcon(icon4)
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/sort.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonSort.setIcon(icon5)
         self.pushButtonSort.setObjectName(_fromUtf8("pushButtonSort"))
 
         self.retranslateUi(SortDialog)
@@ -103,3 +106,4 @@ class Ui_SortDialog(object):
         self.pushButtonOk.setText(_translate("SortDialog", "Ok", None))
 
 import sort_dialog_rc
+import app_icon_rc

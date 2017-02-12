@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'filter_dialog.ui'
 #
-# Created: Sun Jun 26 11:20:43 2016
+# Created: Sun Jan 29 08:59:16 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,6 +29,9 @@ class Ui_FilterDialog(object):
         FilterDialog.resize(255, 368)
         FilterDialog.setMinimumSize(QtCore.QSize(255, 368))
         FilterDialog.setMaximumSize(QtCore.QSize(255, 368))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        FilterDialog.setWindowIcon(icon)
         self.tabCategory = QtGui.QTabWidget(FilterDialog)
         self.tabCategory.setGeometry(QtCore.QRect(0, 0, 401, 321))
         self.tabCategory.setTabShape(QtGui.QTabWidget.Rounded)
@@ -94,3 +97,4 @@ class Ui_FilterDialog(object):
         self.pushButtonCancel.setText(_translate("FilterDialog", "Cancel", None))
         self.pushButtonOk.setText(_translate("FilterDialog", "Ok", None))
 
+import app_icon_rc

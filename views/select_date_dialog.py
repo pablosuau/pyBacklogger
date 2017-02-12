@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'select_date_dialog.ui'
 #
-# Created: Sun Jun 19 08:52:43 2016
+# Created: Sun Jan 29 09:00:15 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,6 +35,9 @@ class Ui_SelectDateDialog(object):
         SelectDateDialog.setSizePolicy(sizePolicy)
         SelectDateDialog.setMinimumSize(QtCore.QSize(176, 149))
         SelectDateDialog.setMaximumSize(QtCore.QSize(176, 149))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        SelectDateDialog.setWindowIcon(icon)
         self.radioButtonCanceled = QtGui.QRadioButton(SelectDateDialog)
         self.radioButtonCanceled.setGeometry(QtCore.QRect(10, 10, 82, 17))
         self.radioButtonCanceled.setObjectName(_fromUtf8("radioButtonCanceled"))
@@ -72,3 +75,4 @@ class Ui_SelectDateDialog(object):
         self.pushButtonOk.setText(_translate("SelectDateDialog", "Ok", None))
         self.pushButtonCancel.setText(_translate("SelectDateDialog", "Cancel", None))
 
+import app_icon_rc
