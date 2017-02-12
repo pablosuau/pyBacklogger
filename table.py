@@ -215,28 +215,33 @@ class Table(QTableWidget):
             self.item(i, headers.index(COLUMN_WEIGHTED)).setText(wr_str[i])
             
     def update_colors(self):
-        max_weighted = -1
-        min_weighted = sys.float_info.max
-        all_weighted = []
-        # Computing colour ranges
-        for row in range(0, self.rowCount()):
-            try:
-                weighted = float(self.item(row, headers.index(COLUMN_WEIGHTED)).text())
-                max_weighted = max(max_weighted, weighted)
-                min_weighted = min(min_weighted, weighted)
-                all_weighted.append(weighted)
-            except:
-                all_weighted.append(-1)
-        # Assigning colour ranges
-        all_weighted = np.array(all_weighted)
-        weighted_indices = all_weighted == -1
-        all_weighted = 100*(all_weighted - min_weighted)/(max_weighted - min_weighted)
-        all_weighted[weighted_indices] = 0        
-        for row in range(0, self.rowCount()):
-            color = QtGui.QColor()    
-            color.setHsv(all_weighted[row], 255, 150)
-            self.item(row, headers.index(COLUMN_WEIGHTED)).setTextColor(color)
-        # TODO: add score, number of votes
+        def update_colors_column(column):
+            max_value = -1
+            min_value = sys.float_info.max
+            all_values = []
+            # Computing colour ranges
+            for row in range(0, self.rowCount()):
+                try:
+                    value = float(self.item(row, headers.index(column)).text())
+                    max_value = max(max_value, value)
+                    min_value = min(min_value, value)
+                    all_values.append(value)
+                except:
+                    all_values.append(-1)
+            # Assigning colour ranges
+            all_values = np.array(all_values)
+            indices = all_values == -1
+            all_values = 100*(all_values - min_value)/(max_value - min_value)
+            all_values[indices] = 0        
+            for row in range(0, self.rowCount()):
+                color = QtGui.QColor()    
+                color.setHsv(all_values[row], 255, 150)
+                self.item(row, headers.index(column)).setTextColor(color)
+        
+        update_colors_column(COLUMN_WEIGHTED)
+        update_colors_column(COLUMN_YEAR)
+        update_colors_column(COLUMN_VOTES)
+        update_colors_column(COLUMN_RATING)
         # TODO: currently called from load backlog. Where should I invoke
             # this method from?
          
