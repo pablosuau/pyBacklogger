@@ -64,10 +64,10 @@ class SearchResultsController(QtGui.QDialog):
     
         # Signal slots 
     def okClicked(self):
-        self.close()
+        self.hide()
     
     def cancelClicked(self):
-        self.close()   
+        self.hide()   
         self.canceled = True
         
     def closeEvent(self, event):

@@ -15,7 +15,6 @@ class AddGameController(QtGui.QDialog):
         
         self.table = table
         
-        self.importing = None
         self.pending_selected = None
         
         self.setupSignals()
@@ -28,7 +27,6 @@ class AddGameController(QtGui.QDialog):
     # Signal slots 
     def okClicked(self):
         self.addGame()
-        self.table.update_colors()
         self.close()
     
     def cancelClicked(self):
@@ -49,8 +47,6 @@ class AddGameController(QtGui.QDialog):
             if not re.match(r'^[a-zA-Z]+://', self.url):
                 self.url = 'http://' + self.url
             if not self.url.startswith(GAMEFAQS_URL):
-                print self.url
-                print(GAMEFAQS_URL)
                 util.showErrorMessage(self.parent(), 'The URL is not a valid GameFAQs one')
             else:
                 # Download the content of the page
@@ -82,8 +78,9 @@ class AddGameController(QtGui.QDialog):
                 if len(self.pending_selected) == 0:
                     self.pending_selected = None
                 self.launchAddGameWorker()
-            elif self.importing != None:
-                self.importGames()
+            else:
+                self.table.update_colors()
+            
         else:
             src = SearchResultsController(html)
             src.exec_()
@@ -96,8 +93,6 @@ class AddGameController(QtGui.QDialog):
                 if len(self.pending_selected) == 0:
                     self.pending_selected = None
                 self.launchAddGameWorker()
-            elif self.importing != None:
-                self.importGames()
 
     class AddGameWorker(QtCore.QThread):
         def __init__(self, url, parent=None):

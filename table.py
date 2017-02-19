@@ -59,7 +59,7 @@ class Table(QTableWidget):
         self.setHorizontalHeaderLabels(horHeaders)
         
     def addGame(self, url, html):
-        #try:
+        try:
             doc = fromstring(html)
             data = dict()
             # Game's name
@@ -110,9 +110,9 @@ class Table(QTableWidget):
                 self.addGameRow(data)
                 # And recomputing weighted ratins
                 self.compute_final_rating()
-        #except:
-        #    errorMessage=QErrorMessage(self)
-        #    errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
+        except:
+            errorMessage=QErrorMessage(self)
+            errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
     
     def addGameRow(self, data, row=None):
             # Adding the row, and disabling some of the fields, so
@@ -215,7 +215,7 @@ class Table(QTableWidget):
             self.item(i, headers.index(COLUMN_WEIGHTED)).setText(wr_str[i])
             
     def update_colors(self):
-        if self.rowCount() > 0:
+        if self.rowCount() > 1:
             # Gradient color for the year, rating, votes and weighted columns
             def update_colors_column(column):
                 max_value = -1

@@ -1,6 +1,6 @@
 from PyQt4 import QtGui
 
-GAMEFAQS_URL = 'http://www.gamefaqs.com'
+GAMEFAQS_URL = 'https://www.gamefaqs.com'
 SEARCH_URL = GAMEFAQS_URL + '/search?game='
 
 COLUMN_NAME = 'Name'
