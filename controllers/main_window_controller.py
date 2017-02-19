@@ -37,7 +37,7 @@ class MainWindowController(QtGui.QWidget):
         self.ui.lineEditSearchGame.textChanged.connect(self.search_text_changed)
         
     def add_game_clicked(self):
-        addGameController = AddGameController(self.table, self)
+        addGameController = AddGameController(self.table, parent=self)
         addGameController.show()
     
     def remove_game_clicked(self):

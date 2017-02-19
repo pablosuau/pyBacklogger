@@ -27,10 +27,10 @@ class AddGameController(QtGui.QDialog):
     # Signal slots 
     def okClicked(self):
         self.addGame()
-        self.close()
+        #self.hide()
     
     def cancelClicked(self):
-        self.close()
+        self.hide()
         
     def textChanged(self):
         if len(str(self.ui.lineEditSearch.text()))>0:
@@ -80,9 +80,10 @@ class AddGameController(QtGui.QDialog):
                 self.launchAddGameWorker()
             else:
                 self.table.update_colors()
+                self.hide()
             
         else:
-            src = SearchResultsController(html)
+            src = SearchResultsController(html, parent=self)
             src.exec_()
             selected = src.get_search_results()
             if len(selected) > 0:
