@@ -73,6 +73,7 @@ class MainWindowController(QtGui.QWidget):
                 self.table.changed = True
                 
             self.table.update_colors()
+            self.table.resizeColumns()
         else:
             error = QErrorMessage()
             error.showMessage('No games were selected')

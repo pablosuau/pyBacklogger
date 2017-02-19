@@ -81,6 +81,7 @@ class AddGameController(QtGui.QDialog):
             else:
                 self.table.update_colors()
                 self.hide()
+                self.table.resizeColumns()
             
         else:
             src = SearchResultsController(html, parent=self)
