@@ -215,48 +215,49 @@ class Table(QTableWidget):
             self.item(i, headers.index(COLUMN_WEIGHTED)).setText(wr_str[i])
             
     def update_colors(self):
-        # Gradient color for the year, rating, votes and weighted columns
-        def update_colors_column(column):
-            max_value = -1
-            min_value = sys.float_info.max
-            all_values = []
-            # Computing colour ranges
+        if self.rowCount() > 0:
+            # Gradient color for the year, rating, votes and weighted columns
+            def update_colors_column(column):
+                max_value = -1
+                min_value = sys.float_info.max
+                all_values = []
+                # Computing colour ranges
+                for row in range(0, self.rowCount()):
+                    try:
+                        value = float(self.item(row, headers.index(column)).text())
+                        max_value = max(max_value, value)
+                        min_value = min(min_value, value)
+                        all_values.append(value)
+                    except:
+                        all_values.append(-1)
+                # Assigning colour ranges
+                all_values = np.array(all_values)
+                indices = all_values == -1
+                all_values = 100*(all_values - min_value)/(max_value - min_value)
+                all_values[indices] = 0        
+                for row in range(0, self.rowCount()):
+                    color = QtGui.QColor()    
+                    color.setHsv(all_values[row], 255, 150)
+                    self.item(row, headers.index(column)).setTextColor(color)
+            
+            update_colors_column(COLUMN_WEIGHTED)
+            update_colors_column(COLUMN_YEAR)
+            update_colors_column(COLUMN_VOTES)
+            update_colors_column(COLUMN_RATING)
+            
+            # Colour code for different systems
+            systems = []
             for row in range(0, self.rowCount()):
-                try:
-                    value = float(self.item(row, headers.index(column)).text())
-                    max_value = max(max_value, value)
-                    min_value = min(min_value, value)
-                    all_values.append(value)
-                except:
-                    all_values.append(-1)
-            # Assigning colour ranges
-            all_values = np.array(all_values)
-            indices = all_values == -1
-            all_values = 100*(all_values - min_value)/(max_value - min_value)
-            all_values[indices] = 0        
+                system = self.item(row, headers.index(COLUMN_SYSTEM)).text()
+                if system not in systems:
+                    systems.append(system)
+            number_systems = len(systems)
+            step = int(360/float(number_systems))
             for row in range(0, self.rowCount()):
-                color = QtGui.QColor()    
-                color.setHsv(all_values[row], 255, 150)
-                self.item(row, headers.index(column)).setTextColor(color)
-        
-        update_colors_column(COLUMN_WEIGHTED)
-        update_colors_column(COLUMN_YEAR)
-        update_colors_column(COLUMN_VOTES)
-        update_colors_column(COLUMN_RATING)
-        
-        # Colour code for different systems
-        systems = []
-        for row in range(0, self.rowCount()):
-            system = self.item(row, headers.index(COLUMN_SYSTEM)).text()
-            if system not in systems:
-                systems.append(system)
-        number_systems = len(systems)
-        step = int(360/float(number_systems))
-        for row in range(0, self.rowCount()):
-            system = self.item(row, headers.index(COLUMN_SYSTEM)).text()
-            color = QtGui.QColor()
-            color.setHsv(step*systems.index(system), 255, 150)
-            self.item(row, headers.index(COLUMN_SYSTEM)).setTextColor(color)
+                system = self.item(row, headers.index(COLUMN_SYSTEM)).text()
+                color = QtGui.QColor()
+                color.setHsv(step*systems.index(system), 255, 150)
+                self.item(row, headers.index(COLUMN_SYSTEM)).setTextColor(color)
          
     def reload_scores(self):
         rows = self.rowCount()
