@@ -61,6 +61,9 @@ class MainWindowController(QtGui.QWidget):
                              delete_msg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
         
             if reply == QtGui.QMessageBox.Yes:
+                progress = QProgressDialog("Removing games", "", 0, len(actual_indexes), self)
+                progress.setCancelButton(None)
+                progress.setWindowModality(QtCore.Qt.WindowModal)
                 for i in range(len(actual_indexes) - 1, -1, -1):
                     system = self.table.getGameData(actual_indexes[i])[COLUMN_SYSTEM]
                     status = self.table.getGameData(actual_indexes[i])[COLUMN_STATUS]
@@ -70,6 +73,7 @@ class MainWindowController(QtGui.QWidget):
                     for label in labels:
                         self.table.label_list_model.remove(label)
                     self.table.removeRow(actual_indexes[i])
+                    progress.setValue(len(actual_indexes) - i)
                 self.table.changed = True
                 
             self.table.update_colors()
