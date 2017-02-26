@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created: Sun Jan 29 08:56:01 2017
+# Created: Sun Feb 26 07:53:08 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -120,6 +120,8 @@ class Ui_MainWindow(object):
         icon6 = QtGui.QIcon()
         icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/sort.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonSortData.setIcon(icon6)
+        self.pushButtonSortData.setCheckable(True)
+        self.pushButtonSortData.setChecked(False)
         self.pushButtonSortData.setObjectName(_fromUtf8("pushButtonSortData"))
         self.horizontalLayout.addWidget(self.pushButtonSortData)
         self.pushButtonFilterData = QtGui.QPushButton(MainWindow)
@@ -134,6 +136,7 @@ class Ui_MainWindow(object):
         icon7 = QtGui.QIcon()
         icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/filter.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonFilterData.setIcon(icon7)
+        self.pushButtonFilterData.setCheckable(True)
         self.pushButtonFilterData.setObjectName(_fromUtf8("pushButtonFilterData"))
         self.horizontalLayout.addWidget(self.pushButtonFilterData)
         self.label = QtGui.QLabel(MainWindow)

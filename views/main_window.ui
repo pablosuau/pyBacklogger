@@ -221,6 +221,12 @@
           <iconset resource="../icons/main_window.qrc">
            <normaloff>:/icons/sort.png</normaloff>:/icons/sort.png</iconset>
          </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -252,6 +258,9 @@
          <property name="icon">
           <iconset resource="../icons/main_window.qrc">
            <normaloff>:/icons/filter.png</normaloff>:/icons/filter.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
