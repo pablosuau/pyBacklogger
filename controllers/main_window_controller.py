@@ -89,6 +89,8 @@ class MainWindowController(QtGui.QWidget):
         if self.table.changed:
             confirm = self.showConfirmDialog()
         if confirm or not self.table.changed:    
+            self.ui.pushButtonSortData.setChecked(False)
+            self.ui.pushButtonFilterData.setChecked(False)
             self.ui.lineEditSearchGame.setText('')            
             
             fileName = QtGui.QFileDialog.getOpenFileName(self, 'Load backlog', '', '*.blg')
@@ -152,10 +154,12 @@ class MainWindowController(QtGui.QWidget):
             sgc.applySorting()
     
     def filter_data_clicked(self):
+        self.ui.pushButtonFilterData.setChecked(False)
         if not self.checkEmpty():
             fgc = FilterGamesController(self.table, self)
             fgc.exec_()
             fgc.applyFiltering()
+            self.ui.pushButtonFilterData.setChecked(not fgc.filtering_all)         
     
     def search_text_changed(self):
         search_text = str(self.ui.lineEditSearchGame.text()).lower()

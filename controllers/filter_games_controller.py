@@ -9,6 +9,7 @@ class FilterGamesController(QtGui.QDialog):
         
         self.table = table
         self.canceled = False
+        self.filtering_all = True
         
         self.initializeUi()
         self.setupSignals()
@@ -77,3 +78,12 @@ class FilterGamesController(QtGui.QDialog):
             applyFilteringPerType(self.table.status_list_model, self.ui.listStatus)
             applyFilteringPerType(self.table.label_list_model, self.ui.listLabel)               
             self.table.hide_rows()
+            
+        models = [self.table.system_list_model,
+                 self.table.status_list_model, 
+                 self.table.label_list_model]
+        m = 0
+        while not models[m].is_any_filtered() and m < len(models):
+            m = m + 1
+        self.filtering_all = m >= len(models) 
+                
