@@ -148,10 +148,12 @@ class MainWindowController(QtGui.QWidget):
             self.table.update_colors()
     
     def sort_data_clicked(self):
+        self.ui.pushButtonSortData.setChecked(False)
         if not self.checkEmpty():
             sgc = SortGamesController(self.table, self)
             sgc.exec_()
             sgc.applySorting()
+            self.ui.pushButtonSortData.setChecked(sgc.sorting_active)
     
     def filter_data_clicked(self):
         self.ui.pushButtonFilterData.setChecked(False)

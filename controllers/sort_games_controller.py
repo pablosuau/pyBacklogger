@@ -13,6 +13,7 @@ class SortGamesController(QtGui.QDialog):
         self.table = table
         self.table.sort_list_model.save_model()
         self.canceled = False
+        self.sorting_active = False
      
         self.initializeUi()     
         self.setupSignals()
@@ -123,4 +124,6 @@ class SortGamesController(QtGui.QDialog):
             self.table.setVisible(True)
         else:
             self.table.sort_list_model.restore_model()
+            
+        self.sorting_active = len(self.table.sort_list_model.get_sort_fields()[0]) > 0
         
