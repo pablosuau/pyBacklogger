@@ -83,7 +83,7 @@ class FilterGamesController(QtGui.QDialog):
                  self.table.status_list_model, 
                  self.table.label_list_model]
         m = 0
-        while not models[m].is_any_filtered() and m < len(models):
+        while  m < len(models) and not models[m].is_any_filtered():
             m = m + 1
         self.filtering_all = m >= len(models) 
                 
