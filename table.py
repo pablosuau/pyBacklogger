@@ -49,6 +49,9 @@ class Table(QTableWidget):
         self.status_model = StatusModel()
         self.sort_list_model = SortListModel()
         
+        self.rows_to_hide = None
+        self.rows_order = None
+        
     def setmydata(self, data): 
         horHeaders = []
         for n, key in enumerate(sorted(self.data.keys())):
