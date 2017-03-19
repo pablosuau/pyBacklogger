@@ -89,12 +89,14 @@ class MainWindowController(QtGui.QWidget):
         if self.table.changed:
             confirm = self.showConfirmDialog()
         if confirm or not self.table.changed:    
-            self.ui.pushButtonSortData.setChecked(False)
-            self.ui.pushButtonFilterData.setChecked(False)
-            self.ui.lineEditSearchGame.setText('')            
-            
             fileName = QtGui.QFileDialog.getOpenFileName(self, 'Load backlog', '', '*.blg')
             if fileName:
+                self.table.last_index = 0            
+            
+                self.ui.pushButtonSortData.setChecked(False)
+                self.ui.pushButtonFilterData.setChecked(False)
+                self.ui.lineEditSearchGame.setText('')                    
+                
                 self.table.system_list_model.clear()
                 self.table.status_list_model.clear()
                 self.table.label_list_model.clear()
@@ -128,6 +130,9 @@ class MainWindowController(QtGui.QWidget):
             fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save backlog', '', '*.blg')
             if fileName:
                 with open(fileName, 'w') as fp:
+                    order = QtCore.Qt.AscendingOrder
+                    self.table.sortByColumn(constants.headers_extended.index(constants.COLUMN_ORDER), order)                                                    
+                    
                     writer = csv.writer(fp, delimiter=',',lineterminator='\n',quoting=csv.QUOTE_ALL)
                     rows = self.table.rowCount()
                     progress = QProgressDialog("Saving backlog", "", 0, rows, self)
@@ -141,6 +146,10 @@ class MainWindowController(QtGui.QWidget):
                         writer.writerows([data_list])
                         progress.setValue(i+1)
                     self.table.changed = False
+                    
+                    sgc = SortGamesController(self.table, self)
+                    sgc.canceled = False
+                    sgc.applySorting()
     
     def reload_scores_clicked(self):
         if not self.checkEmpty():

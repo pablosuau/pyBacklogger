@@ -113,14 +113,20 @@ class SortGamesController(QtGui.QDialog):
         if not self.canceled:
             self.table.setVisible(False)
             (sort_fields, sort_order) = self.table.sort_list_model.get_sort_fields()
-            for i in range(0,len(sort_fields)):
-                j = len(sort_fields) - i - 1
-                index_column = constants.headers.index(sort_fields[j])
-                if sort_order[j] == constants.ORDER_ASCENDING:
-                    order = QtCore.Qt.AscendingOrder
-                else:
-                    order = QtCore.Qt.DescendingOrder
-                self.table.sortByColumn(index_column, order)
+            
+            if len(sort_fields) > 0:            
+                for i in range(0,len(sort_fields)):
+                    j = len(sort_fields) - i - 1
+                    index_column = constants.headers.index(sort_fields[j])
+                    if sort_order[j] == constants.ORDER_ASCENDING:
+                        order = QtCore.Qt.AscendingOrder
+                    else:
+                        order = QtCore.Qt.DescendingOrder
+                    self.table.sortByColumn(index_column, order)
+            else:
+                order = QtCore.Qt.AscendingOrder
+                self.table.sortByColumn(constants.headers_extended.index(constants.COLUMN_ORDER), order)
+
             self.table.setVisible(True)
         else:
             self.table.sort_list_model.restore_model()
