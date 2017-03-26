@@ -335,6 +335,10 @@ class Table(QTableWidget):
                 self.setRowHidden(row, not self.search_string in item_text)
         else:
             self.hide_rows()
+            
+    def show_all_rows(self):
+        for row in range(0, self.rowCount()):
+            self.setRowHidden(row, False)
         
     def resizeColumns(self):
         self.setVisible(False)

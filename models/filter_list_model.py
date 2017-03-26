@@ -13,6 +13,10 @@ class FilterListModel():
                     self.add(i)
             else:
                 self.add(self.initial_entries)
+                
+    def clear_filtered(self):
+        for k in self.list.keys():
+            self.list[k][FILTERED] = False
 
     def add(self, item):
         if not item in self.list:

@@ -83,7 +83,7 @@ class MainWindowController(QtGui.QWidget):
             error.showMessage('No games were selected')
             error.setWindowTitle('Remove game')
             error.exec_()
-    
+                
     def load_backlog_clicked(self):
         confirm = False
         if self.table.changed:
@@ -93,13 +93,8 @@ class MainWindowController(QtGui.QWidget):
             if fileName:
                 self.table.last_index = 0            
             
-                self.ui.pushButtonSortData.setChecked(False)
-                self.ui.pushButtonFilterData.setChecked(False)
-                self.ui.lineEditSearchGame.setText('')                    
+                self.clear_options()
                 
-                self.table.system_list_model.clear()
-                self.table.status_list_model.clear()
-                self.table.label_list_model.clear()
                 for i in reversed(range(self.table.rowCount())):
                     self.table.removeRow(i)
                 with open(fileName, 'r') as fp:
@@ -130,8 +125,7 @@ class MainWindowController(QtGui.QWidget):
             fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save backlog', '', '*.blg')
             if fileName:
                 with open(fileName, 'w') as fp:
-                    order = QtCore.Qt.AscendingOrder
-                    self.table.sortByColumn(constants.headers_extended.index(constants.COLUMN_ORDER), order)                                                    
+                    self.set_original_order()
                     
                     writer = csv.writer(fp, delimiter=',',lineterminator='\n',quoting=csv.QUOTE_ALL)
                     rows = self.table.rowCount()
@@ -200,3 +194,20 @@ class MainWindowController(QtGui.QWidget):
             event.accept()
         else:
             event.ignore()
+            
+    def clear_options(self):
+        self.ui.pushButtonSortData.setChecked(False)
+        self.ui.pushButtonFilterData.setChecked(False)
+        self.ui.lineEditSearchGame.setText('')                    
+        
+        self.table.system_list_model.clear_filtered()
+        self.table.status_list_model.clear_filtered()
+        self.table.label_list_model.clear_filtered()
+        
+        self.table.show_all_rows()
+
+    def set_original_order(self):
+        self.table.sort_list_model.clear()
+        order = QtCore.Qt.AscendingOrder
+        self.table.sortByColumn(constants.headers_extended.index(constants.COLUMN_ORDER), order) 
+                                                 
