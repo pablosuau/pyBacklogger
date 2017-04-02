@@ -14,6 +14,7 @@ class AddGameController(QtGui.QDialog):
         self.ui.setupUi(self)
         
         self.table = table
+        self.parent = parent
         
         self.pending_selected = None
         
@@ -71,7 +72,6 @@ class AddGameController(QtGui.QDialog):
         self.progress.close()
         if self.add_by_url:
             self.table.addGame(self.url, str(html))
-            self.table.scrollToBottom()
             if self.pending_selected != None:
                 self.url = self.pending_selected[0]
                 del(self.pending_selected[0])   
@@ -79,9 +79,14 @@ class AddGameController(QtGui.QDialog):
                     self.pending_selected = None
                 self.launchAddGameWorker()
             else:
+                self.parent.clear_options()
+                self.parent.set_original_order()                
+                
                 self.table.update_colors()
                 self.hide()
                 self.table.resizeColumns()
+                
+                self.table.scrollToBottom()
             
         else:
             src = SearchResultsController(html, parent=self)
