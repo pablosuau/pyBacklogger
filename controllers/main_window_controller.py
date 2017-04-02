@@ -1,4 +1,6 @@
 import csv
+import os
+from shutil import copyfile
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -124,6 +126,11 @@ class MainWindowController(QtGui.QWidget):
         if not self.checkEmpty():
             fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save backlog', '', '*.blg')
             if fileName:
+                if os.path.isfile(fileName):
+                    (dir, file) = os.path.split(fileName)
+                    name, extension = os.path.splitext(file)
+                    bak_file = os.path.join(dir, name + '.bak')
+                    copyfile(fileName, bak_file)
                 with open(fileName, 'w') as fp:
                     self.set_original_order()
                     
