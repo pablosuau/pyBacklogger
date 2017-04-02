@@ -315,9 +315,13 @@ class Table(QTableWidget):
             errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
         
     def hide_rows(self):
-        if self.search_string == '':
-            none = self.label_list_model.get_filtered(LABEL_NONE)
-            for row in range(0,self.rowCount()):
+        none = self.label_list_model.get_filtered(LABEL_NONE)
+        for row in range(0,self.rowCount()):
+             filtered_out = False
+             if self.search_string != '':
+                 item_text = str(self.item(row, headers.index(COLUMN_NAME)).text()).lower()
+                 filtered_out = not self.search_string in item_text
+             if not filtered_out:
                  labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
                  filtered_out = none and len(labels_row) == 0
                  i = 0                          
@@ -326,16 +330,8 @@ class Table(QTableWidget):
                      i = i + 1
                  filtered_out = filtered_out or self.system_list_model.get_filtered(self.item(row, headers.index(COLUMN_SYSTEM)).text())
                  filtered_out = filtered_out or self.status_list_model.get_filtered(self.item(row, headers.index(COLUMN_STATUS)).text())
-                 self.setRowHidden(row, filtered_out)
+             self.setRowHidden(row, filtered_out)
 
-    def hide_rows_search(self):
-        if self.search_string != '':
-            for row in range(0,self.rowCount()):
-                item_text = str(self.item(row, headers.index(COLUMN_NAME)).text()).lower()
-                self.setRowHidden(row, not self.search_string in item_text)
-        else:
-            self.hide_rows()
-            
     def show_all_rows(self):
         for row in range(0, self.rowCount()):
             self.setRowHidden(row, False)

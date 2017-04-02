@@ -169,7 +169,7 @@ class MainWindowController(QtGui.QWidget):
     def search_text_changed(self):
         search_text = str(self.ui.lineEditSearchGame.text()).lower()
         self.table.search_string = search_text
-        self.table.hide_rows_search()
+        self.table.hide_rows()
 
     def checkEmpty(self):
         empty = self.table.rowCount() == 0
