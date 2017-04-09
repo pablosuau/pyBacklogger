@@ -269,7 +269,19 @@ class Table(QTableWidget):
                 self.item(row, headers.index(COLUMN_SYSTEM)).setTextColor(color)
          
     def reload_scores(self):
-        pass
+        indexes = self.selectionModel().selectedRows()
+        if len(indexes) == 0:
+            error = QErrorMessage()
+            error.showMessage('No games were selected')
+            error.setWindowTitle('Reload scores')
+            error.exec_()
+        elif len(indexes) > 500:
+            error = QErrorMessage()
+            error.showMessage('A maximum of 500 games can be selected')
+            error.setWindowTitle('Reload scores')
+            error.exec_()
+        else:
+            pass
 #        rows = self.rowCount()
 #        progress = QProgressDialog("Updating scores", "", 0, rows, self)
 #        progress.setWindowTitle('Reload scores')
