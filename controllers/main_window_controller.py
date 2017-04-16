@@ -8,6 +8,7 @@ from views.main_window import Ui_MainWindow
 from controllers.add_game_controller import *
 from controllers.filter_games_controller import *
 from controllers.sort_games_controller import *
+from controllers.reload_scores_controller import *
 from models.constants import headers, COLUMN_SYSTEM, COLUMN_STATUS, COLUMN_LABELS
 
 class MainWindowController(QtGui.QWidget):
@@ -154,8 +155,8 @@ class MainWindowController(QtGui.QWidget):
     
     def reload_scores_clicked(self):
         if not self.checkEmpty():
-            self.table.reload_scores()
-            self.table.update_colors()
+            rsc = ReloadScoresController(self.table, self)
+            rsc.reload_scores()
     
     def sort_data_clicked(self):
         self.ui.pushButtonSortData.setChecked(False)

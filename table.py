@@ -4,12 +4,9 @@ from PyQt4.QtGui import *
 from lxml.html.soupparser import fromstring
 import re
 import sys
-from random import randint
-from time import sleep
 from widgets.label_widget import LabelWidget
 from controllers.select_date_controller import SelectDateController
 from controllers.select_status_controller import SelectStatusController
-import urllib2
 import numpy as np
 from models.filter_list_model import FilterListModel
 from models.status_model import StatusModel
@@ -269,65 +266,6 @@ class Table(QTableWidget):
                 color = QtGui.QColor()
                 color.setHsv(step*systems.index(system), 255, 150)
                 self.item(row, headers.index(COLUMN_SYSTEM)).setTextColor(color)
-         
-    def reload_scores(self):
-        indexes = self.selectionModel().selectedRows()
-        if len(indexes) == 0:
-            error = QErrorMessage()
-            error.showMessage('No games were selected')
-            error.setWindowTitle('Reload scores')
-            error.exec_()
-        elif len(indexes) > 500:
-            error = QErrorMessage()
-            error.showMessage('A maximum of 500 games can be selected')
-            error.setWindowTitle('Reload scores')
-            error.exec_()
-        else:
-            progress = QProgressDialog("Updating scores", "", 0, len(indexes), self)
-            progress.setWindowTitle('Reload scores')
-            progress.setCancelButton(None)
-            progress.setWindowModality(Qt.WindowModal)
-            try:
-                for i in range(0,len(indexes)):
-                    row = indexes[i].row()
-                    sleep(randint(5,15))
-                    url = self.item(row,headers.index(COLUMN_URL)).text()        
-                    req = urllib2.Request(str(url), headers={'User-Agent' : "Magic Browser"}) 
-                    response = urllib2.urlopen(req)
-                    html = response.read().decode('ascii','ignore') 
-                    doc = fromstring(html)
-                    # Updating the name, in case it changed
-                    el = doc.xpath("//h1[@class='page-title']")
-                    name = el[0].findtext('a')
-                    self.item(row,headers.index(COLUMN_NAME)).setText(name)
-                    # Updating the score
-                    el = doc.xpath("//fieldset[@id='js_mygames_rate']")
-                    if len(el)>0:
-                        rating_str = el[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                        if rating_str == None:
-                            rating = '0.00'
-                            votes = '0'
-                        else:
-                            rating = rating_str.split(' / ')[0]
-                            votes_str = el[0].getchildren()[0].getchildren()[0].getchildren()[2].text
-                            votes = votes_str.split(' ')[0]   
-                    else:
-                        rating = '0.00'
-                        votes = '0'
-                    self.item(row,headers.index(COLUMN_RATING)).setText(rating)
-                    self.item(row,headers.index(COLUMN_VOTES)).setText(votes)
-                    progress.setValue(i+1)
-                self.compute_final_rating()
-                self.changed = True
-            except urllib2.URLError as e:
-                print e.reason   
-                errorMessage=QErrorMessage(self)
-                errorMessage.showMessage('Incorrect URL or not Internet connection')
-            except urllib2.HTTPError as e:
-                print e.code
-                print e.read() 
-                errorMessage=QErrorMessage(self)
-                errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
         
     def hide_rows(self):
         none = self.label_list_model.get_filtered(LABEL_NONE)
