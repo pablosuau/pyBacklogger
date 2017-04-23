@@ -26,7 +26,7 @@ class ReloadScoresController(QtGui.QWidget):
             error.setWindowTitle('Reload scores')
             error.exec_()
         else:
-            self.progress = QProgressDialog("Updating scores", "", 0, len(indexes), self)
+            self.progress = QProgressDialog("Updating scores", "", 0, len(indexes), self.parent)
             self.progress.setWindowTitle('Reload scores')
             self.progress.setCancelButton(None)
             self.progress.setWindowModality(Qt.WindowModal)
