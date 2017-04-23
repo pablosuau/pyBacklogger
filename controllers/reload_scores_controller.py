@@ -7,8 +7,9 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from models.constants import headers, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_URL
 
-class ReloadScoresController():
+class ReloadScoresController(QtGui.QWidget):
     def __init__(self, table, parent=None):
+        QtGui.QWidget.__init__(self, parent)
         self.table = table
         self.parent = parent
         
@@ -25,13 +26,30 @@ class ReloadScoresController():
             error.setWindowTitle('Reload scores')
             error.exec_()
         else:
-            progress = QProgressDialog("Updating scores", "", 0, len(indexes), self.parent)
-            progress.setWindowTitle('Reload scores')
-            progress.setCancelButton(None)
-            progress.setWindowModality(Qt.WindowModal)
+            self.progress = QProgressDialog("Updating scores", "", 0, len(indexes), self)
+            self.progress.setWindowTitle('Reload scores')
+            self.progress.setCancelButton(None)
+            self.progress.setWindowModality(Qt.WindowModal)
+            self.thread = self.ReloadScoresWorker(self.table, indexes)
+            self.connect(self.thread, QtCore.SIGNAL("update_progress(int)"), self.update_progress)
+            self.progress.setValue(0)
+            self.thread.start()
+            
+    def update_progress(self, i):
+        self.progress.setValue(i+1)
+                
+    class ReloadScoresWorker(QtCore.QThread):
+        def __init__(self, table, indexes, parent=None):
+            QtCore.QThread.__init__(self, parent)
+            self.exiting = False
+            self.table = table
+            self.indexes = indexes
+            self.parent = parent
+        
+        def run(self):
             try:
-                for i in range(0,len(indexes)):
-                    row = indexes[i].row()
+                for i in range(0,len(self.indexes)):
+                    row = self.indexes[i].row()
                     sleep(randint(5,15))
                     url = self.table.item(row,headers.index(COLUMN_URL)).text()        
                     req = urllib2.Request(str(url), headers={'User-Agent' : "Magic Browser"}) 
@@ -58,16 +76,20 @@ class ReloadScoresController():
                         votes = '0'
                     self.table.item(row,headers.index(COLUMN_RATING)).setText(rating)
                     self.table.item(row,headers.index(COLUMN_VOTES)).setText(votes)
-                    progress.setValue(i+1)
+                    self.emit(QtCore.SIGNAL("update_progress(int)"), i)
                 self.table.compute_final_rating()
                 self.table.changed = True
                 self.table.update_colors()
             except urllib2.URLError as e:
                 print e.reason   
-                errorMessage=QErrorMessage(self)
+                errorMessage=QErrorMessage(self.parent)
                 errorMessage.showMessage('Incorrect URL or not Internet connection')
             except urllib2.HTTPError as e:
                 print e.code
                 print e.read() 
-                errorMessage=QErrorMessage(self)
+                errorMessage=QErrorMessage(self.parent)
                 errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
+   
+        def __del__(self):
+            self.exiting = True
+            self.wait()
