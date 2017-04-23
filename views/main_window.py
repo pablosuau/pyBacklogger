@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created: Sun Feb 26 07:53:08 2017
+# Created: Sun Apr 09 09:29:41 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -94,7 +94,7 @@ class Ui_MainWindow(object):
         self.pushButtonSaveBacklog.setObjectName(_fromUtf8("pushButtonSaveBacklog"))
         self.horizontalLayout.addWidget(self.pushButtonSaveBacklog)
         self.pushButtonReloadScores = QtGui.QPushButton(MainWindow)
-        self.pushButtonReloadScores.setEnabled(False)
+        self.pushButtonReloadScores.setEnabled(True)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
