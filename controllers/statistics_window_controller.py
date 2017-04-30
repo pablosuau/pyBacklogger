@@ -18,4 +18,7 @@ class StatisticsWindowController(QtGui.QDialog):
         pass        
         
     def setupSignals(self):
-        pass
+        self.ui.pushButtonClose.clicked.connect(self.close_clicked)
+        
+    def close_clicked(self):
+        self.close()
