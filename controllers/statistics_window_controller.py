@@ -15,10 +15,26 @@ class StatisticsWindowController(QtGui.QDialog):
         self.setupSignals()
     
     def initializeUi(self):
-        pass        
+        self.buttons = [self.ui.pushButtonSystem, self.ui.pushButtonYear, self.ui.pushButtonLabel, self.ui.pushButtonStatus]
+        # Make buttons checkable
+        for b in self.buttons:
+            b.setCheckable(True)
         
     def setupSignals(self):
         self.ui.pushButtonClose.clicked.connect(self.close_clicked)
+        for b in self.buttons:
+            b.clicked.connect(self.option_clicked)
         
     def close_clicked(self):
         self.close()
+        
+    def option_clicked(self):
+        checked = 0
+        for b in self.buttons:
+            if b.isChecked():
+                checked = checked + 1
+                
+        self.ui.plainTextEdit.clear()
+        
+        if checked > 2:
+           self.ui.plainTextEdit.appendPlainText('Only two criteria can be selected')
