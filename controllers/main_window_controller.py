@@ -9,6 +9,7 @@ from controllers.add_game_controller import *
 from controllers.filter_games_controller import *
 from controllers.sort_games_controller import *
 from controllers.reload_scores_controller import *
+from controllers.statistics_window_controller import *
 from models.constants import headers, COLUMN_SYSTEM, COLUMN_STATUS, COLUMN_LABELS
 
 class MainWindowController(QtGui.QWidget):
@@ -37,6 +38,7 @@ class MainWindowController(QtGui.QWidget):
         self.ui.pushButtonReloadScores.clicked.connect(self.reload_scores_clicked)
         self.ui.pushButtonSortData.clicked.connect(self.sort_data_clicked)
         self.ui.pushButtonFilterData.clicked.connect(self.filter_data_clicked)
+        self.ui.pushButtonStatistics.clicked.connect(self.statistics_clicked)
         self.ui.lineEditSearchGame.textChanged.connect(self.search_text_changed)
         
     def add_game_clicked(self):
@@ -172,7 +174,12 @@ class MainWindowController(QtGui.QWidget):
             fgc = FilterGamesController(self.table, self)
             fgc.exec_()
             fgc.applyFiltering()
-            self.ui.pushButtonFilterData.setChecked(not fgc.filtering_all)         
+            self.ui.pushButtonFilterData.setChecked(not fgc.filtering_all)   
+            
+    def statistics_clicked(self):
+        if not self.checkEmpty():
+            swc = StatisticsWindowController(self)
+            swc.exec_()
     
     def search_text_changed(self):
         search_text = str(self.ui.lineEditSearchGame.text()).lower()
