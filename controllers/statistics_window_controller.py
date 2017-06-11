@@ -63,7 +63,7 @@ class StatisticsWindowController(QtGui.QDialog):
                     total = total + results[r1][r2]
                 for r2 in sorted(results[r1].keys()):
                     value = "%.2f" % (results[r1][r2]/float(total)*100)
-                    self.ui.plainTextEdit.appendPlainText('    ' + r2 + ': ' + value + '%')
+                    self.ui.plainTextEdit.appendPlainText('    ' + r2 + ': ' + value + '% (' + str(results[r1][r2]) + ')')
         elif checked == 1:
             results = dict()
             for row in range(0, self.table.rowCount()):
@@ -77,4 +77,4 @@ class StatisticsWindowController(QtGui.QDialog):
                 total = total + results[r]
             for r in sorted(results.keys()):
                 value = "%.2f" % (results[r]/float(total)*100)
-                self.ui.plainTextEdit.appendPlainText(r + ': ' + value + '%')
+                self.ui.plainTextEdit.appendPlainText(r + ': ' + value + '% (' + str(results[r]) + ')')
