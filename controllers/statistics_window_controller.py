@@ -65,4 +65,16 @@ class StatisticsWindowController(QtGui.QDialog):
                     value = "%.2f" % (results[r1][r2]/float(total)*100)
                     self.ui.plainTextEdit.appendPlainText('    ' + r2 + ': ' + value + '%')
         elif checked == 1:
-            pass
+            results = dict()
+            for row in range(0, self.table.rowCount()):
+                value = self.table.item(row, headers.index(self.columns[selected[0]])).text()
+                if value not in results.keys():
+                    results[value] = 1
+                else:
+                    results[value] = results[value] + 1
+            total = 0
+            for r in results.keys():
+                total = total + results[r]
+            for r in sorted(results.keys()):
+                value = "%.2f" % (results[r]/float(total)*100)
+                self.ui.plainTextEdit.appendPlainText(r + ': ' + value + '%')
