@@ -46,9 +46,9 @@ class StatisticsWindowController(QtGui.QDialog):
         elif checked > 1:
             results = dict()
             for row in range(0, self.table.rowCount()):
-                 value1 = self.table.item(row, headers.index(self.columns[selected[0]])).text()
+                 value1 = str(self.table.item(row, headers.index(self.columns[selected[0]])).text())
                  value1 = value1.split(',') # To deal wiht labels
-                 value2 = self.table.item(row, headers.index(self.columns[selected[1]])).text()
+                 value2 = str(self.table.item(row, headers.index(self.columns[selected[1]])).text())
                  value2 = value2.split(',')
                  
                  
@@ -80,7 +80,7 @@ class StatisticsWindowController(QtGui.QDialog):
         elif checked == 1:
             results = dict()
             for row in range(0, self.table.rowCount()):
-                value = self.table.item(row, headers.index(self.columns[selected[0]])).text()
+                value = str(self.table.item(row, headers.index(self.columns[selected[0]])).text())
                 value = value.split(',') # To deal with labels
                 for v in value:
                     if v == '':
