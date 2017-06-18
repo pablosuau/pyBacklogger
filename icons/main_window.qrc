@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icons">
+    <file>statistics.png</file>
     <file>filter.png</file>
     <file>sort.png</file>
     <file>reload.png</file>

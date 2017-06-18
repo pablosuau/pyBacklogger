@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created: Sun Apr 09 09:29:41 2017
+# Created: Sun Apr 23 08:37:22 2017
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(640, 480)
+        MainWindow.resize(766, 501)
         MainWindow.setMinimumSize(QtCore.QSize(640, 480))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -124,6 +124,20 @@ class Ui_MainWindow(object):
         self.pushButtonSortData.setChecked(False)
         self.pushButtonSortData.setObjectName(_fromUtf8("pushButtonSortData"))
         self.horizontalLayout.addWidget(self.pushButtonSortData)
+        self.pushButtonStatistics = QtGui.QPushButton(MainWindow)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pushButtonStatistics.sizePolicy().hasHeightForWidth())
+        self.pushButtonStatistics.setSizePolicy(sizePolicy)
+        self.pushButtonStatistics.setMinimumSize(QtCore.QSize(31, 31))
+        self.pushButtonStatistics.setMaximumSize(QtCore.QSize(31, 31))
+        self.pushButtonStatistics.setText(_fromUtf8(""))
+        icon7 = QtGui.QIcon()
+        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/statistics.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonStatistics.setIcon(icon7)
+        self.pushButtonStatistics.setObjectName(_fromUtf8("pushButtonStatistics"))
+        self.horizontalLayout.addWidget(self.pushButtonStatistics)
         self.pushButtonFilterData = QtGui.QPushButton(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -133,9 +147,9 @@ class Ui_MainWindow(object):
         self.pushButtonFilterData.setMinimumSize(QtCore.QSize(31, 31))
         self.pushButtonFilterData.setMaximumSize(QtCore.QSize(31, 31))
         self.pushButtonFilterData.setText(_fromUtf8(""))
-        icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/filter.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButtonFilterData.setIcon(icon7)
+        icon8 = QtGui.QIcon()
+        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/filter.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonFilterData.setIcon(icon8)
         self.pushButtonFilterData.setCheckable(True)
         self.pushButtonFilterData.setObjectName(_fromUtf8("pushButtonFilterData"))
         self.horizontalLayout.addWidget(self.pushButtonFilterData)
@@ -180,6 +194,7 @@ class Ui_MainWindow(object):
         self.pushButtonSaveBacklog.setToolTip(_translate("MainWindow", "Save backlog", None))
         self.pushButtonReloadScores.setToolTip(_translate("MainWindow", "Reload scores", None))
         self.pushButtonSortData.setToolTip(_translate("MainWindow", "Sort games", None))
+        self.pushButtonStatistics.setToolTip(_translate("MainWindow", "Statistics", None))
         self.pushButtonFilterData.setToolTip(_translate("MainWindow", "Filter games", None))
         self.label.setText(_translate("MainWindow", "Search:", None))
 
