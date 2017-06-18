@@ -2,7 +2,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from views.statistics_dialog import Ui_StatisticsWindow
-from models.constants import headers, COLUMN_SYSTEM, COLUMN_STATUS, COLUMN_LABELS, COLUMN_YEAR
+from models.constants import headers, COLUMN_SYSTEM, COLUMN_STATUS, COLUMN_LABELS, COLUMN_YEAR, LABEL_NONE
 
 class StatisticsWindowController(QtGui.QDialog):
     # UI and signal setup
@@ -47,14 +47,27 @@ class StatisticsWindowController(QtGui.QDialog):
             results = dict()
             for row in range(0, self.table.rowCount()):
                  value1 = self.table.item(row, headers.index(self.columns[selected[0]])).text()
+                 value1 = value1.split(',') # To deal wiht labels
                  value2 = self.table.item(row, headers.index(self.columns[selected[1]])).text()
+                 value2 = value2.split(',')
                  
-                 if value1 not in results.keys():
-                     results[value1] = dict()
-                 if value2 not in results[value1].keys():
-                     results[value1][value2] = 1
-                 else:
-                     results[value1][value2] = results[value1][value2] + 1
+                 
+                 for v1 in value1:
+                     if v1 == '':
+                         v1strip = LABEL_NONE
+                     else:
+                         v1strip = v1.strip()
+                     if v1strip not in results.keys():
+                         results[v1strip] = dict()
+                     for v2 in value2:
+                         if v2 == '':
+                             v2strip = LABEL_NONE
+                         else:
+                             v2strip = v2.strip()
+                         if v2strip not in results[v1strip].keys():
+                             results[v1strip][v2strip] = 1
+                         else:
+                             results[v1strip][v2strip] = results[v1strip][v2strip] + 1
                  
             for r1 in sorted(results.keys()):
                 self.ui.plainTextEdit.appendPlainText(r1)
@@ -68,10 +81,16 @@ class StatisticsWindowController(QtGui.QDialog):
             results = dict()
             for row in range(0, self.table.rowCount()):
                 value = self.table.item(row, headers.index(self.columns[selected[0]])).text()
-                if value not in results.keys():
-                    results[value] = 1
-                else:
-                    results[value] = results[value] + 1
+                value = value.split(',') # To deal with labels
+                for v in value:
+                    if v == '':
+                        vstrip = LABEL_NONE
+                    else:
+                        vstrip = v.strip()
+                    if vstrip not in results.keys():
+                        results[vstrip] = 1
+                    else:
+                        results[vstrip] = results[vstrip] + 1
             total = 0
             for r in results.keys():
                 total = total + results[r]
