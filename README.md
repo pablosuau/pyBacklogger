@@ -4,7 +4,7 @@ A desktop Python application based on PyQ to manage your videogame collection wh
 
 ![Main window view](readme_img/main_window.png)
 
-Project's [post-mortem]([https://github.com/pablosuau/pyBacklogger/blob/master/postmortem.md](https://github.com/pablosuau/pyBacklogger/blob/master/postmortem.md))'s document
+Project's [post-mortem](https://github.com/pablosuau/pyBacklogger/blob/master/postmortem.md)'s document
 
 ## How to use it
 
