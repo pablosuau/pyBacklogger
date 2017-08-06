@@ -130,7 +130,7 @@ class MainWindowController(QtGui.QWidget):
             fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save backlog', '', '*.blg')
             if fileName:
                 if os.path.isfile(fileName):
-                    (dir, file) = os.path.split(fileName)
+                    (dir, file) = os.path.split(str(fileName))
                     name, extension = os.path.splitext(file)
                     bak_file = os.path.join(dir, name + '.bak')
                     copyfile(fileName, bak_file)
@@ -146,7 +146,7 @@ class MainWindowController(QtGui.QWidget):
                         data = self.table.getGameData(i)
                         data_list = []
                         for h in headers: 
-                            data_list.append(data[h].encode('utf-8'))
+                            data_list.append(str(data[h]).encode('utf-8'))
                         writer.writerows([data_list])
                         progress.setValue(i+1)
                     self.table.changed = False
