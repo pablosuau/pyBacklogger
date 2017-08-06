@@ -28,17 +28,22 @@ class SearchResultsController(QtGui.QDialog):
         names = []
         urls = []
         doc = fromstring(html)
-        el = doc.xpath("//table[@class='results']")
-        for table in el:
-            rows = table.getchildren()[2:]
-            for row in rows:
-                system = row.getchildren()[0].text.strip()
-                if system == '':
-                    system = systems[-1]
-                systems.append(system)
-                names.append(row.getchildren()[1].findtext('a'))
-                urls.append(GAMEFAQS_URL + row.getchildren()[1].getchildren()[0].attrib['href'])
+        
+        el = doc.xpath("//div[@class='search_result']")
+        for sr in el:
+            right_panel = sr.getchildren()[1]
+            name = right_panel.getchildren()[0].getchildren()[0].getchildren()[0].getchildren()[0].text.strip()
+            
+            details = right_panel.getchildren()[1].getchildren()
+            for d in details:
+                product = d.getchildren()[0].getchildren()[0]
+                system = product.text.strip()
+                url = GAMEFAQS_URL + product.attrib['href']
                 
+                systems.append(system)
+                names.append(name)
+                urls.append(url)    
+                        
         # Displaying search results       
         model = QStandardItemModel()
         if len(systems) > 0:
@@ -56,7 +61,6 @@ class SearchResultsController(QtGui.QDialog):
         self.urls = urls
         self.checked = 0
         self.ui.pushButtonOk.setEnabled(False)
-        
         
     def setupSignals(self):
         self.ui.pushButtonOk.clicked.connect(self.okClicked)
