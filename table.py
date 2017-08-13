@@ -241,7 +241,10 @@ class Table(QTableWidget):
                 # Assigning colour ranges
                 all_values = np.array(all_values)
                 indices = all_values == -1
-                all_values = 100*(all_values - min_value)/(max_value - min_value)
+                if max_value - min_value > 0:
+                    all_values = 100*(all_values - min_value)/(max_value - min_value)
+                else:
+                    all_values = 0*all_values
                 all_values[indices] = 0        
                 for row in range(0, self.rowCount()):
                     color = QtGui.QColor()    

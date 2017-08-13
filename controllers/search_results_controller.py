@@ -36,13 +36,16 @@ class SearchResultsController(QtGui.QDialog):
             
             details = right_panel.getchildren()[1].getchildren()
             for d in details:
-                product = d.getchildren()[0].getchildren()[0]
-                system = product.text.strip()
-                url = GAMEFAQS_URL + product.attrib['href']
-                
-                systems.append(system)
-                names.append(name)
-                urls.append(url)    
+                if d.get('class') == 'sr_showall':
+                    pass
+                else:
+                    product = d.getchildren()[0].getchildren()[0]
+                    system = product.text.strip()
+                    url = GAMEFAQS_URL + product.attrib['href']
+                    
+                    systems.append(system)
+                    names.append(name)
+                    urls.append(url)    
                         
         # Displaying search results       
         model = QStandardItemModel()
