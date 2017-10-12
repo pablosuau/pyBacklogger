@@ -1,17 +1,17 @@
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import QtGui, QtWidgets, QtCore
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
-class LabelWidget(QtGui.QWidget):
+class LabelWidget(QtWidgets.QWidget):
     def __init__(self, item, father):
         super(LabelWidget, self).__init__()
-        self.layout = QtGui.QHBoxLayout()
+        self.layout = QtWidgets.QHBoxLayout()
         self.layout.setAlignment(QtCore.Qt.AlignLeft)
         self.setLayout(self.layout)
         self.style = 'QLabel { background-color : #AAAAAA; color: black; }'
         self.father = father
         self.item = item
-        self.item.setTextColor(QtGui.QColor(255,255,255))
+        self.item.setForeground(QtGui.QColor(255,255,255))
         self.setContentsMargins(0, 0, 0, 0)
         self.layout.setContentsMargins(0, 0, 0, 0)
         
@@ -43,7 +43,7 @@ class LabelWidget(QtGui.QWidget):
         for i in range(0,len(labels)):
             label_text = str(labels[i]).strip()
             if label_text != '':
-                label = QtGui.QLabel(label_text)
+                label = QtWidgets.QLabel(label_text)
                 label.setStyleSheet(self.style)
                 self.layout.addWidget(label)
                 
@@ -59,12 +59,12 @@ class LabelWidget(QtGui.QWidget):
         
     def mousePressEvent(self, event):
         labels = self.labelsToString()     
-        text, ok = QtGui.QInputDialog.getText(self, 'Labels', 'Enter labels (comma-separated)', QtGui.QLineEdit.Normal, labels)        
+        text, ok = QtWidgets.QInputDialog.getText(self, 'Labels', 'Enter labels (comma-separated)', QtWidgets.QLineEdit.Normal, labels)        
         if ok:
             self.stringToLabels(text)
 
         
-        QtGui.qApp.processEvents() # this line makes the labels to be
+        QtWidgets.qApp.processEvents() # this line makes the labels to be
                                    # painted before resizing the table's
                                    # columns
         

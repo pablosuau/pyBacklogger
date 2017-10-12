@@ -1,4 +1,4 @@
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 from models.constants import OPTIONS
 
 class StatusModel(QtGui.QStandardItemModel):

@@ -1,9 +1,9 @@
 import csv
 import os
 from shutil import copyfile
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from views.main_window import Ui_MainWindow
 from controllers.add_game_controller import *
 from controllers.filter_games_controller import *
@@ -12,10 +12,10 @@ from controllers.reload_scores_controller import *
 from controllers.statistics_window_controller import *
 from models.constants import headers, COLUMN_SYSTEM, COLUMN_STATUS, COLUMN_LABELS
 
-class MainWindowController(QtGui.QWidget):
+class MainWindowController(QtWidgets.QWidget):
     # UI and signal setup
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
        
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -62,11 +62,11 @@ class MainWindowController(QtGui.QWidget):
                 delete_msg = delete_msg + '\n' + names[i] + ' (' + systems[i] + ')'
             if len(names) > 10:
                 delete_msg = delete_msg + '\n...'
-            reply = QtGui.QMessageBox.question(self, 'Confirm game removal', 
-                             delete_msg, QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+            reply = QtWidgets.QMessageBox.question(self, 'Confirm game removal', 
+                             delete_msg, QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
         
-            if reply == QtGui.QMessageBox.Yes:
-                progress = QProgressDialog("Removing games", "", 0, len(actual_indexes), self)
+            if reply == QtWidgets.QMessageBox.Yes:
+                progress = QtWidgets.QProgressDialog("Removing games", "", 0, len(actual_indexes), self)
                 progress.setCancelButton(None)
                 progress.setWindowModality(QtCore.Qt.WindowModal)
                 for i in range(len(actual_indexes) - 1, -1, -1):
@@ -84,7 +84,7 @@ class MainWindowController(QtGui.QWidget):
             self.table.update_colors()
             self.table.resizeColumns()
         else:
-            error = QErrorMessage()
+            error = QtWidgets.QErrorMessage()
             error.showMessage('No games were selected')
             error.setWindowTitle('Remove game')
             error.exec_()
@@ -94,7 +94,7 @@ class MainWindowController(QtGui.QWidget):
         if self.table.changed:
             confirm = self.showConfirmDialog()
         if confirm or not self.table.changed:    
-            fileName = QtGui.QFileDialog.getOpenFileName(self, 'Load backlog', '', '*.blg')
+            fileName = QtWidgets.QFileDialog.getOpenFileName(self, 'Load backlog', '', '*.blg')[0]
             if fileName:
                 self.table.last_index = 0            
             
@@ -106,7 +106,7 @@ class MainWindowController(QtGui.QWidget):
                     reader = csv.reader(fp, delimiter=',',quoting=csv.QUOTE_ALL)
                     rows = sum(1 for row in reader)
                     fp.seek(0)
-                    progress = QProgressDialog("Loading backlog", "", 0, rows, self)
+                    progress = QtWidgets.QProgressDialog("Loading backlog", "", 0, rows, self)
                     progress.setCancelButton(None)
                     progress.setWindowModality(QtCore.Qt.WindowModal)
                     i = 0
@@ -127,7 +127,7 @@ class MainWindowController(QtGui.QWidget):
     
     def save_backlog_clicked(self):
         if not self.checkEmpty():
-            fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save backlog', '', '*.blg')
+            fileName = QtWidgets.QFileDialog.getSaveFileName(self, 'Save backlog', '', '*.blg')[0]
             if fileName:
                 if os.path.isfile(fileName):
                     (dir, file) = os.path.split(str(fileName))
@@ -139,7 +139,7 @@ class MainWindowController(QtGui.QWidget):
                     
                     writer = csv.writer(fp, delimiter=',',lineterminator='\n',quoting=csv.QUOTE_ALL)
                     rows = self.table.rowCount()
-                    progress = QProgressDialog("Saving backlog", "", 0, rows, self)
+                    progress = QtWidgets.QProgressDialog("Saving backlog", "", 0, rows, self)
                     progress.setCancelButton(None)
                     progress.setWindowModality(QtCore.Qt.WindowModal)
                     for i in range(0,rows):
@@ -189,17 +189,17 @@ class MainWindowController(QtGui.QWidget):
     def checkEmpty(self):
         empty = self.table.rowCount() == 0
         if empty:
-            error = QErrorMessage()
+            error = QtWidgets.QErrorMessage()
             error.showMessage('Add some games first!')
             error.setWindowTitle('No games')
             error.exec_()
         return(empty)
         
     def showConfirmDialog(self):
-        reply = QtGui.QMessageBox.question(self, 'Confirm action', 
+        reply = QtWidgets.QMessageBox.question(self, 'Confirm action', 
                      "Your data changed since you loaded it. Are you sure you want to do this?", 
-                     QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
-        return reply == QtGui.QMessageBox.Yes                     
+                     QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+        return reply == QtWidgets.QMessageBox.Yes                     
 
     def closeEvent(self, event):
         confirm = False

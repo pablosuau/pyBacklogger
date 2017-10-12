@@ -1,13 +1,13 @@
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from views.select_date_dialog import Ui_SelectDateDialog
 from util import util
 
 from models.constants import INITIAL_YEAR, FINAL_YEAR
 
-class SelectDateController(QtGui.QDialog):
+class SelectDateController(QtWidgets.QDialog):
     # UI and signal setup
     def __init__(self, year, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_SelectDateDialog()
         self.ui.setupUi(self)
         

@@ -1,13 +1,13 @@
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from views.statistics_dialog import Ui_StatisticsWindow
 from models.constants import headers, COLUMN_SYSTEM, COLUMN_STATUS, COLUMN_LABELS, COLUMN_YEAR, LABEL_NONE
 
-class StatisticsWindowController(QtGui.QDialog):
+class StatisticsWindowController(QtWidgets.QDialog):
     # UI and signal setup
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
        
         self.ui = Ui_StatisticsWindow()
         self.ui.setupUi(self)

@@ -1,11 +1,11 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 from views.status_dialog import Ui_StatusDialog
 from models.status_model import StatusModel
 
-class SelectStatusController(QtGui.QDialog):
+class SelectStatusController(QtWidgets.QDialog):
     # UI and signal setup
     def __init__(self, status, parent):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
 
         self.previous_status = status  
         self.canceled = False
