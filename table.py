@@ -307,6 +307,7 @@ class Table(QtWidgets.QTableWidget):
             date = sdc.getDate()
             if date != None:
                 self.item(row, column).setText(date)
+                self.update_colors()
         elif column == headers.index(COLUMN_STATUS):
             ssc = SelectStatusController(self.item(row, column).text(), self)  
             ssc.exec_()
