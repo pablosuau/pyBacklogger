@@ -1,6 +1,6 @@
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from lxml.html.soupparser import fromstring
 import re
 import sys
@@ -13,12 +13,12 @@ from models.status_model import StatusModel
 from models.sort_list_model import SortListModel
 from models.constants import headers, headers_extended, LABEL_NONE, COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER
 
-class NumericWidgetItem(QtGui.QTableWidgetItem):
+class NumericWidgetItem(QtWidgets.QTableWidgetItem):
     def __lt__(self, other):
         return (float(str(self.text()).encode('ascii','ignore')) <
                 float(str(other.text()).encode('ascii','ignore')))
 
-class Table(QTableWidget):
+class Table(QtWidgets.QTableWidget):
     def initialize(self, *args):
         self.clicked.connect(self.cellClicked)
         
@@ -102,7 +102,7 @@ class Table(QTableWidget):
                 pos = pos + 1
         
             if found:
-                errorMessage=QErrorMessage(self)
+                errorMessage = QtWidgets.QErrorMessage(self)
                 errorMessage.showMessage(data[COLUMN_NAME] + ' (' + data[COLUMN_SYSTEM] + ') is already in the database')
             else:
                 data[COLUMN_WEIGHTED] = ''
@@ -114,7 +114,7 @@ class Table(QTableWidget):
                 # And recomputing weighted ratins
                 self.compute_final_rating()
         except:
-            errorMessage=QErrorMessage(self)
+            errorMessage = QtWidgets.QErrorMessage(self)
             errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
     
     def addGameRow(self, data, row=None):
@@ -127,20 +127,20 @@ class Table(QTableWidget):
             else:
                 rows = row
 
-            item = QtGui.QTableWidgetItem(data[COLUMN_NAME])
+            item = QtWidgets.QTableWidgetItem(data[COLUMN_NAME])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_NAME), item)
             # system
-            item = QtGui.QTableWidgetItem(data[COLUMN_SYSTEM])
+            item = QtWidgets.QTableWidgetItem(data[COLUMN_SYSTEM])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_SYSTEM), item)
             self.system_list_model.add(data[COLUMN_SYSTEM])
             # date
-            item = QtGui.QTableWidgetItem(data[COLUMN_YEAR])
+            item = QtWidgets.QTableWidgetItem(data[COLUMN_YEAR])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_YEAR), item)
             # rating
-            item = QtGui.QTableWidgetItem(data[COLUMN_RATING])
+            item = QtWidgets.QTableWidgetItem(data[COLUMN_RATING])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_RATING), item)
             # votes
@@ -148,17 +148,17 @@ class Table(QTableWidget):
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_VOTES), item)
             # Weighted rating
-            item = QtGui.QTableWidgetItem(data[COLUMN_WEIGHTED])
+            item = QtWidgets.QTableWidgetItem(data[COLUMN_WEIGHTED])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_WEIGHTED), item)
             # Status
-            item = QtGui.QTableWidgetItem(data[COLUMN_STATUS])
+            item = QtWidgets.QTableWidgetItem(data[COLUMN_STATUS])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_STATUS), item)
-            item.setTextColor(self.status_model.getColor(data[COLUMN_STATUS]))
+            item.setForeground(self.status_model.getColor(data[COLUMN_STATUS]))
             self.status_list_model.add(data[COLUMN_STATUS])
             # labels
-            item = QtGui.QTableWidgetItem('')
+            item = QtWidgets.QTableWidgetItem('')
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers.index(COLUMN_LABELS), item)
             widget = LabelWidget(item, self)
@@ -168,15 +168,15 @@ class Table(QTableWidget):
             for label in new_labels:
                 self.label_list_model.add(label)  
             # Notes
-            item = QtGui.QTableWidgetItem(data[COLUMN_NOTES])
+            item = QtWidgets.QTableWidgetItem(data[COLUMN_NOTES])
             self.setItem(rows, headers.index(COLUMN_NOTES), item)
             # Url
-            item = QtGui.QTableWidgetItem(data[COLUMN_URL])
+            item = QtWidgets.QTableWidgetItem(data[COLUMN_URL])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_URL), item)
             
             # Used to restore the original order
-            item = QtGui.QTableWidgetItem()
+            item = QtWidgets.QTableWidgetItem()
             item.setData(Qt.DisplayRole, self.last_index)
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_ORDER), item)
@@ -249,7 +249,7 @@ class Table(QTableWidget):
                 for row in range(0, self.rowCount()):
                     color = QtGui.QColor()    
                     color.setHsv(all_values[row], 255, 150)
-                    self.item(row, headers.index(column)).setTextColor(color)
+                    self.item(row, headers.index(column)).setForeground(color)
             
             update_colors_column(COLUMN_WEIGHTED)
             update_colors_column(COLUMN_YEAR)
@@ -268,7 +268,7 @@ class Table(QTableWidget):
                 system = self.item(row, headers.index(COLUMN_SYSTEM)).text()
                 color = QtGui.QColor()
                 color.setHsv(step*systems.index(system), 255, 150)
-                self.item(row, headers.index(COLUMN_SYSTEM)).setTextColor(color)
+                self.item(row, headers.index(COLUMN_SYSTEM)).setForeground(color)
         
     def hide_rows(self):
         none = self.label_list_model.get_filtered(LABEL_NONE)
@@ -307,16 +307,16 @@ class Table(QTableWidget):
             date = sdc.getDate()
             if date != None:
                 self.item(row, column).setText(date)
+                self.update_colors()
         elif column == headers.index(COLUMN_STATUS):
             ssc = SelectStatusController(self.item(row, column).text(), self)  
             ssc.exec_()
             status = ssc.getStatus()
             if status != None:
                 self.item(row, column).setText(status)
-                self.item(row, column).setTextColor(self.status_model.getColor(status))
+                self.item(row, column).setForeground(self.status_model.getColor(status))
                 self.status_list_model.add(status)
                 self.status_list_model.remove(ssc.getPreviousStatus())
                 self.hide_rows()
-                self.hide_rows_search()
                 self.changed = True
         

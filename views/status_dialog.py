@@ -3,11 +3,11 @@
 # Form implementation generated from reading ui file 'status_dialog.ui'
 #
 # Created: Sun Jan 29 08:58:27 2017
-#      by: PyQt4 UI code generator 4.11.3
+#      by: PyQt5 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,12 +16,12 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_StatusDialog(object):
     def setupUi(self, StatusDialog):
@@ -32,13 +32,13 @@ class Ui_StatusDialog(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         StatusDialog.setWindowIcon(icon)
-        self.pushButtonOk = QtGui.QPushButton(StatusDialog)
+        self.pushButtonOk = QtWidgets.QPushButton(StatusDialog)
         self.pushButtonOk.setGeometry(QtCore.QRect(10, 40, 75, 23))
         self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
-        self.pushButtonCancel = QtGui.QPushButton(StatusDialog)
+        self.pushButtonCancel = QtWidgets.QPushButton(StatusDialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(90, 40, 75, 23))
         self.pushButtonCancel.setObjectName(_fromUtf8("pushButtonCancel"))
-        self.comboBoxStatus = QtGui.QComboBox(StatusDialog)
+        self.comboBoxStatus = QtWidgets.QComboBox(StatusDialog)
         self.comboBoxStatus.setGeometry(QtCore.QRect(10, 10, 151, 22))
         self.comboBoxStatus.setObjectName(_fromUtf8("comboBoxStatus"))
 

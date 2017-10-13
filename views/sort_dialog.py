@@ -3,11 +3,11 @@
 # Form implementation generated from reading ui file 'sort_dialog.ui'
 #
 # Created: Sun Jan 29 09:01:20 2017
-#      by: PyQt4 UI code generator 4.11.3
+#      by: PyQt5 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,12 +16,12 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_SortDialog(object):
     def setupUi(self, SortDialog):
@@ -32,22 +32,22 @@ class Ui_SortDialog(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         SortDialog.setWindowIcon(icon)
-        self.listView = QtGui.QListView(SortDialog)
+        self.listView = QtWidgets.QListView(SortDialog)
         self.listView.setGeometry(QtCore.QRect(100, 500, 256, 192))
         self.listView.setObjectName(_fromUtf8("listView"))
-        self.sortByList = QtGui.QListView(SortDialog)
+        self.sortByList = QtWidgets.QListView(SortDialog)
         self.sortByList.setGeometry(QtCore.QRect(10, 40, 211, 261))
         self.sortByList.setObjectName(_fromUtf8("sortByList"))
-        self.availableFieldsList = QtGui.QListView(SortDialog)
+        self.availableFieldsList = QtWidgets.QListView(SortDialog)
         self.availableFieldsList.setGeometry(QtCore.QRect(260, 40, 211, 261))
         self.availableFieldsList.setObjectName(_fromUtf8("availableFieldsList"))
-        self.label = QtGui.QLabel(SortDialog)
+        self.label = QtWidgets.QLabel(SortDialog)
         self.label.setGeometry(QtCore.QRect(10, 20, 46, 13))
         self.label.setObjectName(_fromUtf8("label"))
-        self.label_2 = QtGui.QLabel(SortDialog)
+        self.label_2 = QtWidgets.QLabel(SortDialog)
         self.label_2.setGeometry(QtCore.QRect(260, 20, 121, 16))
         self.label_2.setObjectName(_fromUtf8("label_2"))
-        self.pushButtonDown = QtGui.QPushButton(SortDialog)
+        self.pushButtonDown = QtWidgets.QPushButton(SortDialog)
         self.pushButtonDown.setEnabled(False)
         self.pushButtonDown.setGeometry(QtCore.QRect(170, 10, 21, 23))
         self.pushButtonDown.setText(_fromUtf8(""))
@@ -55,7 +55,7 @@ class Ui_SortDialog(object):
         icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_down.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonDown.setIcon(icon1)
         self.pushButtonDown.setObjectName(_fromUtf8("pushButtonDown"))
-        self.pushButtonUp = QtGui.QPushButton(SortDialog)
+        self.pushButtonUp = QtWidgets.QPushButton(SortDialog)
         self.pushButtonUp.setEnabled(False)
         self.pushButtonUp.setGeometry(QtCore.QRect(200, 10, 21, 23))
         self.pushButtonUp.setText(_fromUtf8(""))
@@ -63,7 +63,7 @@ class Ui_SortDialog(object):
         icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_up.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonUp.setIcon(icon2)
         self.pushButtonUp.setObjectName(_fromUtf8("pushButtonUp"))
-        self.pushButtonLeft = QtGui.QPushButton(SortDialog)
+        self.pushButtonLeft = QtWidgets.QPushButton(SortDialog)
         self.pushButtonLeft.setEnabled(False)
         self.pushButtonLeft.setGeometry(QtCore.QRect(230, 120, 21, 23))
         self.pushButtonLeft.setText(_fromUtf8(""))
@@ -71,7 +71,7 @@ class Ui_SortDialog(object):
         icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_left.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonLeft.setIcon(icon3)
         self.pushButtonLeft.setObjectName(_fromUtf8("pushButtonLeft"))
-        self.pushButtonRight = QtGui.QPushButton(SortDialog)
+        self.pushButtonRight = QtWidgets.QPushButton(SortDialog)
         self.pushButtonRight.setEnabled(False)
         self.pushButtonRight.setGeometry(QtCore.QRect(230, 150, 21, 23))
         self.pushButtonRight.setText(_fromUtf8(""))
@@ -79,14 +79,14 @@ class Ui_SortDialog(object):
         icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/arrow_icons/arrow_right.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonRight.setIcon(icon4)
         self.pushButtonRight.setObjectName(_fromUtf8("pushButtonRight"))
-        self.pushButtonCancel = QtGui.QPushButton(SortDialog)
+        self.pushButtonCancel = QtWidgets.QPushButton(SortDialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(390, 310, 75, 23))
         self.pushButtonCancel.setObjectName(_fromUtf8("pushButtonCancel"))
-        self.pushButtonOk = QtGui.QPushButton(SortDialog)
+        self.pushButtonOk = QtWidgets.QPushButton(SortDialog)
         self.pushButtonOk.setEnabled(True)
         self.pushButtonOk.setGeometry(QtCore.QRect(300, 310, 75, 23))
         self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
-        self.pushButtonSort = QtGui.QPushButton(SortDialog)
+        self.pushButtonSort = QtWidgets.QPushButton(SortDialog)
         self.pushButtonSort.setEnabled(False)
         self.pushButtonSort.setGeometry(QtCore.QRect(140, 10, 21, 23))
         self.pushButtonSort.setText(_fromUtf8(""))

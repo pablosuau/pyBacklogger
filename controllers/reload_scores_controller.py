@@ -1,37 +1,39 @@
 from random import randint
 from time import sleep
 import urllib2
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 from lxml.html.soupparser import fromstring
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from models.constants import headers, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_URL
 
-class ReloadScoresController(QtGui.QWidget):
+class ReloadScoresController(QtWidgets.QWidget):
+    progress_signal = QtCore.pyqtSignal(int)
+
     def __init__(self, table, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.table = table
         self.parent = parent
         
     def reload_scores(self):
         indexes = self.table.selectionModel().selectedRows()
         if len(indexes) == 0:
-            error = QErrorMessage()
+            error = QtWidgets.QErrorMessage()
             error.showMessage('No games were selected')
             error.setWindowTitle('Reload scores')
             error.exec_()
         elif len(indexes) > 500:
-            error = QErrorMessage()
+            error = QtWidgets.QErrorMessage()
             error.showMessage('A maximum of 500 games can be selected')
             error.setWindowTitle('Reload scores')
             error.exec_()
         else:
-            self.progress = QProgressDialog("Updating scores", "", 0, len(indexes), self.parent)
+            self.progress = QtWidgets.QProgressDialog("Updating scores", "", 0, len(indexes), self.parent)
             self.progress.setWindowTitle('Reload scores')
             self.progress.setCancelButton(None)
             self.progress.setWindowModality(Qt.WindowModal)
-            self.thread = self.ReloadScoresWorker(self.table, indexes)
-            self.connect(self.thread, QtCore.SIGNAL("update_progress(int)"), self.update_progress)
+            self.thread = self.ReloadScoresWorker(self.table, indexes, self.progress_signal)
+            self.progress_signal.connect(self.update_progress)
             self.progress.setValue(0)
             self.thread.start()
             
@@ -39,12 +41,13 @@ class ReloadScoresController(QtGui.QWidget):
         self.progress.setValue(i+1)
                 
     class ReloadScoresWorker(QtCore.QThread):
-        def __init__(self, table, indexes, parent=None):
+        def __init__(self, table, indexes, progress_signal, parent=None):
             QtCore.QThread.__init__(self, parent)
             self.exiting = False
             self.table = table
             self.indexes = indexes
             self.parent = parent
+            self.progress_signal = progress_signal
         
         def run(self):
             try:
@@ -76,18 +79,18 @@ class ReloadScoresController(QtGui.QWidget):
                         votes = '0'
                     self.table.item(row,headers.index(COLUMN_RATING)).setText(rating)
                     self.table.item(row,headers.index(COLUMN_VOTES)).setText(votes)
-                    self.emit(QtCore.SIGNAL("update_progress(int)"), i)
+                    self.progress_signal.emit(i)
                 self.table.compute_final_rating()
                 self.table.changed = True
                 self.table.update_colors()
             except urllib2.URLError as e:
                 print e.reason   
-                errorMessage=QErrorMessage(self.parent)
+                errorMessage = QtWidgets.QErrorMessage(self.parent)
                 errorMessage.showMessage('Incorrect URL or not Internet connection')
             except urllib2.HTTPError as e:
                 print e.code
                 print e.read() 
-                errorMessage=QErrorMessage(self.parent)
+                errorMessage = QtWidgets.QErrorMessage(self.parent)
                 errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
    
         def __del__(self):

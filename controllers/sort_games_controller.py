@@ -1,11 +1,11 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 from views.sort_dialog import Ui_SortDialog
 import models.constants as constants
 
-class SortGamesController(QtGui.QDialog):
+class SortGamesController(QtWidgets.QDialog):
     # UI and signal setup
     def __init__(self, table, parent):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
        
         self.ui = Ui_SortDialog()
         self.ui.setupUi(self)
@@ -77,7 +77,7 @@ class SortGamesController(QtGui.QDialog):
     def up_down_clicked(self, method):
         index = method(self.ui.sortByList.selectedIndexes()[0])
         self.clear_clicked()
-        self.ui.sortByList.selectionModel().select(index, QtGui.QItemSelectionModel.Select)
+        self.ui.sortByList.selectionModel().select(index, QtCore.QItemSelectionModel.Select)
         self.set_up_down()
         
     def up_clicked(self):
@@ -96,7 +96,7 @@ class SortGamesController(QtGui.QDialog):
             new_order = constants.ORDER_ASCENDING
         order = self.table.sort_list_model.set_sort_order(index, new_order)
         index = self.ui.sortByList.model().createIndex(row, 0)
-        self.ui.sortByList.selectionModel().select(index, QtGui.QItemSelectionModel.Select)
+        self.ui.sortByList.selectionModel().select(index, QtCore.QItemSelectionModel.Select)
         
     def ok_clicked(self):
         self.canceled = False

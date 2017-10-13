@@ -3,11 +3,11 @@
 # Form implementation generated from reading ui file 'main_window.ui'
 #
 # Created: Sun Apr 23 08:37:22 2017
-#      by: PyQt4 UI code generator 4.11.3
+#      by: PyQt5 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,12 +16,12 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -31,14 +31,14 @@ class Ui_MainWindow(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
-        self.verticalLayout = QtGui.QVBoxLayout(MainWindow)
+        self.verticalLayout = QtWidgets.QVBoxLayout(MainWindow)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.horizontalLayout_2 = QtGui.QHBoxLayout()
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.pushButtonAddGame = QtGui.QPushButton(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.pushButtonAddGame = QtWidgets.QPushButton(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButtonAddGame.sizePolicy().hasHeightForWidth())
@@ -51,8 +51,8 @@ class Ui_MainWindow(object):
         self.pushButtonAddGame.setIcon(icon1)
         self.pushButtonAddGame.setObjectName(_fromUtf8("pushButtonAddGame"))
         self.horizontalLayout.addWidget(self.pushButtonAddGame)
-        self.pushButtonRemoveGame = QtGui.QPushButton(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.pushButtonRemoveGame = QtWidgets.QPushButton(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButtonRemoveGame.sizePolicy().hasHeightForWidth())
@@ -65,8 +65,8 @@ class Ui_MainWindow(object):
         self.pushButtonRemoveGame.setIcon(icon2)
         self.pushButtonRemoveGame.setObjectName(_fromUtf8("pushButtonRemoveGame"))
         self.horizontalLayout.addWidget(self.pushButtonRemoveGame)
-        self.pushButtonLoadBacklog = QtGui.QPushButton(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.pushButtonLoadBacklog = QtWidgets.QPushButton(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButtonLoadBacklog.sizePolicy().hasHeightForWidth())
@@ -79,8 +79,8 @@ class Ui_MainWindow(object):
         self.pushButtonLoadBacklog.setIcon(icon3)
         self.pushButtonLoadBacklog.setObjectName(_fromUtf8("pushButtonLoadBacklog"))
         self.horizontalLayout.addWidget(self.pushButtonLoadBacklog)
-        self.pushButtonSaveBacklog = QtGui.QPushButton(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.pushButtonSaveBacklog = QtWidgets.QPushButton(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButtonSaveBacklog.sizePolicy().hasHeightForWidth())
@@ -93,9 +93,9 @@ class Ui_MainWindow(object):
         self.pushButtonSaveBacklog.setIcon(icon4)
         self.pushButtonSaveBacklog.setObjectName(_fromUtf8("pushButtonSaveBacklog"))
         self.horizontalLayout.addWidget(self.pushButtonSaveBacklog)
-        self.pushButtonReloadScores = QtGui.QPushButton(MainWindow)
+        self.pushButtonReloadScores = QtWidgets.QPushButton(MainWindow)
         self.pushButtonReloadScores.setEnabled(True)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButtonReloadScores.sizePolicy().hasHeightForWidth())
@@ -108,8 +108,8 @@ class Ui_MainWindow(object):
         self.pushButtonReloadScores.setIcon(icon5)
         self.pushButtonReloadScores.setObjectName(_fromUtf8("pushButtonReloadScores"))
         self.horizontalLayout.addWidget(self.pushButtonReloadScores)
-        self.pushButtonSortData = QtGui.QPushButton(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.pushButtonSortData = QtWidgets.QPushButton(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButtonSortData.sizePolicy().hasHeightForWidth())
@@ -124,8 +124,8 @@ class Ui_MainWindow(object):
         self.pushButtonSortData.setChecked(False)
         self.pushButtonSortData.setObjectName(_fromUtf8("pushButtonSortData"))
         self.horizontalLayout.addWidget(self.pushButtonSortData)
-        self.pushButtonStatistics = QtGui.QPushButton(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.pushButtonStatistics = QtWidgets.QPushButton(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButtonStatistics.sizePolicy().hasHeightForWidth())
@@ -138,8 +138,8 @@ class Ui_MainWindow(object):
         self.pushButtonStatistics.setIcon(icon7)
         self.pushButtonStatistics.setObjectName(_fromUtf8("pushButtonStatistics"))
         self.horizontalLayout.addWidget(self.pushButtonStatistics)
-        self.pushButtonFilterData = QtGui.QPushButton(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.pushButtonFilterData = QtWidgets.QPushButton(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButtonFilterData.sizePolicy().hasHeightForWidth())
@@ -153,8 +153,8 @@ class Ui_MainWindow(object):
         self.pushButtonFilterData.setCheckable(True)
         self.pushButtonFilterData.setObjectName(_fromUtf8("pushButtonFilterData"))
         self.horizontalLayout.addWidget(self.pushButtonFilterData)
-        self.label = QtGui.QLabel(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Preferred)
+        self.label = QtWidgets.QLabel(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
@@ -163,8 +163,8 @@ class Ui_MainWindow(object):
         self.label.setMaximumSize(QtCore.QSize(46, 13))
         self.label.setObjectName(_fromUtf8("label"))
         self.horizontalLayout.addWidget(self.label)
-        self.lineEditSearchGame = QtGui.QLineEdit(MainWindow)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        self.lineEditSearchGame = QtWidgets.QLineEdit(MainWindow)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lineEditSearchGame.sizePolicy().hasHeightForWidth())
@@ -174,7 +174,7 @@ class Ui_MainWindow(object):
         self.lineEditSearchGame.setObjectName(_fromUtf8("lineEditSearchGame"))
         self.horizontalLayout.addWidget(self.lineEditSearchGame)
         self.horizontalLayout_2.addLayout(self.horizontalLayout)
-        spacerItem = QtGui.QSpacerItem(208, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(208, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.table = Table(MainWindow)

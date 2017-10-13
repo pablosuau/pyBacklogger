@@ -1,4 +1,4 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 import re
 import urllib2
 from views.add_game_dialog import Ui_AddGameDialog
@@ -6,10 +6,14 @@ from controllers.search_results_controller import *
 from util import util
 from models.constants import SEARCH_URL, GAMEFAQS_URL
 
-class AddGameController(QtGui.QDialog):
+
+class AddGameController(QtWidgets.QDialog):
+
+    htmlRead = QtCore.pyqtSignal(str)
+
     # UI and signal setup
     def __init__(self, table, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_AddGameDialog()
         self.ui.setupUi(self)
         
@@ -24,6 +28,7 @@ class AddGameController(QtGui.QDialog):
         self.ui.pushButtonOk.clicked.connect(self.okClicked)
         self.ui.pushButtonCancel.clicked.connect(self.cancelClicked)
         self.ui.lineEditSearch.textChanged.connect(self.textChanged)
+        self.htmlRead.connect(self.updateAddGame)
         
     # Signal slots 
     def okClicked(self):
@@ -60,12 +65,11 @@ class AddGameController(QtGui.QDialog):
             self.launchAddGameWorker()
                 
     def launchAddGameWorker(self):
-        self.progress = QtGui.QProgressDialog("Adding game", "", 0, 0, self)
+        self.progress = QtWidgets.QProgressDialog("Adding game", "", 0, 0, self)
         self.progress.setCancelButton(None)
         self.progress.setWindowModality(QtCore.Qt.WindowModal)
         self.progress.show()
-        self.thread = self.AddGameWorker(self.url, self.table)
-        self.connect(self.thread, QtCore.SIGNAL("htmlRead(QString)"), self.updateAddGame)
+        self.thread = self.AddGameWorker(self.url, self.htmlRead, self.table)  
         self.thread.start()
     
     def updateAddGame(self, html):
@@ -92,6 +96,7 @@ class AddGameController(QtGui.QDialog):
             src = SearchResultsController(html, parent=self)
             src.exec_()
             selected = src.get_search_results()
+            print(selected)
             if len(selected) > 0:
                 self.add_by_url = True
                 self.pending_selected = selected
@@ -102,17 +107,18 @@ class AddGameController(QtGui.QDialog):
                 self.launchAddGameWorker()
 
     class AddGameWorker(QtCore.QThread):
-        def __init__(self, url, parent=None):
+        def __init__(self, url, htmlRead, parent=None):
             QtCore.QThread.__init__(self, parent)
             self.exiting = False
             self.url = url
+            self.htmlRead = htmlRead
         
         def run(self):
             try:
                 req = urllib2.Request(self.url, headers={'User-Agent' : "Magic Browser"}) 
                 response = urllib2.urlopen(req)
                 self.html = response.read().decode('ascii','ignore')
-                self.emit(QtCore.SIGNAL("htmlRead(QString)"), self.html)
+                self.htmlRead.emit(self.html)
             except urllib2.URLError as e:
                 print e.reason   
                 util.showErrorMessage(self.parent(), 'Incorrect URL or not Internet connection')

@@ -1,9 +1,9 @@
-from PyQt4 import QtGui, QtCore, Qt
+from PyQt5 import QtGui, QtCore, Qt, QtWidgets
 from views.filter_dialog import Ui_FilterDialog
 
-class FilterGamesController(QtGui.QDialog):
+class FilterGamesController(QtWidgets.QDialog):
     def __init__(self, table, parent = None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_FilterDialog()
         self.ui.setupUi(self)
         

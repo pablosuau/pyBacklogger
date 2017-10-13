@@ -1,14 +1,14 @@
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from lxml.html.soupparser import fromstring
 from views.search_results_dialog import Ui_SearchResultsDialog
 from models.constants import GAMEFAQS_URL
 
-class SearchResultsController(QtGui.QDialog):
+class SearchResultsController(QtWidgets.QDialog):
     # UI and signal setup
     def __init__(self, html, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.ui = Ui_SearchResultsDialog()
         self.ui.setupUi(self)
         
