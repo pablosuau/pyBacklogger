@@ -280,10 +280,11 @@ class Table(QtWidgets.QTableWidget):
              if not filtered_out:
                  labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
                  filtered_out = none and len(labels_row) == 0
-                 i = 0                          
-                 while not filtered_out and i<len(labels_row):
-                     filtered_out = self.label_list_model.get_filtered(labels_row[i])
-                     i = i + 1
+                 if not filtered_out and len(labels_row) > 0:
+                    filtered_list = []
+                    for i in range(len(labels_row)):
+                        filtered_list.append(self.label_list_model.get_filtered(labels_row[i]))
+                    filtered_out = all(filtered_list)
                  filtered_out = filtered_out or self.system_list_model.get_filtered(self.item(row, headers.index(COLUMN_SYSTEM)).text())
                  filtered_out = filtered_out or self.status_list_model.get_filtered(self.item(row, headers.index(COLUMN_STATUS)).text())
              self.setRowHidden(row, filtered_out)
