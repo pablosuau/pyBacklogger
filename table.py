@@ -303,12 +303,14 @@ class Table(QtWidgets.QTableWidget):
         column = tableItem.column()        
         
         if column == headers.index(COLUMN_YEAR):
-            sdc = SelectDateController(self.item(row, column).text(), self)
+            year = self.item(row, column).text()
+            sdc = SelectDateController(year, self)
             sdc.exec_()
             date = sdc.getDate()
             if date != None:
                 self.item(row, column).setText(date)
                 self.update_colors()
+                self.changed = year != date
         elif column == headers.index(COLUMN_STATUS):
             ssc = SelectStatusController(self.item(row, column).text(), self)  
             ssc.exec_()
