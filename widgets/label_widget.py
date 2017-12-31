@@ -62,7 +62,7 @@ class LabelWidget(QtWidgets.QWidget):
         text, ok = QtWidgets.QInputDialog.getText(self, 'Labels', 'Enter labels (comma-separated)', QtWidgets.QLineEdit.Normal, labels)        
         if ok:
             self.stringToLabels(text)
-
+            self.father.changed = text != labels
         
         QtWidgets.qApp.processEvents() # this line makes the labels to be
                                    # painted before resizing the table's
