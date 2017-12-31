@@ -50,7 +50,8 @@ class MainWindowController(QtWidgets.QWidget):
         if len(indexes) > 0:
             actual_indexes = []
             for index in sorted(indexes):
-                actual_indexes.append(index.row())
+                if not self.table.isRowHidden(index.row()):
+                    actual_indexes.append(index.row())
             names = []
             systems = []
             for i in actual_indexes:
