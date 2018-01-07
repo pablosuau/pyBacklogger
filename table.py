@@ -20,8 +20,6 @@ class NumericWidgetItem(QtWidgets.QTableWidgetItem):
 
 class Table(QtWidgets.QTableWidget):
     def initialize(self, *args):
-        self.clicked.connect(self.cellClicked)
-        
         self.setRowCount(0)
         self.setColumnCount(len(headers_extended))
         
@@ -51,6 +49,10 @@ class Table(QtWidgets.QTableWidget):
         self.sort_list_model = SortListModel()
         
         self.last_index = 0
+
+        # Callbacks
+        self.clicked.connect(self.cellIsClicked)
+        self.cellChanged.connect(self.cellIsChanged)
         
     def setmydata(self, data): 
         horHeaders = []
@@ -181,8 +183,6 @@ class Table(QtWidgets.QTableWidget):
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_ORDER), item)
             self.last_index = self.last_index + 1
-            
-            self.changed = True
         
     def getGameData(self, row):
         data = dict()
@@ -297,27 +297,29 @@ class Table(QtWidgets.QTableWidget):
         self.setVisible(False)
         self.resizeColumnsToContents()
         self.setVisible(True)
-        
-    def cellClicked(self, tableItem):
-        row = tableItem.row()
-        column = tableItem.column()        
-        
-        if column == headers.index(COLUMN_YEAR):
-            sdc = SelectDateController(self.item(row, column).text(), self)
-            sdc.exec_()
-            date = sdc.getDate()
-            if date != None:
-                self.item(row, column).setText(date)
-                self.update_colors()
-        elif column == headers.index(COLUMN_STATUS):
-            ssc = SelectStatusController(self.item(row, column).text(), self)  
-            ssc.exec_()
-            status = ssc.getStatus()
-            if status != None:
-                self.item(row, column).setText(status)
-                self.item(row, column).setForeground(self.status_model.getColor(status))
-                self.status_list_model.add(status)
-                self.status_list_model.remove(ssc.getPreviousStatus())
-                self.hide_rows()
-                self.changed = True
+
+    def cellIsClicked(self, tableItem):
+            row = tableItem.row()
+            column = tableItem.column()        
+            
+            if column == headers.index(COLUMN_YEAR):
+                sdc = SelectDateController(self.item(row, column).text(), self)
+                sdc.exec_()
+                date = sdc.getDate()
+                if date != None:
+                    self.item(row, column).setText(date)
+                    self.update_colors()
+            elif column == headers.index(COLUMN_STATUS):
+                ssc = SelectStatusController(self.item(row, column).text(), self)  
+                ssc.exec_()
+                status = ssc.getStatus()
+                if status != None:
+                    self.item(row, column).setText(status)
+                    self.item(row, column).setForeground(self.status_model.getColor(status))
+                    self.status_list_model.add(status)
+                    self.status_list_model.remove(ssc.getPreviousStatus())
+                    self.hide_rows()
+
+    def cellIsChanged(self, row, col):
+        self.changed = True
         
