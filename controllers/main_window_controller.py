@@ -120,11 +120,10 @@ class MainWindowController(QtWidgets.QWidget):
                         self.table.addGameRow(row_dict, i)
                         progress.setValue(i+1)
                         i = i + 1
+                    self.table.resizeColumns()
+                    self.table.update_colors()
                     self.table.changed = False
                     self.table.loading = False
-                    self.table.resizeColumns()
-        
-        self.table.update_colors()
     
     def save_backlog_clicked(self):
         if not self.checkEmpty():
@@ -150,11 +149,11 @@ class MainWindowController(QtWidgets.QWidget):
                             data_list.append(str(data[h]).encode('utf-8'))
                         writer.writerows([data_list])
                         progress.setValue(i+1)
-                    self.table.changed = False
                     
                     sgc = SortGamesController(self.table, self)
                     sgc.canceled = False
                     sgc.applySorting()
+                    self.table.changed = False
     
     def reload_scores_clicked(self):
         if not self.checkEmpty():
