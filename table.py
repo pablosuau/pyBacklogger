@@ -11,50 +11,53 @@ import numpy as np
 from models.filter_list_model import FilterListModel
 from models.status_model import StatusModel
 from models.sort_list_model import SortListModel
-from models.constants import headers, headers_extended, LABEL_NONE, COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER
+from models.constants import headers, headers_extended, LABEL_NONE, COLUMN_NAME, \
+                             COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, \
+                             COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, \
+                             COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER
 
 class NumericWidgetItem(QtWidgets.QTableWidgetItem):
     def __lt__(self, other):
-        return (float(str(self.text()).encode('ascii','ignore')) <
-                float(str(other.text()).encode('ascii','ignore')))
+        return (float(str(self.text()).encode('ascii', 'ignore')) <
+                float(str(other.text()).encode('ascii', 'ignore')))
 
 class Table(QtWidgets.QTableWidget):
     def initialize(self, *args):
         self.setRowCount(0)
         self.setColumnCount(len(headers_extended))
-        
+
         self.setHorizontalHeaderLabels(headers_extended)
         font = QFont()
         font.setBold(True)
         font.setPointSize(11)
-        self.horizontalHeader().setFont(font)  
-        
+        self.horizontalHeader().setFont(font)
+
         self.setColumnHidden(headers_extended.index(COLUMN_ORDER), True)
-        
+
         # Weighted rating initialization
         self.minimum = 100
         # Scrollbar policy
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        
+
         self.changed = False
         self.loading = False
         self.search_string = ''
-        
+
         # Models initialization
         self.system_list_model = FilterListModel()
         self.label_list_model = FilterListModel(LABEL_NONE)
         self.status_list_model = FilterListModel()
         self.status_model = StatusModel()
         self.sort_list_model = SortListModel()
-        
+
         self.last_index = 0
 
         # Callbacks
         self.clicked.connect(self.cellIsClicked)
         self.cellChanged.connect(self.cellIsChanged)
-        
-    def setmydata(self, data): 
+
+    def setmydata(self, data):
         horHeaders = []
         for n, key in enumerate(sorted(self.data.keys())):
             horHeaders.append(key)
@@ -62,7 +65,7 @@ class Table(QtWidgets.QTableWidget):
                 newitem = QTableWidgetItem(item)
                 self.setItem(m, n, newitem)
         self.setHorizontalHeaderLabels(horHeaders)
-        
+
     def addGame(self, url, html):
         try:
             doc = fromstring(html)
@@ -82,7 +85,7 @@ class Table(QtWidgets.QTableWidget):
             data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', year).group()
             # Rating, votes and final rating
             el = doc.xpath("//fieldset[@id='js_mygames_rate']")
-            if len(el)>0:
+            if len(el) > 0:
                 rating_str = el[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
                 if rating_str == None:
                     data[COLUMN_RATING] = '0.00'
@@ -90,7 +93,7 @@ class Table(QtWidgets.QTableWidget):
                 else:
                     data[COLUMN_RATING] = rating_str.split(' / ')[0]
                     votes_str = el[0].getchildren()[0].getchildren()[0].getchildren()[2].text
-                    data[COLUMN_VOTES] = votes_str.split(' ')[0]   
+                    data[COLUMN_VOTES] = votes_str.split(' ')[0]
             else:
                 data[COLUMN_RATING] = '0.00'
                 data[COLUMN_VOTES] = '0'
@@ -99,13 +102,15 @@ class Table(QtWidgets.QTableWidget):
             found = False
             pos = 0
             while not found and pos < rows:
-                if self.item(pos,headers.index(COLUMN_URL)).text() == url:
+                if self.item(pos, headers.index(COLUMN_URL)).text() == url:
                     found = True
                 pos = pos + 1
-        
+
             if found:
                 errorMessage = QtWidgets.QErrorMessage(self)
-                errorMessage.showMessage(data[COLUMN_NAME] + ' (' + data[COLUMN_SYSTEM] + ') is already in the database')
+                errorMessage.showMessage(data[COLUMN_NAME] + ' (' +
+                                         data[COLUMN_SYSTEM] +
+                                         ') is already in the database')
             else:
                 data[COLUMN_WEIGHTED] = ''
                 data[COLUMN_STATUS] = 'unplayed'
@@ -117,8 +122,9 @@ class Table(QtWidgets.QTableWidget):
                 self.compute_final_rating()
         except:
             errorMessage = QtWidgets.QErrorMessage(self)
-            errorMessage.showMessage('The URL ' + url + ' does not seem to be a valid game entry on GameFAQs')
-    
+            errorMessage.showMessage('The URL ' + url +
+                                     ' does not seem to be a valid game entry on GameFAQs')
+
     def addGameRow(self, data, row=None):
             # Adding the row, and disabling some of the fields, so
             # they can not be edited
@@ -168,7 +174,7 @@ class Table(QtWidgets.QTableWidget):
             self.setCellWidget(rows, headers_extended.index(COLUMN_LABELS), widget)
             new_labels = widget.getLabels()
             for label in new_labels:
-                self.label_list_model.add(label)  
+                self.label_list_model.add(label)
             # Notes
             item = QtWidgets.QTableWidgetItem(data[COLUMN_NOTES])
             self.setItem(rows, headers.index(COLUMN_NOTES), item)
@@ -176,45 +182,47 @@ class Table(QtWidgets.QTableWidget):
             item = QtWidgets.QTableWidgetItem(data[COLUMN_URL])
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_URL), item)
-            
+
             # Used to restore the original order
             item = QtWidgets.QTableWidgetItem()
             item.setData(Qt.DisplayRole, self.last_index)
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.setItem(rows, headers_extended.index(COLUMN_ORDER), item)
             self.last_index = self.last_index + 1
-        
+
     def getGameData(self, row):
         data = dict()
         data[COLUMN_NAME] = self.item(row, headers.index(COLUMN_NAME)).text()
-        data[COLUMN_SYSTEM] = self.item(row,headers.index(COLUMN_SYSTEM)).text()
-        data[COLUMN_YEAR] = self.item(row,headers.index(COLUMN_YEAR)).text()
-        data[COLUMN_RATING] = self.item(row,headers.index(COLUMN_RATING)).text()
-        data[COLUMN_VOTES] = self.item(row,headers.index(COLUMN_VOTES)).text()
-        data[COLUMN_WEIGHTED] = self.item(row,headers.index(COLUMN_WEIGHTED)).text()
+        data[COLUMN_SYSTEM] = self.item(row, headers.index(COLUMN_SYSTEM)).text()
+        data[COLUMN_YEAR] = self.item(row, headers.index(COLUMN_YEAR)).text()
+        data[COLUMN_RATING] = self.item(row, headers.index(COLUMN_RATING)).text()
+        data[COLUMN_VOTES] = self.item(row, headers.index(COLUMN_VOTES)).text()
+        data[COLUMN_WEIGHTED] = self.item(row, headers.index(COLUMN_WEIGHTED)).text()
         data[COLUMN_STATUS] = self.item(row, headers.index(COLUMN_STATUS)).text()
-        data[COLUMN_LABELS] = self.cellWidget(row,headers.index(COLUMN_LABELS)).labelsToString()
-        data[COLUMN_NOTES] = self.item(row,headers.index(COLUMN_NOTES)).text()
-        data[COLUMN_URL] = self.item(row,headers.index(COLUMN_URL)).text()
-                 
+        data[COLUMN_LABELS] = self.cellWidget(row, headers.index(COLUMN_LABELS)).labelsToString()
+        data[COLUMN_NOTES] = self.item(row, headers.index(COLUMN_NOTES)).text()
+        data[COLUMN_URL] = self.item(row, headers.index(COLUMN_URL)).text()
+
         return data
-        
+
     def compute_final_rating(self):
         rows = self.rowCount()
         # Computing the mean
         ratings_i = []
         votes_i = []
-        for i in range(0,rows):
-            ratings_i.append(float(self.item(i,headers.index(COLUMN_RATING)).text()))
-            votes_i.append(float(self.item(i,headers.index(COLUMN_VOTES)).text()))
+        for i in range(0, rows):
+            ratings_i.append(float(self.item(i, headers.index(COLUMN_RATING)).text()))
+            votes_i.append(float(self.item(i, headers.index(COLUMN_VOTES)).text()))
         ratings_i = np.array(ratings_i)
         votes_i = np.array(votes_i)
-        non_zeros = np.where(votes_i != 0)[0]  
+        non_zeros = np.where(votes_i != 0)[0]
         mean = np.mean(ratings_i[non_zeros])
 
         wr = np.zeros((rows))
-        wr[non_zeros] = (votes_i[non_zeros]/(votes_i[non_zeros] + self.minimum))*ratings_i[non_zeros]
-        wr[non_zeros] = wr[non_zeros] + (self.minimum / (votes_i[non_zeros] + self.minimum))*mean
+        wr[non_zeros] = (votes_i[non_zeros]/(votes_i[non_zeros] +
+                        self.minimum))*ratings_i[non_zeros]
+        wr[non_zeros] = wr[non_zeros] + (self.minimum /
+                        (votes_i[non_zeros] + self.minimum))*mean
         
         wr_str = np.zeros((rows),dtype='S4')
         wr_str[non_zeros] = ["%.2f" % x for x in wr[non_zeros]]
