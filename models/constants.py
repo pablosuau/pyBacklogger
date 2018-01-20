@@ -17,7 +17,10 @@ COLUMN_ORDER = 'Order'
 
 LABEL_NONE = '---None---'
 
-headers = [COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL]
+headers = [
+	   COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES,
+	   COLUMN_WEIGHTED, COLUMN_STATUS, COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL
+]
 headers_extended = headers[:]
 headers_extended.append(COLUMN_ORDER)
 
@@ -31,9 +34,9 @@ FILTERED = 'filtered'
 COUNT = 'count'
 
 OPTIONS = {
-            'unplayed':  QtGui.QColor(155,0,0),
-            'playing':   QtGui.QColor(0,0,155),
-            'played':    QtGui.QColor(255,155,0),
-            'completed': QtGui.QColor(0,155,0),
-            'shelved':   QtGui.QColor(120,155,0)
+    'unplayed':  QtGui.QColor(155, 0, 0),
+    'playing':   QtGui.QColor(0, 0, 155),
+    'played':    QtGui.QColor(255, 155, 0),
+    'completed': QtGui.QColor(0, 155, 0),
+    'shelved':   QtGui.QColor(120, 155, 0)
 }
