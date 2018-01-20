@@ -126,69 +126,69 @@ class Table(QtWidgets.QTableWidget):
                                      ' does not seem to be a valid game entry on GameFAQs')
 
     def addGameRow(self, data, row=None):
-            # Adding the row, and disabling some of the fields, so
-            # they can not be edited
-            # name
-            if row == None:
-                rows = self.rowCount()
-                self.setRowCount(rows + 1)
-            else:
-                rows = row
+        # Adding the row, and disabling some of the fields, so
+        # they can not be edited
+        # name
+        if row == None:
+            rows = self.rowCount()
+            self.setRowCount(rows + 1)
+        else:
+            rows = row
 
-            item = QtWidgets.QTableWidgetItem(data[COLUMN_NAME])
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(COLUMN_NAME), item)
-            # system
-            item = QtWidgets.QTableWidgetItem(data[COLUMN_SYSTEM])
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(COLUMN_SYSTEM), item)
-            self.system_list_model.add(data[COLUMN_SYSTEM])
-            # date
-            item = QtWidgets.QTableWidgetItem(data[COLUMN_YEAR])
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(COLUMN_YEAR), item)
-            # rating
-            item = QtWidgets.QTableWidgetItem(data[COLUMN_RATING])
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(COLUMN_RATING), item)
-            # votes
-            item = NumericWidgetItem(data[COLUMN_VOTES])
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(COLUMN_VOTES), item)
-            # Weighted rating
-            item = QtWidgets.QTableWidgetItem(data[COLUMN_WEIGHTED])
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(COLUMN_WEIGHTED), item)
-            # Status
-            item = QtWidgets.QTableWidgetItem(data[COLUMN_STATUS])
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(COLUMN_STATUS), item)
-            item.setForeground(self.status_model.getColor(data[COLUMN_STATUS]))
-            self.status_list_model.add(data[COLUMN_STATUS])
-            # labels
-            item = QtWidgets.QTableWidgetItem('')
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers.index(COLUMN_LABELS), item)
-            widget = LabelWidget(item, self)
-            widget.stringToLabels(data[COLUMN_LABELS])
-            self.setCellWidget(rows, headers_extended.index(COLUMN_LABELS), widget)
-            new_labels = widget.getLabels()
-            for label in new_labels:
-                self.label_list_model.add(label)
-            # Notes
-            item = QtWidgets.QTableWidgetItem(data[COLUMN_NOTES])
-            self.setItem(rows, headers.index(COLUMN_NOTES), item)
-            # Url
-            item = QtWidgets.QTableWidgetItem(data[COLUMN_URL])
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(COLUMN_URL), item)
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_NAME])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_NAME), item)
+        # system
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_SYSTEM])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_SYSTEM), item)
+        self.system_list_model.add(data[COLUMN_SYSTEM])
+        # date
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_YEAR])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_YEAR), item)
+        # rating
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_RATING])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_RATING), item)
+        # votes
+        item = NumericWidgetItem(data[COLUMN_VOTES])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_VOTES), item)
+        # Weighted rating
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_WEIGHTED])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_WEIGHTED), item)
+        # Status
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_STATUS])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_STATUS), item)
+        item.setForeground(self.status_model.getColor(data[COLUMN_STATUS]))
+        self.status_list_model.add(data[COLUMN_STATUS])
+        # labels
+        item = QtWidgets.QTableWidgetItem('')
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers.index(COLUMN_LABELS), item)
+        widget = LabelWidget(item, self)
+        widget.stringToLabels(data[COLUMN_LABELS])
+        self.setCellWidget(rows, headers_extended.index(COLUMN_LABELS), widget)
+        new_labels = widget.getLabels()
+        for label in new_labels:
+            self.label_list_model.add(label)
+        # Notes
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_NOTES])
+        self.setItem(rows, headers.index(COLUMN_NOTES), item)
+        # Url
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_URL])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_URL), item)
 
-            # Used to restore the original order
-            item = QtWidgets.QTableWidgetItem()
-            item.setData(Qt.DisplayRole, self.last_index)
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(COLUMN_ORDER), item)
-            self.last_index = self.last_index + 1
+        # Used to restore the original order
+        item = QtWidgets.QTableWidgetItem()
+        item.setData(Qt.DisplayRole, self.last_index)
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_ORDER), item)
+        self.last_index = self.last_index + 1
 
     def getGameData(self, row):
         data = dict()
@@ -219,17 +219,16 @@ class Table(QtWidgets.QTableWidget):
         mean = np.mean(ratings_i[non_zeros])
 
         wr = np.zeros((rows))
-        wr[non_zeros] = (votes_i[non_zeros]/(votes_i[non_zeros] +
+        wr[non_zeros] = (votes_i[non_zeros]/(votes_i[non_zeros] + \
                         self.minimum))*ratings_i[non_zeros]
-        wr[non_zeros] = wr[non_zeros] + (self.minimum /
-                        (votes_i[non_zeros] + self.minimum))*mean
-        
-        wr_str = np.zeros((rows),dtype='S4')
+        wr[non_zeros] = wr[non_zeros] + (self.minimum / (votes_i[non_zeros] + self.minimum))*mean
+
+        wr_str = np.zeros((rows), dtype='S4')
         wr_str[non_zeros] = ["%.2f" % x for x in wr[non_zeros]]
         # Computing the weighted rating for all the games again
-        for i in range(0,rows):
+        for i in range(0, rows):
             self.item(i, headers.index(COLUMN_WEIGHTED)).setText(wr_str[i])
-            
+
     def update_colors(self):
         if self.rowCount() > 1:
             # Gradient color for the year, rating, votes and weighted columns
@@ -253,17 +252,17 @@ class Table(QtWidgets.QTableWidget):
                     all_values = 100*(all_values - min_value)/(max_value - min_value)
                 else:
                     all_values = 0*all_values
-                all_values[indices] = 0        
+                all_values[indices] = 0
                 for row in range(0, self.rowCount()):
-                    color = QtGui.QColor()    
+                    color = QtGui.QColor()
                     color.setHsv(all_values[row], 255, 150)
                     self.item(row, headers.index(column)).setForeground(color)
-            
+
             update_colors_column(COLUMN_WEIGHTED)
             update_colors_column(COLUMN_YEAR)
             update_colors_column(COLUMN_VOTES)
             update_colors_column(COLUMN_RATING)
-            
+
             # Colour code for different systems
             systems = []
             for row in range(0, self.rowCount()):
@@ -277,57 +276,60 @@ class Table(QtWidgets.QTableWidget):
                 color = QtGui.QColor()
                 color.setHsv(step*systems.index(system), 255, 150)
                 self.item(row, headers.index(COLUMN_SYSTEM)).setForeground(color)
-        
+
     def hide_rows(self):
         none = self.label_list_model.get_filtered(LABEL_NONE)
-        for row in range(0,self.rowCount()):
-             filtered_out = False
-             if self.search_string != '':
-                 item_text = str(self.item(row, headers.index(COLUMN_NAME)).text()).lower()
-                 filtered_out = not self.search_string in item_text
-             if not filtered_out:
-                 labels_row = self.cellWidget(row,headers.index(COLUMN_LABELS)).getLabels()
-                 filtered_out = none and len(labels_row) == 0
-                 if not filtered_out and len(labels_row) > 0:
+        for row in range(0, self.rowCount()):
+            filtered_out = False
+            if self.search_string != '':
+                item_text = str(self.item(row, headers.index(COLUMN_NAME)).text()).lower()
+                filtered_out = not self.search_string in item_text
+            if not filtered_out:
+                labels_row = self.cellWidget(row, headers.index(COLUMN_LABELS)).getLabels()
+                filtered_out = none and len(labels_row) == 0
+                if not filtered_out and len(labels_row) > 0:
                     filtered_list = []
                     for i in range(len(labels_row)):
                         filtered_list.append(self.label_list_model.get_filtered(labels_row[i]))
                     filtered_out = all(filtered_list)
-                 filtered_out = filtered_out or self.system_list_model.get_filtered(self.item(row, headers.index(COLUMN_SYSTEM)).text())
-                 filtered_out = filtered_out or self.status_list_model.get_filtered(self.item(row, headers.index(COLUMN_STATUS)).text())
-             self.setRowHidden(row, filtered_out)
+                filtered_out = filtered_out or \
+                               self.system_list_model.get_filtered(
+                                   self.item(row, headers.index(COLUMN_SYSTEM)).text())
+                filtered_out = filtered_out or \
+                               self.status_list_model.get_filtered(
+                                   self.item(row, headers.index(COLUMN_STATUS)).text())
+            self.setRowHidden(row, filtered_out)
 
     def show_all_rows(self):
         for row in range(0, self.rowCount()):
             self.setRowHidden(row, False)
-        
+
     def resizeColumns(self):
         self.setVisible(False)
         self.resizeColumnsToContents()
         self.setVisible(True)
 
     def cellIsClicked(self, tableItem):
-            row = tableItem.row()
-            column = tableItem.column()        
-            
-            if column == headers.index(COLUMN_YEAR):
-                sdc = SelectDateController(self.item(row, column).text(), self)
-                sdc.exec_()
-                date = sdc.getDate()
-                if date != None:
-                    self.item(row, column).setText(date)
-                    self.update_colors()
-            elif column == headers.index(COLUMN_STATUS):
-                ssc = SelectStatusController(self.item(row, column).text(), self)  
-                ssc.exec_()
-                status = ssc.getStatus()
-                if status != None:
-                    self.item(row, column).setText(status)
-                    self.item(row, column).setForeground(self.status_model.getColor(status))
-                    self.status_list_model.add(status)
-                    self.status_list_model.remove(ssc.getPreviousStatus())
-                    self.hide_rows()
+        row = tableItem.row()
+        column = tableItem.column()
+
+        if column == headers.index(COLUMN_YEAR):
+            sdc = SelectDateController(self.item(row, column).text(), self)
+            sdc.exec_()
+            date = sdc.getDate()
+            if date != None:
+                self.item(row, column).setText(date)
+                self.update_colors()
+        elif column == headers.index(COLUMN_STATUS):
+            ssc = SelectStatusController(self.item(row, column).text(), self)
+            ssc.exec_()
+            status = ssc.getStatus()
+            if status != None:
+                self.item(row, column).setText(status)
+                self.item(row, column).setForeground(self.status_model.getColor(status))
+                self.status_list_model.add(status)
+                self.status_list_model.remove(ssc.getPreviousStatus())
+                self.hide_rows()
 
     def cellIsChanged(self, row, col):
         self.changed = True
-        
