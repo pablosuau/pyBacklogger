@@ -1,9 +1,16 @@
+'''
+Main entry point of the pyBacklogger application.
+'''
+
 import sys
-from controllers.main_window_controller import *
-from PyQt5 import QtWidgets
+from controllers.main_window_controller import MainWindowController
+from PyQt5.QtWidgets import QApplication
 
 def start_up_app():
-    app = QtWidgets.QApplication(sys.argv)
+    '''
+    Launches the application's GUI.
+    '''
+    app = QApplication(sys.argv)
 
     main = MainWindowController()
     main.show()
