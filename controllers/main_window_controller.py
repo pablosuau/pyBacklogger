@@ -77,10 +77,10 @@ class MainWindowController(QtWidgets.QWidget):
                     status = self.table.getGameData(actual_indexes[i])[COLUMN_STATUS]
                     labels = self.table.cellWidget(
                         actual_indexes[i], headers.index(COLUMN_LABELS)).getLabels()
-                    self.table.system_list_model.remove(system)
-                    self.table.status_list_model.remove(status)
+                    self.table.models['system_list_model'].remove(system)
+                    self.table.models['status_list_model'].remove(status)
                     for label in labels:
-                        self.table.label_list_model.remove(label)
+                        self.table.models['label_list_model'].remove(label)
                     self.table.removeRow(actual_indexes[i])
                     progress.setValue(len(actual_indexes) - i)
                 self.table.changed = True
@@ -221,13 +221,13 @@ class MainWindowController(QtWidgets.QWidget):
         self.ui.pushButtonFilterData.setChecked(False)
         self.ui.lineEditSearchGame.setText('')
 
-        self.table.system_list_model.clear_filtered()
-        self.table.status_list_model.clear_filtered()
-        self.table.label_list_model.clear_filtered()
+        self.table.models['system_list_model'].clear_filtered()
+        self.table.models['status_list_model'].clear_filtered()
+        self.table.models['label_list_model'].clear_filtered()
 
         self.table.show_all_rows()
 
     def set_original_order(self):
-        self.table.sort_list_model.clear()
+        self.table.models['sort_list_model'].clear()
         order = QtCore.Qt.AscendingOrder
         self.table.sortByColumn(constants.headers_extended.index(constants.COLUMN_ORDER), order)

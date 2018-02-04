@@ -27,9 +27,9 @@ class FilterGamesController(QtWidgets.QDialog):
                 model_qt.appendRow(item)
             list_widget.setModel(model_qt)
 
-        assign_model(self.table.system_list_model, self.ui.listSystem)
-        assign_model(self.table.status_list_model, self.ui.listStatus)
-        assign_model(self.table.label_list_model, self.ui.listLabel)
+        assign_model(self.table.models['system_list_model'], self.ui.listSystem)
+        assign_model(self.table.models['status_list_model'], self.ui.listStatus)
+        assign_model(self.table.models['label_list_model'], self.ui.listLabel)
 
     def setupSignals(self):
         self.ui.pushButtonSelectAllSystem.clicked.connect(
@@ -80,14 +80,14 @@ class FilterGamesController(QtWidgets.QDialog):
                 model.set_filtered(str(item.text()), item.checkState() != QtCore.Qt.Checked)
 
         if not self.canceled:
-            applyFilteringPerType(self.table.system_list_model, self.ui.listSystem)
-            applyFilteringPerType(self.table.status_list_model, self.ui.listStatus)
-            applyFilteringPerType(self.table.label_list_model, self.ui.listLabel)
+            applyFilteringPerType(self.table.models['system_list_model'], self.ui.listSystem)
+            applyFilteringPerType(self.table.models['status_list_model'], self.ui.listStatus)
+            applyFilteringPerType(self.table.models['label_list_model'], self.ui.listLabel)
             self.table.hide_rows()
 
-        models = [self.table.system_list_model,
-                  self.table.status_list_model,
-                  self.table.label_list_model]
+        models = [self.table.models['system_list_model'],
+                  self.table.models['status_list_model'],
+                  self.table.models['label_list_model']]
         m = 0
         while  m < len(models) and not models[m].is_any_filtered():
             m = m + 1

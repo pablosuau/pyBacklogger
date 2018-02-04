@@ -11,7 +11,7 @@ class SortGamesController(QtWidgets.QDialog):
         self.ui.setupUi(self)
 
         self.table = table
-        self.table.sort_list_model.save_model()
+        self.table.models['sort_list_model'].save_model()
         self.canceled = False
         self.sorting_active = False
 
@@ -19,8 +19,8 @@ class SortGamesController(QtWidgets.QDialog):
         self.setupSignals()
 
     def initializeUi(self):
-        self.ui.sortByList.setModel(self.table.sort_list_model.sort)
-        self.ui.availableFieldsList.setModel(self.table.sort_list_model.available)
+        self.ui.sortByList.setModel(self.table.models['sort_list_model'].sort)
+        self.ui.availableFieldsList.setModel(self.table.models['sort_list_model'].available)
 
     def setupSignals(self):
         self.ui.pushButtonLeft.clicked.connect(self.left_clicked)
@@ -67,11 +67,11 @@ class SortGamesController(QtWidgets.QDialog):
                 self.ui.pushButtonDown.setEnabled(True)
 
     def left_clicked(self):
-        self.table.sort_list_model.to_sort(self.ui.availableFieldsList.selectedIndexes())
+        self.table.models['sort_list_model'].to_sort(self.ui.availableFieldsList.selectedIndexes())
         self.clear_clicked()
 
     def right_clicked(self):
-        self.table.sort_list_model.to_available(self.ui.sortByList.selectedIndexes())
+        self.table.models['sort_list_model'].to_available(self.ui.sortByList.selectedIndexes())
         self.clear_clicked()
 
     def up_down_clicked(self, method):
@@ -81,20 +81,20 @@ class SortGamesController(QtWidgets.QDialog):
         self.set_up_down()
 
     def up_clicked(self):
-        self.up_down_clicked(self.table.sort_list_model.sort_up)
+        self.up_down_clicked(self.table.models['sort_list_model'].sort_up)
 
     def down_clicked(self):
-        self.up_down_clicked(self.table.sort_list_model.sort_down)
+        self.up_down_clicked(self.table.models['sort_list_model'].sort_down)
 
     def sort_clicked(self):
         index = self.ui.sortByList.selectedIndexes()
         row = index[0].row()
-        order = self.table.sort_list_model.get_sort_order(index)
+        order = self.table.models['sort_list_model'].get_sort_order(index)
         if order == constants.ORDER_ASCENDING:
             new_order = constants.ORDER_DESCENDING
         else:
             new_order = constants.ORDER_ASCENDING
-        order = self.table.sort_list_model.set_sort_order(index, new_order)
+        order = self.table.models['sort_list_model'].set_sort_order(index, new_order)
         index = self.ui.sortByList.model().createIndex(row, 0)
         self.ui.sortByList.selectionModel().select(index, QtCore.QItemSelectionModel.Select)
 
@@ -112,7 +112,7 @@ class SortGamesController(QtWidgets.QDialog):
     def applySorting(self):
         if not self.canceled:
             self.table.setVisible(False)
-            (sort_fields, sort_order) = self.table.sort_list_model.get_sort_fields()
+            (sort_fields, sort_order) = self.table.models['sort_list_model'].get_sort_fields()
 
             if len(sort_fields) > 0:
                 for i in range(0, len(sort_fields)):
@@ -131,6 +131,6 @@ class SortGamesController(QtWidgets.QDialog):
 
             self.table.setVisible(True)
         else:
-            self.table.sort_list_model.restore_model()
+            self.table.models['sort_list_model'].restore_model()
 
-        self.sorting_active = len(self.table.sort_list_model.get_sort_fields()[0]) > 0
+        self.sorting_active = len(self.table.models['sort_list_model'].get_sort_fields()[0]) > 0

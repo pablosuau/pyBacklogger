@@ -1,6 +1,10 @@
+'''
+Module that contains the code that controllers the table that visualises the games.
+'''
+
 from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
 from lxml.html.soupparser import fromstring
 import re
 import sys
@@ -16,13 +20,28 @@ from models.constants import headers, headers_extended, LABEL_NONE, COLUMN_NAME,
                              COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, \
                              COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER
 
-class NumericWidgetItem(QtWidgets.QTableWidgetItem):
-    def __lt__(self, other):
-        return (float(str(self.text()).encode('ascii', 'ignore')) <
-                float(str(other.text()).encode('ascii', 'ignore')))
-
 class Table(QtWidgets.QTableWidget):
-    def initialize(self, *args):
+    '''
+    Class that represents the application's data table and deals with user
+    interactions with the cells.
+    '''
+
+    class _NumericWidgetItem(QtWidgets.QTableWidgetItem):
+        '''
+        The only purpose of this class is to overload the lesser than operator for
+        numeric cells so that sorting is done not in lexicographic order but in
+        numeric order.
+        '''
+        # pylint: disable=too-few-public-methods
+        def __lt__(self, other):
+            return (float(str(self.text()).encode('ascii', 'ignore')) <
+                    float(str(other.text()).encode('ascii', 'ignore')))
+
+    def initialize(self):
+        '''
+        Initialization of the table parameters, including headers, weighted rating,
+        callbacks and models.
+        '''
         self.setRowCount(0)
         self.setColumnCount(len(headers_extended))
 
@@ -45,26 +64,18 @@ class Table(QtWidgets.QTableWidget):
         self.search_string = ''
 
         # Models initialization
-        self.system_list_model = FilterListModel()
-        self.label_list_model = FilterListModel(LABEL_NONE)
-        self.status_list_model = FilterListModel()
-        self.status_model = StatusModel()
-        self.sort_list_model = SortListModel()
+        self.models = dict()
+        self.models['system_list_model'] = FilterListModel()
+        self.models['label_list_model'] = FilterListModel(LABEL_NONE)
+        self.models['status_list_model'] = FilterListModel()
+        self.models['status_model'] = StatusModel()
+        self.models['sort_list_model'] = SortListModel()
 
         self.last_index = 0
 
         # Callbacks
         self.clicked.connect(self.cellIsClicked)
         self.cellChanged.connect(self.cellIsChanged)
-
-    def setmydata(self, data):
-        horHeaders = []
-        for n, key in enumerate(sorted(self.data.keys())):
-            horHeaders.append(key)
-            for m, item in enumerate(self.data[key]):
-                newitem = QTableWidgetItem(item)
-                self.setItem(m, n, newitem)
-        self.setHorizontalHeaderLabels(horHeaders)
 
     def addGame(self, url, html):
         try:
@@ -142,7 +153,7 @@ class Table(QtWidgets.QTableWidget):
         item = QtWidgets.QTableWidgetItem(data[COLUMN_SYSTEM])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_SYSTEM), item)
-        self.system_list_model.add(data[COLUMN_SYSTEM])
+        self.models['system_list_model'].add(data[COLUMN_SYSTEM])
         # date
         item = QtWidgets.QTableWidgetItem(data[COLUMN_YEAR])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -152,7 +163,7 @@ class Table(QtWidgets.QTableWidget):
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_RATING), item)
         # votes
-        item = NumericWidgetItem(data[COLUMN_VOTES])
+        item = self._NumericWidgetItem(data[COLUMN_VOTES])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_VOTES), item)
         # Weighted rating
@@ -163,8 +174,8 @@ class Table(QtWidgets.QTableWidget):
         item = QtWidgets.QTableWidgetItem(data[COLUMN_STATUS])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_STATUS), item)
-        item.setForeground(self.status_model.getColor(data[COLUMN_STATUS]))
-        self.status_list_model.add(data[COLUMN_STATUS])
+        item.setForeground(self.models['status_model'].getColor(data[COLUMN_STATUS]))
+        self.models['status_list_model'].add(data[COLUMN_STATUS])
         # labels
         item = QtWidgets.QTableWidgetItem('')
         item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -174,7 +185,7 @@ class Table(QtWidgets.QTableWidget):
         self.setCellWidget(rows, headers_extended.index(COLUMN_LABELS), widget)
         new_labels = widget.getLabels()
         for label in new_labels:
-            self.label_list_model.add(label)
+            self.models['label_list_model'].add(label)
         # Notes
         item = QtWidgets.QTableWidgetItem(data[COLUMN_NOTES])
         self.setItem(rows, headers.index(COLUMN_NOTES), item)
@@ -278,7 +289,7 @@ class Table(QtWidgets.QTableWidget):
                 self.item(row, headers.index(COLUMN_SYSTEM)).setForeground(color)
 
     def hide_rows(self):
-        none = self.label_list_model.get_filtered(LABEL_NONE)
+        none = self.models['label_list_model'].get_filtered(LABEL_NONE)
         for row in range(0, self.rowCount()):
             filtered_out = False
             if self.search_string != '':
@@ -290,13 +301,14 @@ class Table(QtWidgets.QTableWidget):
                 if not filtered_out and len(labels_row) > 0:
                     filtered_list = []
                     for i in range(len(labels_row)):
-                        filtered_list.append(self.label_list_model.get_filtered(labels_row[i]))
+                        filtered_list.append(
+                            self.models['label_list_model'].get_filtered(labels_row[i]))
                     filtered_out = all(filtered_list)
                 filtered_out = filtered_out or \
-                               self.system_list_model.get_filtered(
+                               self.models['system_list_model'].get_filtered(
                                    self.item(row, headers.index(COLUMN_SYSTEM)).text())
                 filtered_out = filtered_out or \
-                               self.status_list_model.get_filtered(
+                               self.models['status_list_model'].get_filtered(
                                    self.item(row, headers.index(COLUMN_STATUS)).text())
             self.setRowHidden(row, filtered_out)
 
@@ -326,9 +338,9 @@ class Table(QtWidgets.QTableWidget):
             status = ssc.getStatus()
             if status != None:
                 self.item(row, column).setText(status)
-                self.item(row, column).setForeground(self.status_model.getColor(status))
-                self.status_list_model.add(status)
-                self.status_list_model.remove(ssc.getPreviousStatus())
+                self.item(row, column).setForeground(self.models['status_model'].getColor(status))
+                self.models['status_list_model'].add(status)
+                self.models['status_list_model'].remove(ssc.getPreviousStatus())
                 self.hide_rows()
 
     def cellIsChanged(self, row, col):
