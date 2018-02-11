@@ -73,8 +73,8 @@ class MainWindowController(QtWidgets.QWidget):
                 progress.setCancelButton(None)
                 progress.setWindowModality(QtCore.Qt.WindowModal)
                 for i in range(len(actual_indexes) - 1, -1, -1):
-                    system = self.table.getGameData(actual_indexes[i])[COLUMN_SYSTEM]
-                    status = self.table.getGameData(actual_indexes[i])[COLUMN_STATUS]
+                    system = self.table.get_game_data(actual_indexes[i])[COLUMN_SYSTEM]
+                    status = self.table.get_game_data(actual_indexes[i])[COLUMN_STATUS]
                     labels = self.table.cellWidget(
                         actual_indexes[i], headers.index(COLUMN_LABELS)).getLabels()
                     self.table.models['system_list_model'].remove(system)
@@ -148,7 +148,7 @@ class MainWindowController(QtWidgets.QWidget):
                     progress.setCancelButton(None)
                     progress.setWindowModality(QtCore.Qt.WindowModal)
                     for i in range(0, rows):
-                        data = self.table.getGameData(i)
+                        data = self.table.get_game_data(i)
                         data_list = []
                         for h in headers:
                             data_list.append(str(data[h]).encode('utf-8'))

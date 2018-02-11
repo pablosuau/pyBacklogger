@@ -218,7 +218,15 @@ class Table(QtWidgets.QTableWidget):
         self.setItem(rows, headers_extended.index(COLUMN_ORDER), item)
         self.last_index = self.last_index + 1
 
-    def getGameData(self, row):
+    def get_game_data(self, row):
+        '''
+        Produces a dictionary which contains the game data from the selected row
+
+        parameters:
+            - row: the row from which extract the data
+        returns:
+            - A dictionary which contains the data of the selected row
+        '''
         data = dict()
         data[COLUMN_NAME] = self.item(row, headers.index(COLUMN_NAME)).text()
         data[COLUMN_SYSTEM] = self.item(row, headers.index(COLUMN_SYSTEM)).text()
