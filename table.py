@@ -137,7 +137,7 @@ class Table(QtWidgets.QTableWidget):
                 data[COLUMN_LABELS] = ''
                 data[COLUMN_NOTES] = ''
                 data[COLUMN_URL] = url
-                self.addGameRow(data)
+                self.add_game_row(data)
                 # And recomputing weighted ratins
                 self.compute_final_rating()
         except (TypeError, IndexError):
@@ -146,16 +146,23 @@ class Table(QtWidgets.QTableWidget):
             error_message.showMessage('The URL ' + url +
                                       ' does not seem to be a valid game entry on GameFAQs')
 
-    def addGameRow(self, data, row=None):
-        # Adding the row, and disabling some of the fields, so
-        # they can not be edited
-        # name
-        if row == None:
+    def add_game_row(self, data, row=None):
+        '''
+        This method effectively adds a single game as a row to the table after the data has been
+        parsed from the corresponding HTML page.
+
+        parameters:
+            - data: a dictionary which contains the data to be added to the rwo
+            - row: row in which the game should be added. If the default value (None) is used,
+              the row will be appended at the end of the table
+        '''
+        if row is None:
             rows = self.rowCount()
             self.setRowCount(rows + 1)
         else:
             rows = row
 
+        # name
         item = QtWidgets.QTableWidgetItem(data[COLUMN_NAME])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_NAME), item)
@@ -173,9 +180,9 @@ class Table(QtWidgets.QTableWidget):
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_RATING), item)
         # votes
-        item = self._NumericWidgetItem(data[COLUMN_VOTES])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_VOTES), item)
+        item_numeric = self._NumericWidgetItem(data[COLUMN_VOTES])
+        item_numeric.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_VOTES), item_numeric)
         # Weighted rating
         item = QtWidgets.QTableWidgetItem(data[COLUMN_WEIGHTED])
         item.setFlags(QtCore.Qt.ItemIsEnabled)

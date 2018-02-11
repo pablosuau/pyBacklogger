@@ -120,7 +120,7 @@ class MainWindowController(QtWidgets.QWidget):
                         row_dict = dict()
                         for j in range(0, len(headers)):
                             row_dict[headers[j]] = row[j].decode('utf-8')
-                        self.table.addGameRow(row_dict, i)
+                        self.table.add_game_row(row_dict, i)
                         progress.setValue(i+1)
                         i = i + 1
                     self.table.resizeColumns()
