@@ -75,7 +75,7 @@ class AddGameController(QtWidgets.QDialog):
     def updateAddGame(self, html):
         self.progress.close()
         if self.add_by_url:
-            self.table.addGame(self.url, str(html))
+            self.table.add_game(self.url, str(html))
             if self.pending_selected != None:
                 self.url = self.pending_selected[0]
                 del self.pending_selected[0]
