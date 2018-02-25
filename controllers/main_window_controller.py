@@ -86,7 +86,7 @@ class MainWindowController(QtWidgets.QWidget):
                 self.table.changed = True
 
             self.table.update_colors()
-            self.table.resizeColumns()
+            self.table.resize_columns()
         else:
             error = QtWidgets.QErrorMessage()
             error.showMessage('No games were selected')
@@ -123,7 +123,7 @@ class MainWindowController(QtWidgets.QWidget):
                         self.table.add_game_row(row_dict, i)
                         progress.setValue(i+1)
                         i = i + 1
-                    self.table.resizeColumns()
+                    self.table.resize_columns()
                     self.table.update_colors()
                     self.table.changed = False
                     self.table.loading = False

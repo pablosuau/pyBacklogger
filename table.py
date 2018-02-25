@@ -2,16 +2,16 @@
 Module that contains the code that controllers the table that visualises the games.
 '''
 
+import re
+import sys
+import numpy as np
 from PyQt5 import QtGui, QtCore, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from lxml.html.soupparser import fromstring
-import re
-import sys
 from widgets.label_widget import LabelWidget
 from controllers.select_date_controller import SelectDateController
 from controllers.select_status_controller import SelectStatusController
-import numpy as np
 from models.filter_list_model import FilterListModel
 from models.status_model import StatusModel
 from models.sort_list_model import SortListModel
@@ -74,8 +74,8 @@ class Table(QtWidgets.QTableWidget):
         self.last_index = 0
 
         # Callbacks
-        self.clicked.connect(self.cellIsClicked)
-        self.cellChanged.connect(self.cellIsChanged)
+        self.clicked.connect(self.cell_is_clicked)
+        self.cellChanged.connect(self.cell_is_changed)
 
     def add_game(self, url, html):
         '''
@@ -242,6 +242,11 @@ class Table(QtWidgets.QTableWidget):
         return data
 
     def compute_final_rating(self):
+        '''
+        In-place computation of the weighted rating of the games based on GameFAQS' rating and
+        number of votes. See https://math.stackexchange.com/questions/169032/understanding-the-imdb-
+        weighted-rating-function-for-usage-on-my-own-website for a description of this method.
+        '''
         rows = self.rowCount()
         # Computing the mean
         ratings_i = []
@@ -254,21 +259,36 @@ class Table(QtWidgets.QTableWidget):
         non_zeros = np.where(votes_i != 0)[0]
         mean = np.mean(ratings_i[non_zeros])
 
-        wr = np.zeros((rows))
-        wr[non_zeros] = (votes_i[non_zeros]/(votes_i[non_zeros] + \
+        weighted_rating = np.zeros((rows))
+        weighted_rating[non_zeros] = (votes_i[non_zeros]/(votes_i[non_zeros] + \
                         self.minimum))*ratings_i[non_zeros]
-        wr[non_zeros] = wr[non_zeros] + (self.minimum / (votes_i[non_zeros] + self.minimum))*mean
+        weighted_rating[non_zeros] = weighted_rating[non_zeros] + (
+            self.minimum / (votes_i[non_zeros] + self.minimum)
+            )*mean
 
-        wr_str = np.zeros((rows), dtype='S4')
-        wr_str[non_zeros] = ["%.2f" % x for x in wr[non_zeros]]
+        weighted_rating_str = np.zeros((rows), dtype='S4')
+        weighted_rating_str[non_zeros] = ["%.2f" % x for x in weighted_rating[non_zeros]]
         # Computing the weighted rating for all the games again
         for i in range(0, rows):
-            self.item(i, headers.index(COLUMN_WEIGHTED)).setText(wr_str[i])
+            self.item(i, headers.index(COLUMN_WEIGHTED)).setText(weighted_rating_str[i])
 
     def update_colors(self):
+        '''
+        Assigns a colour gradient to to the values in the year, rating, votes and weighted
+        rating columns. Additionally, a different colour is assigned to each different
+        system.
+        '''
         if self.rowCount() > 1:
             # Gradient color for the year, rating, votes and weighted columns
             def update_colors_column(column):
+                '''
+                Auxilar function to compute the colour gradient values
+                for a given column given its range of values.
+
+                parameters:
+                    - column: the table's column identifier to which the colouring operation
+                      is applied.
+                '''
                 max_value = -1
                 min_value = sys.float_info.max
                 all_values = []
@@ -279,7 +299,7 @@ class Table(QtWidgets.QTableWidget):
                         max_value = max(max_value, value)
                         min_value = min(min_value, value)
                         all_values.append(value)
-                    except:
+                    except ValueError:
                         all_values.append(-1)
                 # Assigning colour ranges
                 all_values = np.array(all_values)
@@ -314,20 +334,23 @@ class Table(QtWidgets.QTableWidget):
                 self.item(row, headers.index(COLUMN_SYSTEM)).setForeground(color)
 
     def hide_rows(self):
+        '''
+        Hides table rows depending on search and filtering criteria.
+        '''
         none = self.models['label_list_model'].get_filtered(LABEL_NONE)
         for row in range(0, self.rowCount()):
             filtered_out = False
             if self.search_string != '':
                 item_text = str(self.item(row, headers.index(COLUMN_NAME)).text()).lower()
-                filtered_out = not self.search_string in item_text
+                filtered_out = self.search_string not in item_text
             if not filtered_out:
                 labels_row = self.cellWidget(row, headers.index(COLUMN_LABELS)).getLabels()
                 filtered_out = none and len(labels_row) == 0
                 if not filtered_out and len(labels_row) > 0:
                     filtered_list = []
-                    for i in range(len(labels_row)):
+                    for _, label in enumerate(labels_row):
                         filtered_list.append(
-                            self.models['label_list_model'].get_filtered(labels_row[i]))
+                            self.models['label_list_model'].get_filtered(label))
                     filtered_out = all(filtered_list)
                 filtered_out = filtered_out or \
                                self.models['system_list_model'].get_filtered(
@@ -338,17 +361,31 @@ class Table(QtWidgets.QTableWidget):
             self.setRowHidden(row, filtered_out)
 
     def show_all_rows(self):
+        '''
+        Makes all rows to go visible
+        '''
         for row in range(0, self.rowCount()):
             self.setRowHidden(row, False)
 
-    def resizeColumns(self):
+    def resize_columns(self):
+        '''
+        Adapts the columns' width to their contents. Some workaround is needed for this
+        to work properly.
+        '''
         self.setVisible(False)
         self.resizeColumnsToContents()
         self.setVisible(True)
 
-    def cellIsClicked(self, tableItem):
-        row = tableItem.row()
-        column = tableItem.column()
+    def cell_is_clicked(self, table_item):
+        '''
+        This callback is invoked when a cell in the table is clicked. If the cell is in the year
+        or status columns, the corresponding selector GUI will be displayed.
+
+        parameters:
+            - table_item: the clicked table item
+        '''
+        row = table_item.row()
+        column = table_item.column()
 
         if column == headers.index(COLUMN_YEAR):
             sdc = SelectDateController(self.item(row, column).text(), self)
@@ -368,5 +405,11 @@ class Table(QtWidgets.QTableWidget):
                 self.models['status_list_model'].remove(ssc.getPreviousStatus())
                 self.hide_rows()
 
-    def cellIsChanged(self, row, col):
+    def cell_is_changed(self):
+        '''
+        This callback is invoked when the content of a cell changes. If that is the case,
+        we set a flag to control that the user is aware that changes were made before
+        quitting the application and therefore to make him decide whether he/she wants to
+        save the changes in disk
+        '''
         self.changed = True

@@ -88,7 +88,7 @@ class AddGameController(QtWidgets.QDialog):
 
                 self.table.update_colors()
                 self.hide()
-                self.table.resizeColumns()
+                self.table.resize_columns()
 
                 self.table.scrollToBottom()
 
