@@ -28,7 +28,6 @@ class MainWindowController(QtWidgets.QWidget):
 
     def initializeUi(self):
         self.setWindowState(QtCore.Qt.WindowMaximized)
-        self.table.initialize()
 
     def setupSignals(self):
         self.ui.pushButtonAddGame.clicked.connect(self.add_game_clicked)

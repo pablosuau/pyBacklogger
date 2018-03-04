@@ -37,11 +37,13 @@ class Table(QtWidgets.QTableWidget):
             return (float(str(self.text()).encode('ascii', 'ignore')) <
                     float(str(other.text()).encode('ascii', 'ignore')))
 
-    def initialize(self):
+    def __init__(self, parent=None):
         '''
         Initialization of the table parameters, including headers, weighted rating,
         callbacks and models.
         '''
+        super(Table, self).__init__(parent)
+
         self.setRowCount(0)
         self.setColumnCount(len(headers_extended))
 
