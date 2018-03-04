@@ -96,7 +96,6 @@ class AddGameController(QtWidgets.QDialog):
             src = SearchResultsController(html, parent=self)
             src.exec_()
             selected = src.get_search_results()
-            print(selected)
             if len(selected) > 0:
                 self.add_by_url = True
                 self.pending_selected = selected

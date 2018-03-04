@@ -1,5 +1,5 @@
 '''
-Module that contains the code that controllers the table that visualises the games.
+Module that contains the code that controls the table that visualises the games.
 '''
 
 import re
