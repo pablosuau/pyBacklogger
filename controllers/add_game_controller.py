@@ -1,6 +1,6 @@
 from PyQt5 import QtGui, QtCore, QtWidgets
 import re
-import urllib2
+import urllib.request, urllib.error
 from views.add_game_dialog import Ui_AddGameDialog
 from controllers.search_results_controller import *
 from util import util
@@ -114,14 +114,14 @@ class AddGameController(QtWidgets.QDialog):
 
         def run(self):
             try:
-                req = urllib2.Request(self.url, headers={'User-Agent' : "Magic Browser"})
+                req = urllib.request.Request(self.url, headers={'User-Agent' : "Magic Browser"})
                 response = urllib2.urlopen(req)
                 self.html = response.read().decode('ascii', 'ignore')
                 self.htmlRead.emit(self.html)
-            except urllib2.URLError as e:
+            except urllib.error.URLError as e:
                 print(e.reason)
                 util.showErrorMessage(self.parent(), 'Incorrect URL or not Internet connection')
-            except urllib2.HTTPError as e:
+            except urllib.error.HTTPError as e:
                 print(e.code)
                 print(e.read())
                 util.showErrorMessage(self.parent(), 'Connection error: ' + e.code + ' ' + e.read())

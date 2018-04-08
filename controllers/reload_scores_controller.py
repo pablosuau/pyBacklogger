@@ -1,6 +1,6 @@
 from random import randint
 from time import sleep
-import urllib2
+import urllib.request, urllib.error
 from PyQt5 import QtGui, QtCore, QtWidgets
 from lxml.html.soupparser import fromstring
 from PyQt5.QtCore import *
@@ -56,8 +56,8 @@ class ReloadScoresController(QtWidgets.QWidget):
                     row = self.indexes[i].row()
                     sleep(randint(5, 15))
                     url = self.table.item(row, headers.index(COLUMN_URL)).text()
-                    req = urllib2.Request(str(url), headers={'User-Agent' : "Magic Browser"})
-                    response = urllib2.urlopen(req)
+                    req = urllib.request.Request(str(url), headers={'User-Agent' : "Magic Browser"})
+                    response = urllib.request.urlopen(req)
                     html = response.read().decode('ascii', 'ignore')
                     doc = fromstring(html)
                     # Updating the name, in case it changed
@@ -96,11 +96,11 @@ class ReloadScoresController(QtWidgets.QWidget):
                 self.table.compute_final_rating()
                 self.table.changed = True
                 self.table.update_colors()
-            except urllib2.URLError as e:
+            except urllib.error.URLError as e:
                 print(e.reason)
                 errorMessage = QtWidgets.QErrorMessage(self.parent)
                 errorMessage.showMessage('Incorrect URL or not Internet connection')
-            except urllib2.HTTPError as e:
+            except urllib.error.HTTPError as e:
                 print(e.code)
                 print(e.read())
                 errorMessage = QtWidgets.QErrorMessage(self.parent)
