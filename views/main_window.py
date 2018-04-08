@@ -179,8 +179,6 @@ class Ui_MainWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.table = Table(MainWindow)
         self.table.setObjectName(_fromUtf8("table"))
-        self.table.setColumnCount(0)
-        self.table.setRowCount(0)
         self.verticalLayout.addWidget(self.table)
 
         self.retranslateUi(MainWindow)

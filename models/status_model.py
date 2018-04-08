@@ -9,6 +9,5 @@ class StatusModel(QtGui.QStandardItemModel):
             item = QtGui.QStandardItem(k)
             self.appendRow(item)
 
-        
     def getColor(self, key):
         return OPTIONS[key]
