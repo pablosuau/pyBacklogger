@@ -1,4 +1,4 @@
-import constants
+import models.constants
 from PyQt5.QtGui import *
 
 class SortListModel():

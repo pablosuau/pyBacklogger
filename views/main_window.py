@@ -2,41 +2,26 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created: Sun Apr 23 08:37:22 2017
-#      by: PyQt5 UI code generator 4.11.3
+# Created by: PyQt5 UI code generator 5.9
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
-
-try:
-    _encoding = QtWidgets.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig)
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName(_fromUtf8("MainWindow"))
+        MainWindow.setObjectName("MainWindow")
         MainWindow.resize(766, 501)
         MainWindow.setMinimumSize(QtCore.QSize(640, 480))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/app_icon/shelf.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.verticalLayout = QtWidgets.QVBoxLayout(MainWindow)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.horizontalLayout.setObjectName("horizontalLayout")
         self.pushButtonAddGame = QtWidgets.QPushButton(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -45,11 +30,11 @@ class Ui_MainWindow(object):
         self.pushButtonAddGame.setSizePolicy(sizePolicy)
         self.pushButtonAddGame.setMinimumSize(QtCore.QSize(31, 31))
         self.pushButtonAddGame.setMaximumSize(QtCore.QSize(31, 31))
-        self.pushButtonAddGame.setText(_fromUtf8(""))
+        self.pushButtonAddGame.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/add.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/icons/add.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonAddGame.setIcon(icon1)
-        self.pushButtonAddGame.setObjectName(_fromUtf8("pushButtonAddGame"))
+        self.pushButtonAddGame.setObjectName("pushButtonAddGame")
         self.horizontalLayout.addWidget(self.pushButtonAddGame)
         self.pushButtonRemoveGame = QtWidgets.QPushButton(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -59,11 +44,11 @@ class Ui_MainWindow(object):
         self.pushButtonRemoveGame.setSizePolicy(sizePolicy)
         self.pushButtonRemoveGame.setMinimumSize(QtCore.QSize(31, 31))
         self.pushButtonRemoveGame.setMaximumSize(QtCore.QSize(31, 31))
-        self.pushButtonRemoveGame.setText(_fromUtf8(""))
+        self.pushButtonRemoveGame.setText("")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/delete.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(":/icons/delete.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonRemoveGame.setIcon(icon2)
-        self.pushButtonRemoveGame.setObjectName(_fromUtf8("pushButtonRemoveGame"))
+        self.pushButtonRemoveGame.setObjectName("pushButtonRemoveGame")
         self.horizontalLayout.addWidget(self.pushButtonRemoveGame)
         self.pushButtonLoadBacklog = QtWidgets.QPushButton(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -73,11 +58,11 @@ class Ui_MainWindow(object):
         self.pushButtonLoadBacklog.setSizePolicy(sizePolicy)
         self.pushButtonLoadBacklog.setMinimumSize(QtCore.QSize(31, 31))
         self.pushButtonLoadBacklog.setMaximumSize(QtCore.QSize(31, 31))
-        self.pushButtonLoadBacklog.setText(_fromUtf8(""))
+        self.pushButtonLoadBacklog.setText("")
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/load.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(":/icons/load.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonLoadBacklog.setIcon(icon3)
-        self.pushButtonLoadBacklog.setObjectName(_fromUtf8("pushButtonLoadBacklog"))
+        self.pushButtonLoadBacklog.setObjectName("pushButtonLoadBacklog")
         self.horizontalLayout.addWidget(self.pushButtonLoadBacklog)
         self.pushButtonSaveBacklog = QtWidgets.QPushButton(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -87,11 +72,11 @@ class Ui_MainWindow(object):
         self.pushButtonSaveBacklog.setSizePolicy(sizePolicy)
         self.pushButtonSaveBacklog.setMinimumSize(QtCore.QSize(31, 31))
         self.pushButtonSaveBacklog.setMaximumSize(QtCore.QSize(31, 31))
-        self.pushButtonSaveBacklog.setText(_fromUtf8(""))
+        self.pushButtonSaveBacklog.setText("")
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/save.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon4.addPixmap(QtGui.QPixmap(":/icons/save.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonSaveBacklog.setIcon(icon4)
-        self.pushButtonSaveBacklog.setObjectName(_fromUtf8("pushButtonSaveBacklog"))
+        self.pushButtonSaveBacklog.setObjectName("pushButtonSaveBacklog")
         self.horizontalLayout.addWidget(self.pushButtonSaveBacklog)
         self.pushButtonReloadScores = QtWidgets.QPushButton(MainWindow)
         self.pushButtonReloadScores.setEnabled(True)
@@ -102,11 +87,11 @@ class Ui_MainWindow(object):
         self.pushButtonReloadScores.setSizePolicy(sizePolicy)
         self.pushButtonReloadScores.setMinimumSize(QtCore.QSize(31, 31))
         self.pushButtonReloadScores.setMaximumSize(QtCore.QSize(31, 31))
-        self.pushButtonReloadScores.setText(_fromUtf8(""))
+        self.pushButtonReloadScores.setText("")
         icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/reload.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon5.addPixmap(QtGui.QPixmap(":/icons/reload.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonReloadScores.setIcon(icon5)
-        self.pushButtonReloadScores.setObjectName(_fromUtf8("pushButtonReloadScores"))
+        self.pushButtonReloadScores.setObjectName("pushButtonReloadScores")
         self.horizontalLayout.addWidget(self.pushButtonReloadScores)
         self.pushButtonSortData = QtWidgets.QPushButton(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -116,13 +101,13 @@ class Ui_MainWindow(object):
         self.pushButtonSortData.setSizePolicy(sizePolicy)
         self.pushButtonSortData.setMinimumSize(QtCore.QSize(31, 31))
         self.pushButtonSortData.setMaximumSize(QtCore.QSize(31, 31))
-        self.pushButtonSortData.setText(_fromUtf8(""))
+        self.pushButtonSortData.setText("")
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/sort.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(QtGui.QPixmap(":/icons/sort.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonSortData.setIcon(icon6)
         self.pushButtonSortData.setCheckable(True)
         self.pushButtonSortData.setChecked(False)
-        self.pushButtonSortData.setObjectName(_fromUtf8("pushButtonSortData"))
+        self.pushButtonSortData.setObjectName("pushButtonSortData")
         self.horizontalLayout.addWidget(self.pushButtonSortData)
         self.pushButtonStatistics = QtWidgets.QPushButton(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -132,11 +117,11 @@ class Ui_MainWindow(object):
         self.pushButtonStatistics.setSizePolicy(sizePolicy)
         self.pushButtonStatistics.setMinimumSize(QtCore.QSize(31, 31))
         self.pushButtonStatistics.setMaximumSize(QtCore.QSize(31, 31))
-        self.pushButtonStatistics.setText(_fromUtf8(""))
+        self.pushButtonStatistics.setText("")
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/statistics.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon7.addPixmap(QtGui.QPixmap(":/icons/statistics.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonStatistics.setIcon(icon7)
-        self.pushButtonStatistics.setObjectName(_fromUtf8("pushButtonStatistics"))
+        self.pushButtonStatistics.setObjectName("pushButtonStatistics")
         self.horizontalLayout.addWidget(self.pushButtonStatistics)
         self.pushButtonFilterData = QtWidgets.QPushButton(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -146,12 +131,12 @@ class Ui_MainWindow(object):
         self.pushButtonFilterData.setSizePolicy(sizePolicy)
         self.pushButtonFilterData.setMinimumSize(QtCore.QSize(31, 31))
         self.pushButtonFilterData.setMaximumSize(QtCore.QSize(31, 31))
-        self.pushButtonFilterData.setText(_fromUtf8(""))
+        self.pushButtonFilterData.setText("")
         icon8 = QtGui.QIcon()
-        icon8.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/filter.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon8.addPixmap(QtGui.QPixmap(":/icons/filter.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.pushButtonFilterData.setIcon(icon8)
         self.pushButtonFilterData.setCheckable(True)
-        self.pushButtonFilterData.setObjectName(_fromUtf8("pushButtonFilterData"))
+        self.pushButtonFilterData.setObjectName("pushButtonFilterData")
         self.horizontalLayout.addWidget(self.pushButtonFilterData)
         self.label = QtWidgets.QLabel(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
@@ -161,7 +146,7 @@ class Ui_MainWindow(object):
         self.label.setSizePolicy(sizePolicy)
         self.label.setMinimumSize(QtCore.QSize(46, 13))
         self.label.setMaximumSize(QtCore.QSize(46, 13))
-        self.label.setObjectName(_fromUtf8("label"))
+        self.label.setObjectName("label")
         self.horizontalLayout.addWidget(self.label)
         self.lineEditSearchGame = QtWidgets.QLineEdit(MainWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -171,31 +156,44 @@ class Ui_MainWindow(object):
         self.lineEditSearchGame.setSizePolicy(sizePolicy)
         self.lineEditSearchGame.setMinimumSize(QtCore.QSize(201, 20))
         self.lineEditSearchGame.setMaximumSize(QtCore.QSize(201, 20))
-        self.lineEditSearchGame.setObjectName(_fromUtf8("lineEditSearchGame"))
+        self.lineEditSearchGame.setObjectName("lineEditSearchGame")
         self.horizontalLayout.addWidget(self.lineEditSearchGame)
         self.horizontalLayout_2.addLayout(self.horizontalLayout)
         spacerItem = QtWidgets.QSpacerItem(208, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.table = Table(MainWindow)
-        self.table.setObjectName(_fromUtf8("table"))
+        self.table.setObjectName("table")
+        self.table.setColumnCount(0)
+        self.table.setRowCount(0)
         self.verticalLayout.addWidget(self.table)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "Dialog", None))
-        self.pushButtonAddGame.setToolTip(_translate("MainWindow", "Add game/s", None))
-        self.pushButtonRemoveGame.setToolTip(_translate("MainWindow", "Delete game/s", None))
-        self.pushButtonLoadBacklog.setToolTip(_translate("MainWindow", "Load backlog", None))
-        self.pushButtonSaveBacklog.setToolTip(_translate("MainWindow", "Save backlog", None))
-        self.pushButtonReloadScores.setToolTip(_translate("MainWindow", "Reload scores", None))
-        self.pushButtonSortData.setToolTip(_translate("MainWindow", "Sort games", None))
-        self.pushButtonStatistics.setToolTip(_translate("MainWindow", "Statistics", None))
-        self.pushButtonFilterData.setToolTip(_translate("MainWindow", "Filter games", None))
-        self.label.setText(_translate("MainWindow", "Search:", None))
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Dialog"))
+        self.pushButtonAddGame.setToolTip(_translate("MainWindow", "Add game/s"))
+        self.pushButtonRemoveGame.setToolTip(_translate("MainWindow", "Delete game/s"))
+        self.pushButtonLoadBacklog.setToolTip(_translate("MainWindow", "Load backlog"))
+        self.pushButtonSaveBacklog.setToolTip(_translate("MainWindow", "Save backlog"))
+        self.pushButtonReloadScores.setToolTip(_translate("MainWindow", "Reload scores"))
+        self.pushButtonSortData.setToolTip(_translate("MainWindow", "Sort games"))
+        self.pushButtonStatistics.setToolTip(_translate("MainWindow", "Statistics"))
+        self.pushButtonFilterData.setToolTip(_translate("MainWindow", "Filter games"))
+        self.label.setText(_translate("MainWindow", "Search:"))
 
 from table import Table
-import main_window_rc
-import app_icon_rc
+import views.app_icon_rc
+import views.main_window_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QWidget()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+

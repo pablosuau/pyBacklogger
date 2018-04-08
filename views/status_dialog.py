@@ -2,52 +2,48 @@
 
 # Form implementation generated from reading ui file 'status_dialog.ui'
 #
-# Created: Sun Jan 29 08:58:27 2017
-#      by: PyQt5 UI code generator 4.11.3
+# Created by: PyQt5 UI code generator 5.9
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
-
-try:
-    _encoding = QtWidgets.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig)
-
 class Ui_StatusDialog(object):
     def setupUi(self, StatusDialog):
-        StatusDialog.setObjectName(_fromUtf8("StatusDialog"))
+        StatusDialog.setObjectName("StatusDialog")
         StatusDialog.resize(172, 72)
         StatusDialog.setMinimumSize(QtCore.QSize(172, 72))
         StatusDialog.setMaximumSize(QtCore.QSize(172, 72))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/app_icon/shelf.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         StatusDialog.setWindowIcon(icon)
         self.pushButtonOk = QtWidgets.QPushButton(StatusDialog)
         self.pushButtonOk.setGeometry(QtCore.QRect(10, 40, 75, 23))
-        self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
+        self.pushButtonOk.setObjectName("pushButtonOk")
         self.pushButtonCancel = QtWidgets.QPushButton(StatusDialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(90, 40, 75, 23))
-        self.pushButtonCancel.setObjectName(_fromUtf8("pushButtonCancel"))
+        self.pushButtonCancel.setObjectName("pushButtonCancel")
         self.comboBoxStatus = QtWidgets.QComboBox(StatusDialog)
         self.comboBoxStatus.setGeometry(QtCore.QRect(10, 10, 151, 22))
-        self.comboBoxStatus.setObjectName(_fromUtf8("comboBoxStatus"))
+        self.comboBoxStatus.setObjectName("comboBoxStatus")
 
         self.retranslateUi(StatusDialog)
         QtCore.QMetaObject.connectSlotsByName(StatusDialog)
 
     def retranslateUi(self, StatusDialog):
-        StatusDialog.setWindowTitle(_translate("StatusDialog", "Status", None))
-        self.pushButtonOk.setText(_translate("StatusDialog", "Ok", None))
-        self.pushButtonCancel.setText(_translate("StatusDialog", "Cancel", None))
+        _translate = QtCore.QCoreApplication.translate
+        StatusDialog.setWindowTitle(_translate("StatusDialog", "Status"))
+        self.pushButtonOk.setText(_translate("StatusDialog", "Ok"))
+        self.pushButtonCancel.setText(_translate("StatusDialog", "Cancel"))
 
-import app_icon_rc
+import views.app_icon_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    StatusDialog = QtWidgets.QDialog()
+    ui = Ui_StatusDialog()
+    ui.setupUi(StatusDialog)
+    StatusDialog.show()
+    sys.exit(app.exec_())
+
