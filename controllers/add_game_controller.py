@@ -115,7 +115,7 @@ class AddGameController(QtWidgets.QDialog):
         def run(self):
             try:
                 req = urllib.request.Request(self.url, headers={'User-Agent' : "Magic Browser"})
-                response = urllib2.urlopen(req)
+                response = urllib.request.urlopen(req)
                 self.html = response.read().decode('ascii', 'ignore')
                 self.htmlRead.emit(self.html)
             except urllib.error.URLError as e:
