@@ -1,6 +1,6 @@
 from PyQt5 import QtGui
 
-GAMEFAQS_URL = 'https://www.gamefaqs.com'
+GAMEFAQS_URL = 'https://gamefaqs.gamespot.com'
 SEARCH_URL = GAMEFAQS_URL + '/search?game='
 
 COLUMN_NAME = 'Name'
@@ -8,7 +8,7 @@ COLUMN_SYSTEM = 'System'
 COLUMN_YEAR = 'Year'
 COLUMN_RATING = 'Rating'
 COLUMN_VOTES = 'Votes'
-COLUMN_WEIGHTED = 'Weighted Rating'
+COLUMN_WEIGHTED = 'Weighted\nRating'
 COLUMN_STATUS = 'Status'
 COLUMN_LABELS = 'Labels'
 COLUMN_NOTES = 'Notes'

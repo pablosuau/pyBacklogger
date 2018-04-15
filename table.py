@@ -268,11 +268,11 @@ class Table(QtWidgets.QTableWidget):
             self.minimum / (votes_i[non_zeros] + self.minimum)
             )*mean
 
-        weighted_rating_str = np.zeros((rows), dtype='S4')
-        weighted_rating_str[non_zeros] = ["%.2f" % x for x in weighted_rating[non_zeros]]
+        weighted_rating_str = np.zeros((rows)).astype('|S4')
+        weighted_rating_str[non_zeros] = ['%.2f' % x for x in weighted_rating[non_zeros]]
         # Computing the weighted rating for all the games again
         for i in range(0, rows):
-            self.item(i, headers.index(COLUMN_WEIGHTED)).setText(weighted_rating_str[i])
+            self.item(i, headers.index(COLUMN_WEIGHTED)).setText(weighted_rating_str[i].decode('UTF-8'))
 
     def update_colors(self):
         '''

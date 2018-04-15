@@ -2,57 +2,53 @@
 
 # Form implementation generated from reading ui file 'search_results_dialog.ui'
 #
-# Created: Sun Jan 29 09:00:52 2017
-#      by: PyQt5 UI code generator 4.11.3
+# Created by: PyQt5 UI code generator 5.9
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
-
-try:
-    _encoding = QtWidgets.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig)
-
 class Ui_SearchResultsDialog(object):
     def setupUi(self, SearchResultsDialog):
-        SearchResultsDialog.setObjectName(_fromUtf8("SearchResultsDialog"))
+        SearchResultsDialog.setObjectName("SearchResultsDialog")
         SearchResultsDialog.resize(270, 286)
         SearchResultsDialog.setMinimumSize(QtCore.QSize(270, 286))
         SearchResultsDialog.setMaximumSize(QtCore.QSize(270, 286))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/app_icon/shelf.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         SearchResultsDialog.setWindowIcon(icon)
         self.label = QtWidgets.QLabel(SearchResultsDialog)
         self.label.setGeometry(QtCore.QRect(10, 10, 301, 16))
-        self.label.setObjectName(_fromUtf8("label"))
+        self.label.setObjectName("label")
         self.listViewGames = QtWidgets.QListView(SearchResultsDialog)
         self.listViewGames.setGeometry(QtCore.QRect(10, 30, 251, 221))
-        self.listViewGames.setObjectName(_fromUtf8("listViewGames"))
+        self.listViewGames.setObjectName("listViewGames")
         self.pushButtonOk = QtWidgets.QPushButton(SearchResultsDialog)
         self.pushButtonOk.setEnabled(True)
         self.pushButtonOk.setGeometry(QtCore.QRect(95, 257, 75, 23))
-        self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
+        self.pushButtonOk.setObjectName("pushButtonOk")
         self.pushButtonCancel = QtWidgets.QPushButton(SearchResultsDialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(185, 257, 75, 23))
-        self.pushButtonCancel.setObjectName(_fromUtf8("pushButtonCancel"))
+        self.pushButtonCancel.setObjectName("pushButtonCancel")
 
         self.retranslateUi(SearchResultsDialog)
         QtCore.QMetaObject.connectSlotsByName(SearchResultsDialog)
 
     def retranslateUi(self, SearchResultsDialog):
-        SearchResultsDialog.setWindowTitle(_translate("SearchResultsDialog", "Search results", None))
-        self.label.setText(_translate("SearchResultsDialog", "Select the game or games to add to your backlog", None))
-        self.pushButtonOk.setText(_translate("SearchResultsDialog", "Ok", None))
-        self.pushButtonCancel.setText(_translate("SearchResultsDialog", "Cancel", None))
+        _translate = QtCore.QCoreApplication.translate
+        SearchResultsDialog.setWindowTitle(_translate("SearchResultsDialog", "Search results"))
+        self.label.setText(_translate("SearchResultsDialog", "Select the game or games to add to your backlog"))
+        self.pushButtonOk.setText(_translate("SearchResultsDialog", "Ok"))
+        self.pushButtonCancel.setText(_translate("SearchResultsDialog", "Cancel"))
 
-import app_icon_rc
+import views.app_icon_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    SearchResultsDialog = QtWidgets.QDialog()
+    ui = Ui_SearchResultsDialog()
+    ui.setupUi(SearchResultsDialog)
+    SearchResultsDialog.show()
+    sys.exit(app.exec_())
+

@@ -2,30 +2,15 @@
 
 # Form implementation generated from reading ui file 'add_game_dialog.ui'
 #
-# Created: Sun Jan 29 08:57:08 2017
-#      by: PyQt5 UI code generator 4.11.3
+# Created by: PyQt5 UI code generator 5.9
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
-
-try:
-    _encoding = QtWidgets.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtWidgets.QApplication.translate(context, text, disambig)
-
 class Ui_AddGameDialog(object):
     def setupUi(self, AddGameDialog):
-        AddGameDialog.setObjectName(_fromUtf8("AddGameDialog"))
+        AddGameDialog.setObjectName("AddGameDialog")
         AddGameDialog.setWindowModality(QtCore.Qt.ApplicationModal)
         AddGameDialog.resize(249, 116)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -36,7 +21,7 @@ class Ui_AddGameDialog(object):
         AddGameDialog.setMinimumSize(QtCore.QSize(249, 116))
         AddGameDialog.setMaximumSize(QtCore.QSize(249, 116))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/app_icon/shelf.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/app_icon/shelf.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         AddGameDialog.setWindowIcon(icon)
         AddGameDialog.setSizeGripEnabled(False)
         AddGameDialog.setModal(True)
@@ -48,7 +33,7 @@ class Ui_AddGameDialog(object):
         sizePolicy.setHeightForWidth(self.radioButtonUrl.sizePolicy().hasHeightForWidth())
         self.radioButtonUrl.setSizePolicy(sizePolicy)
         self.radioButtonUrl.setChecked(True)
-        self.radioButtonUrl.setObjectName(_fromUtf8("radioButtonUrl"))
+        self.radioButtonUrl.setObjectName("radioButtonUrl")
         self.radioButtonSearch = QtWidgets.QRadioButton(AddGameDialog)
         self.radioButtonSearch.setGeometry(QtCore.QRect(10, 30, 141, 17))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
@@ -56,7 +41,7 @@ class Ui_AddGameDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.radioButtonSearch.sizePolicy().hasHeightForWidth())
         self.radioButtonSearch.setSizePolicy(sizePolicy)
-        self.radioButtonSearch.setObjectName(_fromUtf8("radioButtonSearch"))
+        self.radioButtonSearch.setObjectName("radioButtonSearch")
         self.lineEditSearch = QtWidgets.QLineEdit(AddGameDialog)
         self.lineEditSearch.setEnabled(True)
         self.lineEditSearch.setGeometry(QtCore.QRect(10, 54, 231, 20))
@@ -65,23 +50,34 @@ class Ui_AddGameDialog(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lineEditSearch.sizePolicy().hasHeightForWidth())
         self.lineEditSearch.setSizePolicy(sizePolicy)
-        self.lineEditSearch.setObjectName(_fromUtf8("lineEditSearch"))
+        self.lineEditSearch.setObjectName("lineEditSearch")
         self.pushButtonOk = QtWidgets.QPushButton(AddGameDialog)
         self.pushButtonOk.setEnabled(False)
         self.pushButtonOk.setGeometry(QtCore.QRect(80, 80, 75, 23))
-        self.pushButtonOk.setObjectName(_fromUtf8("pushButtonOk"))
+        self.pushButtonOk.setObjectName("pushButtonOk")
         self.pushButtonCancel = QtWidgets.QPushButton(AddGameDialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(160, 80, 75, 23))
-        self.pushButtonCancel.setObjectName(_fromUtf8("pushButtonCancel"))
+        self.pushButtonCancel.setObjectName("pushButtonCancel")
 
         self.retranslateUi(AddGameDialog)
         QtCore.QMetaObject.connectSlotsByName(AddGameDialog)
 
     def retranslateUi(self, AddGameDialog):
-        AddGameDialog.setWindowTitle(_translate("AddGameDialog", "Add game by", None))
-        self.radioButtonUrl.setText(_translate("AddGameDialog", "GameFAQs\' url", None))
-        self.radioButtonSearch.setText(_translate("AddGameDialog", "GameFAQs\' game search", None))
-        self.pushButtonOk.setText(_translate("AddGameDialog", "Ok", None))
-        self.pushButtonCancel.setText(_translate("AddGameDialog", "Cancel", None))
+        _translate = QtCore.QCoreApplication.translate
+        AddGameDialog.setWindowTitle(_translate("AddGameDialog", "Add game by"))
+        self.radioButtonUrl.setText(_translate("AddGameDialog", "GameFAQs\' url"))
+        self.radioButtonSearch.setText(_translate("AddGameDialog", "GameFAQs\' game search"))
+        self.pushButtonOk.setText(_translate("AddGameDialog", "Ok"))
+        self.pushButtonCancel.setText(_translate("AddGameDialog", "Cancel"))
 
-import app_icon_rc
+import views.app_icon_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    AddGameDialog = QtWidgets.QDialog()
+    ui = Ui_AddGameDialog()
+    ui.setupUi(AddGameDialog)
+    AddGameDialog.show()
+    sys.exit(app.exec_())
+

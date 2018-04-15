@@ -1,4 +1,4 @@
-import constants
+from models.constants import headers, ORDER_ASCENDING
 from PyQt5.QtGui import *
 
 class SortListModel():
@@ -8,7 +8,7 @@ class SortListModel():
     def clear(self):
         self.sort = QStandardItemModel()
         self.available = QStandardItemModel()
-        for h in constants.headers:
+        for h in headers:
             item = QStandardItem(h)
             item.setEditable(False)
             self.available.appendRow(item)
@@ -33,7 +33,7 @@ class SortListModel():
     def to_sort(self, list_indexes):
         for index in list_indexes:
             item = str(self.available.itemFromIndex(index).text()) + \
-                   ' (' + constants.ORDER_ASCENDING + ')'
+                   ' (' + ORDER_ASCENDING + ')'
             item = QStandardItem(item)
             item.setEditable(False)
             self.sort.appendRow(item)
@@ -47,7 +47,7 @@ class SortListModel():
             i = 0
             while not placed and i < self.available.rowCount():
                 item_i = str(self.available.item(i).text())
-                if constants.headers.index(item_i) > constants.headers.index(item):
+                if headers.index(item_i) > headers.index(item):
                     placed = True
                 else:
                     i = i + 1
