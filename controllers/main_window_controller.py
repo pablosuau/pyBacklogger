@@ -150,7 +150,7 @@ class MainWindowController(QtWidgets.QWidget):
                         data = self.table.get_game_data(i)
                         data_list = []
                         for h in headers:
-                            data_list.append(str(data[h]).encode('utf-8'))
+                            data_list.append(str(data[h]))
                         writer.writerows([data_list])
                         progress.setValue(i+1)
 
