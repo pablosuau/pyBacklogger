@@ -118,7 +118,7 @@ class MainWindowController(QtWidgets.QWidget):
                     for row in reader:
                         row_dict = dict()
                         for j in range(0, len(headers)):
-                            row_dict[headers[j]] = row[j].decode('utf-8')
+                            row_dict[headers[j]] = row[j]
                         self.table.add_game_row(row_dict, i)
                         progress.setValue(i+1)
                         i = i + 1
