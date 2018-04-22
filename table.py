@@ -120,6 +120,18 @@ class Table(QtWidgets.QTableWidget):
             else:
                 data[COLUMN_RATING] = '0.00'
                 data[COLUMN_VOTES] = '0'
+            # Difficulty
+            element = doc.xpath("//fieldset[@id='js_mygames_diff']")
+            if len(element) > 0:
+                difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                if difficulty is None:
+                    data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
+                else:
+                    data[COLUMN_DIFFICULTY] = difficulty
+            else:
+                data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
+
             # Checking that the game is not already in the database
             rows = self.rowCount()
             found = False
@@ -190,6 +202,10 @@ class Table(QtWidgets.QTableWidget):
         item = QtWidgets.QTableWidgetItem(data[COLUMN_WEIGHTED])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_WEIGHTED), item)
+        # Difficulty
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_DIFFICULTY])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_DIFFICULTY), item)
         # Status
         item = QtWidgets.QTableWidgetItem(data[COLUMN_STATUS])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
