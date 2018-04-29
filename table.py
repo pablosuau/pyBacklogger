@@ -268,6 +268,8 @@ class Table(QtWidgets.QTableWidget):
         data[COLUMN_RATING] = self.item(row, headers.index(COLUMN_RATING)).text()
         data[COLUMN_VOTES] = self.item(row, headers.index(COLUMN_VOTES)).text()
         data[COLUMN_WEIGHTED] = self.item(row, headers.index(COLUMN_WEIGHTED)).text()
+        data[COLUMN_DIFFICULTY] = self.item(row, headers.index(COLUMN_DIFFICULTY)).text()
+        data[COLUMN_LENGTH] = self.item(row, headers.index(COLUMN_LENGTH)).text()
         data[COLUMN_STATUS] = self.item(row, headers.index(COLUMN_STATUS)).text()
         data[COLUMN_LABELS] = self.cellWidget(row, headers.index(COLUMN_LABELS)).labelsToString()
         data[COLUMN_NOTES] = self.item(row, headers.index(COLUMN_NOTES)).text()
