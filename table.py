@@ -19,7 +19,7 @@ from models.constants import headers, headers_extended, LABEL_NONE, COLUMN_NAME,
                              COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, \
                              COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_LENGTH, \
                              COLUMN_DIFFICULTY, COLUMN_STATUS, COLUMN_LABELS, \
-                             COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER
+                             COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER, DIFFICULTY_COLORS
 
 class Table(QtWidgets.QTableWidget):
     '''
@@ -375,6 +375,11 @@ class Table(QtWidgets.QTableWidget):
                 color = QtGui.QColor()
                 color.setHsv(step*systems.index(system), 255, 150)
                 self.item(row, headers.index(COLUMN_SYSTEM)).setForeground(color)
+
+            # COlour code for difficulty levels
+            for row in range(0, self.rowCount()):
+                value = self.item(row, headers.index(COLUMN_DIFFICULTY)).text()
+                self.item(row, headers.index(COLUMN_DIFFICULTY)).setForeground(DIFFICULTY_COLORS[value])
 
     def hide_rows(self):
         '''

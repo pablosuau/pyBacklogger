@@ -36,10 +36,19 @@ FINAL_YEAR = 2100
 FILTERED = 'filtered'
 COUNT = 'count'
 
-OPTIONS = {
+OPTIONS_STATUS = {
     'unplayed':  QtGui.QColor(155, 0, 0),
     'playing':   QtGui.QColor(0, 0, 155),
     'played':    QtGui.QColor(255, 155, 0),
     'completed': QtGui.QColor(0, 155, 0),
     'shelved':   QtGui.QColor(120, 155, 0)
+}
+
+DIFFICULTY_COLORS = {
+	'Simple': QtGui.QColor(0, 0, 155),
+	'Easy': QtGui.QColor(0, 0, 255),
+	'Just Right': QtGui.QColor(0, 155, 0),
+	'Tough': QtGui.QColor(255, 155, 0),
+	'Unforgiving': QtGui.QColor(255, 0, 0),
+	'Not Yet Rated': QtGui.QColor(155, 0, 0),
 }
