@@ -336,10 +336,16 @@ class Table(QtWidgets.QTableWidget):
                         min_value = min(min_value, value)
                         all_values.append(value)
                     except ValueError:
-                        all_values.append(-1)
+                        # Maximum value for the length field is 80+
+                        if self.item(row, headers.index(column)).text() == '80+': 
+                            all_values.append(80)
+                        else:
+                            all_values.append(-1)
                 # Assigning colour ranges
                 all_values = np.array(all_values)
                 indices = all_values == -1
+                if column == COLUMN_LENGTH:
+                    all_values = 80 - all_values
                 if max_value - min_value > 0:
                     all_values = 100*(all_values - min_value)/(max_value - min_value)
                 else:
@@ -354,6 +360,7 @@ class Table(QtWidgets.QTableWidget):
             update_colors_column(COLUMN_YEAR)
             update_colors_column(COLUMN_VOTES)
             update_colors_column(COLUMN_RATING)
+            update_colors_column(COLUMN_LENGTH)
 
             # Colour code for different systems
             systems = []
