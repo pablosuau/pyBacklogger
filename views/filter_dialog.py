@@ -57,6 +57,18 @@ class Ui_FilterDialog(object):
         self.listLabel.setGeometry(QtCore.QRect(10, 40, 231, 241))
         self.listLabel.setObjectName("listLabel")
         self.tabCategory.addTab(self.tabLabel, "")
+        self.tabDifficulty = QtWidgets.QWidget()
+        self.tabDifficulty.setObjectName("tabDifficulty")
+        self.pushButtonSelectAllDifficulty = QtWidgets.QPushButton(self.tabDifficulty)
+        self.pushButtonSelectAllDifficulty.setGeometry(QtCore.QRect(10, 7, 75, 23))
+        self.pushButtonSelectAllDifficulty.setObjectName("pushButtonSelectAllDifficulty")
+        self.pushButtonDeselectAllDifficulty = QtWidgets.QPushButton(self.tabDifficulty)
+        self.pushButtonDeselectAllDifficulty.setGeometry(QtCore.QRect(90, 7, 75, 23))
+        self.pushButtonDeselectAllDifficulty.setObjectName("pushButtonDeselectAllDifficulty")
+        self.listDifficulty = QtWidgets.QListView(self.tabDifficulty)
+        self.listDifficulty.setGeometry(QtCore.QRect(10, 40, 231, 241))
+        self.listDifficulty.setObjectName("listDifficulty")
+        self.tabCategory.addTab(self.tabDifficulty, "")
         self.pushButtonCancel = QtWidgets.QPushButton(FilterDialog)
         self.pushButtonCancel.setGeometry(QtCore.QRect(170, 330, 75, 23))
         self.pushButtonCancel.setObjectName("pushButtonCancel")
@@ -80,17 +92,10 @@ class Ui_FilterDialog(object):
         self.pushButtonDeselectAllLabel.setText(_translate("FilterDialog", "Deselect all"))
         self.pushButtonSelectAllLabel.setText(_translate("FilterDialog", "Select all"))
         self.tabCategory.setTabText(self.tabCategory.indexOf(self.tabLabel), _translate("FilterDialog", "Label"))
+        self.pushButtonSelectAllDifficulty.setText(_translate("FilterDialog", "Select all"))
+        self.pushButtonDeselectAllDifficulty.setText(_translate("FilterDialog", "Deselect all"))
+        self.tabCategory.setTabText(self.tabCategory.indexOf(self.tabDifficulty), _translate("FilterDialog", "Difficulty"))
         self.pushButtonCancel.setText(_translate("FilterDialog", "Cancel"))
         self.pushButtonOk.setText(_translate("FilterDialog", "Ok"))
 
 import views.app_icon_rc
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    FilterDialog = QtWidgets.QDialog()
-    ui = Ui_FilterDialog()
-    ui.setupUi(FilterDialog)
-    FilterDialog.show()
-    sys.exit(app.exec_())
-

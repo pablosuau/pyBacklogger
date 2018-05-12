@@ -85,6 +85,7 @@ class Table(QtWidgets.QTableWidget):
         self.models['system_list_model'] = FilterListModel()
         self.models['label_list_model'] = FilterListModel(LABEL_NONE)
         self.models['status_list_model'] = FilterListModel()
+        self.models['difficulty_list_model'] = FilterListModel()
         self.models['status_model'] = StatusModel()
         self.models['sort_list_model'] = SortListModel()
 
@@ -231,6 +232,7 @@ class Table(QtWidgets.QTableWidget):
         item = QtWidgets.QTableWidgetItem(data[COLUMN_DIFFICULTY])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_DIFFICULTY), item)
+        self.models['difficulty_list_model'].add(data[COLUMN_DIFFICULTY])
         # Length
         item = self._NumericWidgetItem(data[COLUMN_LENGTH])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -420,6 +422,9 @@ class Table(QtWidgets.QTableWidget):
                 filtered_out = filtered_out or \
                                self.models['status_list_model'].get_filtered(
                                    self.item(row, headers.index(COLUMN_STATUS)).text())
+                filtered_out = filtered_out or \
+                               self.models['difficulty_list_model'].get_filtered(
+                                   self.item(row, headers.index(COLUMN_DIFFICULTY)).text())
             self.setRowHidden(row, filtered_out)
 
     def show_all_rows(self):
