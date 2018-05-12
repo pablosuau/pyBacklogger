@@ -35,8 +35,22 @@ class Table(QtWidgets.QTableWidget):
         '''
         # pylint: disable=too-few-public-methods
         def __lt__(self, other):
-            return (float(str(self.text()).encode('ascii', 'ignore')) <
-                    float(str(other.text()).encode('ascii', 'ignore')))
+            def cast_number(element):
+                text = str(element.text()).encode('ascii', 'ignore')
+                try:
+                    number = float(text)
+                # These are aimed at dealing with special values in the length field
+                except ValueError as error:
+                    if element.text() == '80+':
+                        number = 80
+                    elif element.text() == 'Not Yet Rated':
+                        number = 100
+                    else:
+                        raise ValueError(error)
+
+                return number
+
+            return (cast_number(self) < cast_number(other))
 
     def __init__(self, parent=None):
         '''
@@ -218,7 +232,7 @@ class Table(QtWidgets.QTableWidget):
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_DIFFICULTY), item)
         # Length
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_LENGTH])
+        item = self._NumericWidgetItem(data[COLUMN_LENGTH])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_LENGTH), item)
         # Status
