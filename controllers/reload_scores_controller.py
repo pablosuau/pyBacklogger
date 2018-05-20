@@ -7,6 +7,11 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from models.constants import headers, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_DIFFICULTY, COLUMN_LENGTH, COLUMN_URL
 
+WARNING_MESSAGE = """<strong>A warning about doing too many requests to GameFAQs.</strong><br><br>\n 
+Making too many requests to GameFAQs during the same day can result in your IP to be permanently blocked.
+As a consequence of this, this application limits the size of the selection to be updated to 200 rows.
+Please, try not to update more than this amount of games on a single day."""
+
 class ReloadScoresController(QtWidgets.QWidget):
     progress_signal = QtCore.pyqtSignal(int)
 
@@ -18,16 +23,22 @@ class ReloadScoresController(QtWidgets.QWidget):
     def reload_scores(self):
         indexes = self.table.selectionModel().selectedRows()
         if len(indexes) == 0:
-            error = QtWidgets.QErrorMessage()
+            error = QtWidgets.QErrorMessage(self.parent)
+            error.setWindowModality(QtCore.Qt.WindowModal)
             error.showMessage('No games were selected')
             error.setWindowTitle('Reload scores')
             error.exec_()
-        elif len(indexes) > 500:
-            error = QtWidgets.QErrorMessage()
-            error.showMessage('A maximum of 500 games can be selected')
+        elif len(indexes) > 200:
+            error = QtWidgets.QErrorMessage(self.parent)
+            error.setWindowModality(QtCore.Qt.WindowModal)
+            error.showMessage(WARNING_MESSAGE + '<br><br><strong>Please select less than 200 games to use this option.</strong>')
             error.setWindowTitle('Reload scores')
             error.exec_()
         else:
+            error = QtWidgets.QErrorMessage(self.parent)
+            error.setWindowModality(QtCore.Qt.WindowModal)
+            error.showMessage(WARNING_MESSAGE)
+            error.setWindowTitle('Reload scores')
             self.progress = QtWidgets.QProgressDialog(
                 'Updating scores', '', 0, len(indexes), self.parent)
             self.progress.setWindowTitle('Reload scores')
