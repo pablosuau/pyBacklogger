@@ -17,8 +17,9 @@ from models.status_model import StatusModel
 from models.sort_list_model import SortListModel
 from models.constants import headers, headers_extended, LABEL_NONE, COLUMN_NAME, \
                              COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, \
-                             COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, \
-                             COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER
+                             COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_LENGTH, \
+                             COLUMN_DIFFICULTY, COLUMN_STATUS, COLUMN_LABELS, \
+                             COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER, DIFFICULTY_COLORS
 
 class Table(QtWidgets.QTableWidget):
     '''
@@ -34,8 +35,22 @@ class Table(QtWidgets.QTableWidget):
         '''
         # pylint: disable=too-few-public-methods
         def __lt__(self, other):
-            return (float(str(self.text()).encode('ascii', 'ignore')) <
-                    float(str(other.text()).encode('ascii', 'ignore')))
+            def cast_number(element):
+                text = str(element.text()).encode('ascii', 'ignore')
+                try:
+                    number = float(text)
+                # These are aimed at dealing with special values in the length field
+                except ValueError as error:
+                    if element.text() == '80+':
+                        number = 80
+                    elif element.text() == 'Not Yet Rated':
+                        number = 100
+                    else:
+                        raise ValueError(error)
+
+                return number
+
+            return (cast_number(self) < cast_number(other))
 
     def __init__(self, parent=None):
         '''
@@ -70,6 +85,7 @@ class Table(QtWidgets.QTableWidget):
         self.models['system_list_model'] = FilterListModel()
         self.models['label_list_model'] = FilterListModel(LABEL_NONE)
         self.models['status_list_model'] = FilterListModel()
+        self.models['difficulty_list_model'] = FilterListModel()
         self.models['status_model'] = StatusModel()
         self.models['sort_list_model'] = SortListModel()
 
@@ -119,6 +135,29 @@ class Table(QtWidgets.QTableWidget):
             else:
                 data[COLUMN_RATING] = '0.00'
                 data[COLUMN_VOTES] = '0'
+            # Difficulty
+            element = doc.xpath("//fieldset[@id='js_mygames_diff']")
+            if len(element) > 0:
+                difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                if difficulty is None:
+                    data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
+                else:
+                    data[COLUMN_DIFFICULTY] = difficulty
+            else:
+                data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
+            # Length
+            element = doc.xpath("//fieldset[@id='js_mygames_time']")
+            if len(element) > 0:
+                length = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                length = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                if length is None:
+                    data[COLUMN_LENGTH] = 'Not Yet Rated'
+                else:
+                    data[COLUMN_LENGTH] = length.split(' ')[0]
+            else:
+                data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
+
             # Checking that the game is not already in the database
             rows = self.rowCount()
             found = False
@@ -189,6 +228,15 @@ class Table(QtWidgets.QTableWidget):
         item = QtWidgets.QTableWidgetItem(data[COLUMN_WEIGHTED])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, headers_extended.index(COLUMN_WEIGHTED), item)
+        # Difficulty
+        item = QtWidgets.QTableWidgetItem(data[COLUMN_DIFFICULTY])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_DIFFICULTY), item)
+        self.models['difficulty_list_model'].add(data[COLUMN_DIFFICULTY])
+        # Length
+        item = self._NumericWidgetItem(data[COLUMN_LENGTH])
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.setItem(rows, headers_extended.index(COLUMN_LENGTH), item)
         # Status
         item = QtWidgets.QTableWidgetItem(data[COLUMN_STATUS])
         item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -236,6 +284,8 @@ class Table(QtWidgets.QTableWidget):
         data[COLUMN_RATING] = self.item(row, headers.index(COLUMN_RATING)).text()
         data[COLUMN_VOTES] = self.item(row, headers.index(COLUMN_VOTES)).text()
         data[COLUMN_WEIGHTED] = self.item(row, headers.index(COLUMN_WEIGHTED)).text()
+        data[COLUMN_DIFFICULTY] = self.item(row, headers.index(COLUMN_DIFFICULTY)).text()
+        data[COLUMN_LENGTH] = self.item(row, headers.index(COLUMN_LENGTH)).text()
         data[COLUMN_STATUS] = self.item(row, headers.index(COLUMN_STATUS)).text()
         data[COLUMN_LABELS] = self.cellWidget(row, headers.index(COLUMN_LABELS)).labelsToString()
         data[COLUMN_NOTES] = self.item(row, headers.index(COLUMN_NOTES)).text()
@@ -302,10 +352,16 @@ class Table(QtWidgets.QTableWidget):
                         min_value = min(min_value, value)
                         all_values.append(value)
                     except ValueError:
-                        all_values.append(-1)
+                        # Maximum value for the length field is 80+
+                        if self.item(row, headers.index(column)).text() == '80+': 
+                            all_values.append(80)
+                        else:
+                            all_values.append(-1)
                 # Assigning colour ranges
                 all_values = np.array(all_values)
                 indices = all_values == -1
+                if column == COLUMN_LENGTH:
+                    all_values = 80 - all_values
                 if max_value - min_value > 0:
                     all_values = 100*(all_values - min_value)/(max_value - min_value)
                 else:
@@ -320,6 +376,7 @@ class Table(QtWidgets.QTableWidget):
             update_colors_column(COLUMN_YEAR)
             update_colors_column(COLUMN_VOTES)
             update_colors_column(COLUMN_RATING)
+            update_colors_column(COLUMN_LENGTH)
 
             # Colour code for different systems
             systems = []
@@ -334,6 +391,11 @@ class Table(QtWidgets.QTableWidget):
                 color = QtGui.QColor()
                 color.setHsv(step*systems.index(system), 255, 150)
                 self.item(row, headers.index(COLUMN_SYSTEM)).setForeground(color)
+
+            # COlour code for difficulty levels
+            for row in range(0, self.rowCount()):
+                value = self.item(row, headers.index(COLUMN_DIFFICULTY)).text()
+                self.item(row, headers.index(COLUMN_DIFFICULTY)).setForeground(DIFFICULTY_COLORS[value])
 
     def hide_rows(self):
         '''
@@ -360,6 +422,9 @@ class Table(QtWidgets.QTableWidget):
                 filtered_out = filtered_out or \
                                self.models['status_list_model'].get_filtered(
                                    self.item(row, headers.index(COLUMN_STATUS)).text())
+                filtered_out = filtered_out or \
+                               self.models['difficulty_list_model'].get_filtered(
+                                   self.item(row, headers.index(COLUMN_DIFFICULTY)).text())
             self.setRowHidden(row, filtered_out)
 
     def show_all_rows(self):

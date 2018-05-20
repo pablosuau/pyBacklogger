@@ -5,7 +5,7 @@ from PyQt5 import QtGui, QtCore, QtWidgets
 from lxml.html.soupparser import fromstring
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from models.constants import headers, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_URL
+from models.constants import headers, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_DIFFICULTY, COLUMN_LENGTH, COLUMN_URL
 
 class ReloadScoresController(QtWidgets.QWidget):
     progress_signal = QtCore.pyqtSignal(int)
@@ -90,8 +90,31 @@ class ReloadScoresController(QtWidgets.QWidget):
                     else:
                         rating = '0.00'
                         votes = '0'
+                    # Difficulty
+                    element = doc.xpath("//fieldset[@id='js_mygames_diff']")
+                    if len(element) > 0:
+                        difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                        difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                        if difficulty is None:
+                            difficulty = 'Not Yet Rated'
+                    else:
+                        difficulty = 'Not Yet Rated'
+                    # Length
+                    element = doc.xpath("//fieldset[@id='js_mygames_time']")
+                    if len(element) > 0:
+                        length = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                        length = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                        if length is None:
+                            length = 'Not Yet Rated'
+                        else:
+                            length = length.split(' ')[0]
+                    else:
+                        length = 'Not Yet Rated'
+
                     self.table.item(row, headers.index(COLUMN_RATING)).setText(rating)
                     self.table.item(row, headers.index(COLUMN_VOTES)).setText(votes)
+                    self.table.item(row, headers.index(COLUMN_DIFFICULTY)).setText(difficulty)
+                    self.table.item(row, headers.index(COLUMN_LENGTH)).setText(length)
                     self.progress_signal.emit(i)
                 self.table.compute_final_rating()
                 self.table.changed = True

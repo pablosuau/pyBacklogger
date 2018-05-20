@@ -30,6 +30,7 @@ class FilterGamesController(QtWidgets.QDialog):
         assign_model(self.table.models['system_list_model'], self.ui.listSystem)
         assign_model(self.table.models['status_list_model'], self.ui.listStatus)
         assign_model(self.table.models['label_list_model'], self.ui.listLabel)
+        assign_model(self.table.models['difficulty_list_model'], self.ui.listDifficulty)
 
     def setupSignals(self):
         self.ui.pushButtonSelectAllSystem.clicked.connect(
@@ -44,6 +45,10 @@ class FilterGamesController(QtWidgets.QDialog):
             lambda: self.select_all(self.ui.listLabel))
         self.ui.pushButtonDeselectAllLabel.clicked.connect(
             lambda: self.deselect_all(self.ui.listLabel))
+        self.ui.pushButtonSelectAllDifficulty.clicked.connect(
+            lambda: self.select_all(self.ui.listDifficulty))
+        self.ui.pushButtonDeselectAllDifficulty.clicked.connect(
+            lambda: self.deselect_all(self.ui.listDifficulty))
         self.ui.pushButtonOk.clicked.connect(self.ok_clicked)
         self.ui.pushButtonCancel.clicked.connect(self.cancel_clicked)
 
@@ -83,11 +88,13 @@ class FilterGamesController(QtWidgets.QDialog):
             applyFilteringPerType(self.table.models['system_list_model'], self.ui.listSystem)
             applyFilteringPerType(self.table.models['status_list_model'], self.ui.listStatus)
             applyFilteringPerType(self.table.models['label_list_model'], self.ui.listLabel)
+            applyFilteringPerType(self.table.models['difficulty_list_model'], self.ui.listDifficulty)
             self.table.hide_rows()
 
         models = [self.table.models['system_list_model'],
                   self.table.models['status_list_model'],
-                  self.table.models['label_list_model']]
+                  self.table.models['label_list_model'],
+                  self.table.models['difficulty_list_model']]
         m = 0
         while  m < len(models) and not models[m].is_any_filtered():
             m = m + 1

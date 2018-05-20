@@ -167,6 +167,47 @@
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="tabDifficulty">
+    <attribute name="title">
+     <string>Difficulty</string>
+    </attribute>
+    <widget class="QPushButton" name="pushButtonSelectAllDifficulty">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>7</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select all</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButtonDeselectAllDifficulty">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>7</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Deselect all</string>
+     </property>
+    </widget>
+    <widget class="QListView" name="listDifficulty">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>231</width>
+       <height>241</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QPushButton" name="pushButtonCancel">
    <property name="geometry">
