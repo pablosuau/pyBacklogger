@@ -134,33 +134,35 @@ class Table(QtWidgets.QTableWidget):
                     data[COLUMN_VOTES] = '0'
                 else:
                     data[COLUMN_RATING] = value.split(' / ')[0]
-                    votes = element[0].getchildren()[0].getchildren()[0].getchildren()[2].text
-                    data[COLUMN_VOTES] = votes.split(' ')[0]
+                    value = element[0].getchildren()[0].getchildren()[0].getchildren()[2].text
+                    data[COLUMN_VOTES] = value.split(' ')[0]
             else:
                 data[COLUMN_RATING] = '0.00'
                 data[COLUMN_VOTES] = '0'
-            # Difficulty
-            element = doc.xpath("//fieldset[@id='js_mygames_diff']")
-            if len(element) > 0:
-                value = element[0].getchildren()[0].getchildren()[0] \
-                                       .getchildren()[1].findtext('a')
-                if value is None:
-                    data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
+            # Difficulty and length
+            def parse_difficulty_length(doc, id_element):
+                '''
+                Auxiliar function to parse difficulty and length, since the parsing process
+                is very similar
+                '''
+                element = doc.xpath("//fieldset[@id='" + id_element + "']")
+                if len(element) > 0:
+                    value = element[0] \
+                            .getchildren()[0] \
+                            .getchildren()[0] \
+                            .getchildren()[1] \
+                            .findtext('a')
+                    if value is None:
+                        ret = 'Not Yet Rated'
+                    else:
+                        ret = value
+                        if id_element == 'js_mygames_time':
+                            ret = ret.split(' ')[0]
                 else:
-                    data[COLUMN_DIFFICULTY] = value
-            else:
-                data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
-            # Length
-            element = doc.xpath("//fieldset[@id='js_mygames_time']")
-            if len(element) > 0:
-                value = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                if value is None:
-                    data[COLUMN_LENGTH] = 'Not Yet Rated'
-                else:
-                    data[COLUMN_LENGTH] = value.split(' ')[0]
-            else:
-                data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
-
+                    ret = 'Not Yet Rated'
+                return ret
+            data[COLUMN_DIFFICULTY] = parse_difficulty_length(doc, 'js_mygames_diff')
+            data[COLUMN_LENGTH] = parse_difficulty_length(doc, 'js_mygames_time')
             # Checking that the game is not already in the database
             rows = self.rowCount()
             found = False
@@ -206,45 +208,30 @@ class Table(QtWidgets.QTableWidget):
         else:
             rows = row
 
-        # name
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_NAME])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_NAME), item)
-        # system
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_SYSTEM])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_SYSTEM), item)
-        self.models['system_list_model'].add(data[COLUMN_SYSTEM])
-        # date
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_YEAR])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_YEAR), item)
-        # rating
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_RATING])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_RATING), item)
-        # votes
-        item_numeric = self._NumericWidgetItem(data[COLUMN_VOTES])
-        item_numeric.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_VOTES), item_numeric)
-        # Weighted rating
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_WEIGHTED])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_WEIGHTED), item)
-        # Difficulty
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_DIFFICULTY])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_DIFFICULTY), item)
-        self.models['difficulty_list_model'].add(data[COLUMN_DIFFICULTY])
-        # Length
-        item = self._NumericWidgetItem(data[COLUMN_LENGTH])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_LENGTH), item)
-        # Status
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_STATUS])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_STATUS), item)
+        def set_item(data, column, set_flags=True):
+            """
+            Creates items for the table and assigns elements
+            """
+            item = QtWidgets.QTableWidgetItem(data[column])
+            if set_flags:
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+            self.setItem(rows, headers_extended.index(column), item)
+            return item
+
+        set_item(data, COLUMN_NAME)
+        set_item(data, COLUMN_SYSTEM)
+        set_item(data, COLUMN_YEAR)
+        set_item(data, COLUMN_RATING)
+        set_item(data, COLUMN_VOTES)
+        set_item(data, COLUMN_WEIGHTED)
+        set_item(data, COLUMN_DIFFICULTY)
+        set_item(data, COLUMN_LENGTH)
+        set_item(data, COLUMN_URL)
+        set_item(data, COLUMN_NOTES, False)
+        item = set_item(data, COLUMN_STATUS)
         item.setForeground(self.models['status_model'].getColor(data[COLUMN_STATUS]))
+        self.models['difficulty_list_model'].add(data[COLUMN_DIFFICULTY])
+        self.models['system_list_model'].add(data[COLUMN_SYSTEM])
         self.models['status_list_model'].add(data[COLUMN_STATUS])
         # labels
         item = QtWidgets.QTableWidgetItem('')
@@ -256,14 +243,6 @@ class Table(QtWidgets.QTableWidget):
         new_labels = widget.getLabels()
         for label in new_labels:
             self.models['label_list_model'].add(label)
-        # Notes
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_NOTES])
-        self.setItem(rows, headers.index(COLUMN_NOTES), item)
-        # Url
-        item = QtWidgets.QTableWidgetItem(data[COLUMN_URL])
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_URL), item)
-
         # Used to restore the original order
         item = QtWidgets.QTableWidgetItem()
         item.setData(Qt.DisplayRole, self.last_index)
