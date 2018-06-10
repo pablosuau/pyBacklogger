@@ -36,21 +36,25 @@ class Table(QtWidgets.QTableWidget):
         # pylint: disable=too-few-public-methods
         def __lt__(self, other):
             def cast_number(element):
+                '''
+                Transforms a string into a number for those fields that may
+                include special values that do not translate well into numbers
+                '''
                 text = str(element.text()).encode('ascii', 'ignore')
                 try:
                     number = float(text)
                 # These are aimed at dealing with special values in the length field
                 except ValueError as error:
                     if element.text() == '80+':
-                        number = 80
+                        number = 80.0
                     elif element.text() == 'Not Yet Rated':
-                        number = 100
+                        number = 100.0
                     else:
                         raise ValueError(error)
 
                 return number
 
-            return (cast_number(self) < cast_number(other))
+            return cast_number(self) < cast_number(other)
 
     def __init__(self, parent=None):
         '''
@@ -113,23 +117,23 @@ class Table(QtWidgets.QTableWidget):
             data[COLUMN_NAME] = element[0].findtext('a')
             # Game's system
             element = doc.xpath("//title")
-            system = element[0].text
-            system = system.split(data[COLUMN_NAME] + ' for ')[1]
-            system = system.split(' - GameFAQs')[0]
-            data[COLUMN_SYSTEM] = system
+            value = element[0].text
+            value = value.split(data[COLUMN_NAME] + ' for ')[1]
+            value = value.split(' - GameFAQs')[0]
+            data[COLUMN_SYSTEM] = value
             # Year
             element = doc.xpath("//div[@class='pod pod_gameinfo']")
-            year = element[0].getchildren()[1].getchildren()[0].getchildren()[3].findtext('a')
-            data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', year).group()
+            value = element[0].getchildren()[1].getchildren()[0].getchildren()[3].findtext('a')
+            data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', value).group()
             # Rating, votes and final rating
             element = doc.xpath("//fieldset[@id='js_mygames_rate']")
             if len(element) > 0:
-                rating = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                if rating is None:
+                value = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                if value is None:
                     data[COLUMN_RATING] = '0.00'
                     data[COLUMN_VOTES] = '0'
                 else:
-                    data[COLUMN_RATING] = rating.split(' / ')[0]
+                    data[COLUMN_RATING] = value.split(' / ')[0]
                     votes = element[0].getchildren()[0].getchildren()[0].getchildren()[2].text
                     data[COLUMN_VOTES] = votes.split(' ')[0]
             else:
@@ -138,23 +142,22 @@ class Table(QtWidgets.QTableWidget):
             # Difficulty
             element = doc.xpath("//fieldset[@id='js_mygames_diff']")
             if len(element) > 0:
-                difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                if difficulty is None:
+                value = element[0].getchildren()[0].getchildren()[0] \
+                                       .getchildren()[1].findtext('a')
+                if value is None:
                     data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
                 else:
-                    data[COLUMN_DIFFICULTY] = difficulty
+                    data[COLUMN_DIFFICULTY] = value
             else:
                 data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
             # Length
             element = doc.xpath("//fieldset[@id='js_mygames_time']")
             if len(element) > 0:
-                length = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                length = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                if length is None:
+                value = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                if value is None:
                     data[COLUMN_LENGTH] = 'Not Yet Rated'
                 else:
-                    data[COLUMN_LENGTH] = length.split(' ')[0]
+                    data[COLUMN_LENGTH] = value.split(' ')[0]
             else:
                 data[COLUMN_DIFFICULTY] = 'Not Yet Rated'
 
@@ -322,7 +325,9 @@ class Table(QtWidgets.QTableWidget):
         weighted_rating_str[non_zeros] = ['%.2f' % x for x in weighted_rating[non_zeros]]
         # Computing the weighted rating for all the games again
         for i in range(0, rows):
-            self.item(i, headers.index(COLUMN_WEIGHTED)).setText(weighted_rating_str[i].decode('UTF-8'))
+            self.item(i, headers.index(COLUMN_WEIGHTED)) \
+                                .setText(weighted_rating_str[i] \
+                                .decode('UTF-8'))
 
     def update_colors(self):
         '''
@@ -353,7 +358,7 @@ class Table(QtWidgets.QTableWidget):
                         all_values.append(value)
                     except ValueError:
                         # Maximum value for the length field is 80+
-                        if self.item(row, headers.index(column)).text() == '80+': 
+                        if self.item(row, headers.index(column)).text() == '80+':
                             all_values.append(80)
                         else:
                             all_values.append(-1)
@@ -395,7 +400,9 @@ class Table(QtWidgets.QTableWidget):
             # COlour code for difficulty levels
             for row in range(0, self.rowCount()):
                 value = self.item(row, headers.index(COLUMN_DIFFICULTY)).text()
-                self.item(row, headers.index(COLUMN_DIFFICULTY)).setForeground(DIFFICULTY_COLORS[value])
+                self.item(row, headers \
+                               .index(COLUMN_DIFFICULTY)) \
+                               .setForeground(DIFFICULTY_COLORS[value])
 
     def hide_rows(self):
         '''
