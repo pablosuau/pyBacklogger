@@ -1,78 +1,123 @@
-from PyQt5 import QtGui, QtCore, QtWidgets
+'''
+Module that contains all the code required to add games to the backlog
+'''
+
 import re
-import urllib.request, urllib.error
+import urllib.request
+import urllib.error
+from PyQt5 import QtCore, QtWidgets
 from views.add_game_dialog import Ui_AddGameDialog
-from controllers.search_results_controller import *
+from controllers.search_results_controller import SearchResultsController
 from util import util
 from models.constants import SEARCH_URL, GAMEFAQS_URL
 
 
 class AddGameController(QtWidgets.QDialog):
+    '''
+    Controller object for adding game functionality. Games are added asynchronously
+    by means of threads.
+    '''
 
-    htmlRead = QtCore.pyqtSignal(str)
+    html_read = QtCore.pyqtSignal(str)
 
-    # UI and signal setup
     def __init__(self, table, parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
-        self.ui = Ui_AddGameDialog()
-        self.ui.setupUi(self)
+        '''
+        Set up the user interface and the signals
+
+        parameters:
+            - table: a table object
+            - parent: the parent of the controller
+        '''
+        QtWidgets.QDialog.__init__(self, parent)
+        self.user_interface = Ui_AddGameDialog()
+        self.user_interface.setupUi(self)
 
         self.table = table
         self.parent = parent
 
         self.pending_selected = None
 
-        self.setupSignals()
+        self.setup_signals()
 
-    def setupSignals(self):
-        self.ui.pushButtonOk.clicked.connect(self.okClicked)
-        self.ui.pushButtonCancel.clicked.connect(self.cancelClicked)
-        self.ui.lineEditSearch.textChanged.connect(self.textChanged)
-        self.htmlRead.connect(self.updateAddGame)
+    def setup_signals(self):
+        '''
+        Connects interface's widgets signals to the corresponding slots
+        '''
+        self.user_interface.pushButtonOk.clicked.connect(self.ok_clicked)
+        self.user_interface.pushButtonCancel.clicked.connect(self.cancel_clicked)
+        self.user_interface.lineEditSearch.textChanged.connect(self.text_changed)
+        self.html_read.connect(self.update_add_game)
 
-    # Signal slots
-    def okClicked(self):
-        self.addGame()
-        #self.hide()
+    def ok_clicked(self):
+        '''
+        Signal slot for when the ok button is clicked. The process to add
+        a game is launched
+        '''
+        self.add_game()
 
-    def cancelClicked(self):
+    def cancel_clicked(self):
+        '''
+        Signal slot for when the cancel button is clicked. The dialog
+        is closed.
+        '''
         self.hide()
 
-    def textChanged(self):
-        if len(str(self.ui.lineEditSearch.text())) > 0:
-            self.ui.pushButtonOk.setEnabled(True)
+    def text_changed(self):
+        '''
+        Signal slot for when we modify the text in the search bar. The ok button
+        is enabled or disabled depending on whether there is any text on the
+        search bar
+        '''
+        if len(str(self.user_interface.lineEditSearch.text())) > 0:
+            self.user_interface.pushButtonOk.setEnabled(True)
         else:
-            self.ui.pushButtonOk.setEnabled(False)
+            self.user_interface.pushButtonOk.setEnabled(False)
 
-    # Controller
-    def addGame(self):
-        if self.ui.radioButtonUrl.isChecked():
+    def add_game(self):
+        '''
+        The controller code entry point. A first initial thread is created fo add a new game,
+        if we are adding a game by URL, or to scrape the results of the search page, if we
+        are adding by name.
+        '''
+        if self.user_interface.radioButtonUrl.isChecked():
             self.add_by_url = True
             # Search by URL
-            self.url = str(self.ui.lineEditSearch.text()).strip()
+            self.url = str(self.user_interface.lineEditSearch.text()).strip()
             if not re.match(r'^[a-zA-Z]+://', self.url):
                 self.url = 'http://' + self.url
             if not self.url.startswith(GAMEFAQS_URL):
                 util.showErrorMessage(self.parent, 'The URL is not a valid GameFAQs one')
             else:
                 # Download the content of the page
-                self.launchAddGameWorker()
+                self.launch_add_game_worker()
         else:
             self.add_by_url = False
             # Search by name
-            self.url = SEARCH_URL + str(self.ui.lineEditSearch.text()).replace(' ', '+')
+            self.url = SEARCH_URL + str(self.user_interface.lineEditSearch.text()).replace(' ', '+')
             # Download the content of the page
-            self.launchAddGameWorker()
+            self.launch_add_game_worker()
 
-    def launchAddGameWorker(self):
+    def launch_add_game_worker(self):
+        '''
+        Creates a background process to add a game while displaying/updating a progress bar.
+        '''
         self.progress = QtWidgets.QProgressDialog("Adding game", "", 0, 0, self)
         self.progress.setCancelButton(None)
         self.progress.setWindowModality(QtCore.Qt.WindowModal)
         self.progress.show()
-        self.thread = self.AddGameWorker(self.url, self.htmlRead, self.table)
+        self.thread = self.AddGameWorker(self.url, self.html_read, self.table)
         self.thread.start()
 
-    def updateAddGame(self, html):
+    def update_add_game(self, html):
+        '''
+        Decides what's the next step after adding a game. If we are already adding games,
+        and there are games pending, a new worker is created. If we are searching by name,
+        the search dialog is displayed and a worker is created to add the first game in
+        the list of selected games.
+
+        parameters:
+            - html: html code to be parsed in order to add a game
+        '''
         self.progress.close()
         if self.add_by_url:
             self.table.add_game(self.url, str(html))
@@ -81,7 +126,7 @@ class AddGameController(QtWidgets.QDialog):
                 del self.pending_selected[0]
                 if len(self.pending_selected) == 0:
                     self.pending_selected = None
-                self.launchAddGameWorker()
+                self.launch_add_game_worker()
             else:
                 self.parent.clear_options()
                 self.parent.set_original_order()
@@ -103,28 +148,37 @@ class AddGameController(QtWidgets.QDialog):
                 del self.pending_selected[0]
                 if len(self.pending_selected) == 0:
                     self.pending_selected = None
-                self.launchAddGameWorker()
+                self.launch_add_game_worker()
 
     class AddGameWorker(QtCore.QThread):
-        def __init__(self, url, htmlRead, parent=None):
+        '''
+        Private class to create background processes in order to parse a piece of html code.
+        '''
+        def __init__(self, url, html_read, parent=None):
             QtCore.QThread.__init__(self, parent)
             self.exiting = False
             self.url = url
-            self.htmlRead = htmlRead
+            self.html_read = html_read
 
         def run(self):
+            '''
+            Parses the html assigned to the worker.
+            '''
             try:
                 req = urllib.request.Request(self.url, headers={'User-Agent' : "Magic Browser"})
                 response = urllib.request.urlopen(req)
                 self.html = response.read().decode('ascii', 'ignore')
-                self.htmlRead.emit(self.html)
-            except urllib.error.URLError as e:
-                print(e.reason)
-                util.showErrorMessage(self.parent(), 'Incorrect URL or not Internet connection')
-            except urllib.error.HTTPError as e:
-                print(e.code)
-                print(e.read())
-                util.showErrorMessage(self.parent(), 'Connection error: ' + e.code + ' ' + e.read())
+                self.html_read.emit(self.html)
+            except urllib.error.HTTPError as exception:
+                print(exception.code)
+                print(exception.read())
+                util.showErrorMessage(
+                    self.parent(),
+                    'Connection error: ' + exception.code + ' ' + exception.read()
+                )
+            except urllib.error.URLError as exception:
+                print(exception.reason)
+                util.showErrorMessage(self.parent(), 'Incorrect URL or no Internet connection')
         def __del__(self):
             self.exiting = True
             self.wait()
