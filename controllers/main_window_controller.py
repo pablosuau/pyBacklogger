@@ -177,7 +177,7 @@ class MainWindowController(QtWidgets.QWidget):
         if not self.checkEmpty():
             fgc = FilterGamesController(self.table, self)
             fgc.exec_()
-            fgc.applyFiltering()
+            fgc.apply_filtering()
             self.ui.pushButtonFilterData.setChecked(not fgc.filtering_all)
 
     def statistics_clicked(self):
