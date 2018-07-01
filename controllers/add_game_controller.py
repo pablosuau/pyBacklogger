@@ -17,6 +17,7 @@ class AddGameController(QtWidgets.QDialog):
     Controller object for adding game functionality. Games are added asynchronously
     by means of threads.
     '''
+    # pylint: disable=too-many-instance-attributes
 
     html_read = QtCore.pyqtSignal(str)
 
@@ -36,6 +37,11 @@ class AddGameController(QtWidgets.QDialog):
         self.parent = parent
 
         self.pending_selected = None
+
+        self.html = None
+        self.add_by_url = None
+        self.url = None
+        self.progress = None
 
         self.setup_signals()
 
@@ -167,8 +173,8 @@ class AddGameController(QtWidgets.QDialog):
             try:
                 req = urllib.request.Request(self.url, headers={'User-Agent' : "Magic Browser"})
                 response = urllib.request.urlopen(req)
-                self.html = response.read().decode('ascii', 'ignore')
-                self.html_read.emit(self.html)
+                html = response.read().decode('ascii', 'ignore')
+                self.html_read.emit(html)
             except urllib.error.HTTPError as exception:
                 print(exception.code)
                 print(exception.read())
