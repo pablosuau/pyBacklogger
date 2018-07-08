@@ -74,7 +74,7 @@ class AddGameController(QtWidgets.QDialog):
         is enabled or disabled depending on whether there is any text on the
         search bar
         '''
-        if len(str(self.user_interface.lineEditSearch.text())) > 0:
+        if str(self.user_interface.lineEditSearch.text()):
             self.user_interface.pushButtonOk.setEnabled(True)
         else:
             self.user_interface.pushButtonOk.setEnabled(False)
@@ -130,7 +130,7 @@ class AddGameController(QtWidgets.QDialog):
             if self.pending_selected != None:
                 self.url = self.pending_selected[0]
                 del self.pending_selected[0]
-                if len(self.pending_selected) == 0:
+                if not self.pending_selected:
                     self.pending_selected = None
                 self.launch_add_game_worker()
             else:
@@ -147,12 +147,12 @@ class AddGameController(QtWidgets.QDialog):
             src = SearchResultsController(html, parent=self)
             src.exec_()
             selected = src.get_search_results()
-            if len(selected) > 0:
+            if selected:
                 self.add_by_url = True
                 self.pending_selected = selected
                 self.url = self.pending_selected[0]
                 del self.pending_selected[0]
-                if len(self.pending_selected) == 0:
+                if not self.pending_selected:
                     self.pending_selected = None
                 self.launch_add_game_worker()
 

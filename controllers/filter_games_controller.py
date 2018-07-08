@@ -1,7 +1,14 @@
+'''
+This module controls the dialog to set filter criteria
+'''
+
 from PyQt5 import QtCore, Qt, QtWidgets
 from views.filter_dialog import Ui_FilterDialog
 
 class FilterGamesController(QtWidgets.QDialog):
+    '''
+    Controller object for the filter games dialog.
+    '''
     def __init__(self, table, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.user_interface = Ui_FilterDialog()
@@ -15,7 +22,18 @@ class FilterGamesController(QtWidgets.QDialog):
         self.setup_signals()
 
     def initialize_ui(self):
+        '''
+        Connects interface's sections with their corresponding models
+        '''
         def assign_model(model, list_widget):
+            '''
+            Private function to populate a specific section in the
+            dialog with the values stored in a model
+
+            parameters:
+                - model: the model assigned to the dialog section
+                - list_widget: the list widget to be populated
+            '''
             model_qt = Qt.QStandardItemModel()
             values_list = model.get_list()
             for value in values_list:
@@ -33,7 +51,16 @@ class FilterGamesController(QtWidgets.QDialog):
         assign_model(self.table.models['difficulty_list_model'], self.user_interface.listDifficulty)
 
     def setup_signals(self):
+        '''
+        Connects interface's widgets signals to the corresponding slots
+        '''
         def select_all(list_view):
+            '''
+            Generic callback for a 'select all' button
+
+            parameters:
+                -list_view: the list affected when the user clicks 'select all'
+            '''
             model_qt = list_view.model()
             for index in range(model_qt.rowCount()):
                 item = model_qt.item(index)
@@ -41,6 +68,12 @@ class FilterGamesController(QtWidgets.QDialog):
                     item.setCheckState(QtCore.Qt.Checked)
 
         def deselect_all(list_view):
+            '''
+            Generic callback for a 'deselect all' button
+
+            parameters:
+                - list_view: the list affected when the user clicks 'deselect all'
+            '''
             model_qt = list_view.model()
             for index in range(model_qt.rowCount()):
                 item = model_qt.item(index)
@@ -67,10 +100,20 @@ class FilterGamesController(QtWidgets.QDialog):
         self.user_interface.pushButtonCancel.clicked.connect(self.cancel_clicked)
 
     def ok_clicked(self):
+        '''
+        Callback for when the user clicks the 'ok' button. The dialog is closed and
+        the parent is informed by means of an attribute that the changes have to
+        take effect
+        '''
         self.canceled = False
         self.hide()
 
     def cancel_clicked(self):
+        '''
+        Callback for when the user clicks the 'cancel' button. The dialog is closed
+        and the parent is informed by means of an attribute that changes shouldn't
+        take effect
+        '''
         self.canceled = True
         self.hide()
 
@@ -87,7 +130,17 @@ class FilterGamesController(QtWidgets.QDialog):
         self.canceled = True
 
     def apply_filtering(self):
+        '''
+        Updates the models with information about which values to be filted
+        '''
         def apply_filtering_per_type(model, list_widget):
+            '''
+            Updates a specific model
+
+            parameters:
+                - model: the model to be updated
+                - list_widget: the list associated to that model
+            '''
             model_qt = list_widget.model()
             for index in range(model_qt.rowCount()):
                 item = model_qt.item(index)

@@ -127,7 +127,7 @@ class Table(QtWidgets.QTableWidget):
             data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', value).group()
             # Rating, votes and final rating
             element = doc.xpath("//fieldset[@id='js_mygames_rate']")
-            if len(element) > 0:
+            if element:
                 value = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
                 if value is None:
                     data[COLUMN_RATING] = '0.00'
@@ -146,7 +146,7 @@ class Table(QtWidgets.QTableWidget):
                 is very similar
                 '''
                 element = doc.xpath("//fieldset[@id='" + id_element + "']")
-                if len(element) > 0:
+                if element:
                     value = element[0] \
                             .getchildren()[0] \
                             .getchildren()[0] \
@@ -395,8 +395,8 @@ class Table(QtWidgets.QTableWidget):
                 filtered_out = self.search_string not in item_text
             if not filtered_out:
                 labels_row = self.cellWidget(row, headers.index(COLUMN_LABELS)).getLabels()
-                filtered_out = none and len(labels_row) == 0
-                if not filtered_out and len(labels_row) > 0:
+                filtered_out = none and not labels_row
+                if not filtered_out and labels_row:
                     filtered_list = []
                     for _, label in enumerate(labels_row):
                         filtered_list.append(
