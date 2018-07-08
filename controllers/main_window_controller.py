@@ -1,46 +1,59 @@
+'''
+This module controls the main dialog of the application
+'''
+
 import csv
 import os
 from shutil import copyfile
 from PyQt5 import QtGui, QtCore, QtWidgets
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 from views.main_window import Ui_MainWindow
-from controllers.add_game_controller import *
-from controllers.filter_games_controller import *
-from controllers.sort_games_controller import *
-from controllers.reload_scores_controller import *
-from controllers.statistics_window_controller import *
+from controllers.add_game_controller import AddGameController
+from controllers.filter_games_controller import FilterGamesController
+from controllers.sort_games_controller import SortGamesController
+from controllers.reload_scores_controller import ReloadScoresController
+from controllers.statistics_window_controller import StatisticsWindowController
 from models.constants import headers, COLUMN_SYSTEM, COLUMN_STATUS, COLUMN_LABELS
 
 class MainWindowController(QtWidgets.QWidget):
-    # UI and signal setup
+    '''
+    Controller object for the main window
+    '''
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
 
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        self.user_interface = Ui_MainWindow()
+        self.user_interface.setupUi(self)
 
-        self.table = self.ui.table
+        self.table = self.user_interface.table
         self.canceled = False
 
-        self.initializeUi()
-        self.setupSignals()
+        self.initialize_ui()
+        self.setup_signals()
 
-    def initializeUi(self):
+    def initialize_ui(self):
+        '''
+        Simply maximize the main window
+        '''
         self.setWindowState(QtCore.Qt.WindowMaximized)
 
-    def setupSignals(self):
-        self.ui.pushButtonAddGame.clicked.connect(self.add_game_clicked)
-        self.ui.pushButtonRemoveGame.clicked.connect(self.remove_game_clicked)
-        self.ui.pushButtonLoadBacklog.clicked.connect(self.load_backlog_clicked)
-        self.ui.pushButtonSaveBacklog.clicked.connect(self.save_backlog_clicked)
-        self.ui.pushButtonReloadScores.clicked.connect(self.reload_scores_clicked)
-        self.ui.pushButtonSortData.clicked.connect(self.sort_data_clicked)
-        self.ui.pushButtonFilterData.clicked.connect(self.filter_data_clicked)
-        self.ui.pushButtonStatistics.clicked.connect(self.statistics_clicked)
-        self.ui.lineEditSearchGame.textChanged.connect(self.search_text_changed)
+    def setup_signals(self):
+        '''
+        Connects interface's widgets signals to the corresponding slots
+        '''
+        self.user_interface.pushButtonAddGame.clicked.connect(self.add_game_clicked)
+        self.user_interface.pushButtonRemoveGame.clicked.connect(self.remove_game_clicked)
+        self.user_interface.pushButtonLoadBacklog.clicked.connect(self.load_backlog_clicked)
+        self.user_interface.pushButtonSaveBacklog.clicked.connect(self.save_backlog_clicked)
+        self.user_interface.pushButtonReloadScores.clicked.connect(self.reload_scores_clicked)
+        self.user_interface.pushButtonSortData.clicked.connect(self.sort_data_clicked)
+        self.user_interface.pushButtonFilterData.clicked.connect(self.filter_data_clicked)
+        self.user_interface.pushButtonStatistics.clicked.connect(self.statistics_clicked)
+        self.user_interface.lineEditSearchGame.textChanged.connect(self.search_text_changed)
 
     def add_game_clicked(self):
+        ''' 
+        Display the dialog to add new games
+        '''
         addGameController = AddGameController(self.table, parent=self)
         addGameController.show()
 
@@ -165,20 +178,20 @@ class MainWindowController(QtWidgets.QWidget):
             rsc.reload_scores()
 
     def sort_data_clicked(self):
-        self.ui.pushButtonSortData.setChecked(False)
+        self.user_interface.pushButtonSortData.setChecked(False)
         if not self.checkEmpty():
             sgc = SortGamesController(self.table, self)
             sgc.exec_()
             sgc.applySorting()
-            self.ui.pushButtonSortData.setChecked(sgc.sorting_active)
+            self.user_interface.pushButtonSortData.setChecked(sgc.sorting_active)
 
     def filter_data_clicked(self):
-        self.ui.pushButtonFilterData.setChecked(False)
+        self.user_interface.pushButtonFilterData.setChecked(False)
         if not self.checkEmpty():
             fgc = FilterGamesController(self.table, self)
             fgc.exec_()
             fgc.apply_filtering()
-            self.ui.pushButtonFilterData.setChecked(not fgc.filtering_all)
+            self.user_interface.pushButtonFilterData.setChecked(not fgc.filtering_all)
 
     def statistics_clicked(self):
         if not self.checkEmpty():
@@ -186,7 +199,7 @@ class MainWindowController(QtWidgets.QWidget):
             swc.exec_()
 
     def search_text_changed(self):
-        search_text = str(self.ui.lineEditSearchGame.text()).lower()
+        search_text = str(self.user_interface.lineEditSearchGame.text()).lower()
         self.table.search_string = search_text
         self.table.hide_rows()
 
@@ -216,9 +229,9 @@ class MainWindowController(QtWidgets.QWidget):
             event.ignore()
 
     def clear_options(self):
-        self.ui.pushButtonSortData.setChecked(False)
-        self.ui.pushButtonFilterData.setChecked(False)
-        self.ui.lineEditSearchGame.setText('')
+        self.user_interface.pushButtonSortData.setChecked(False)
+        self.user_interface.pushButtonFilterData.setChecked(False)
+        self.user_interface.lineEditSearchGame.setText('')
 
         self.table.models['system_list_model'].clear_filtered()
         self.table.models['status_list_model'].clear_filtered()
