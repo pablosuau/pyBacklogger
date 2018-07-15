@@ -5,14 +5,15 @@ This module controls the main dialog of the application
 import csv
 import os
 from shutil import copyfile
-from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from views.main_window import Ui_MainWindow
 from controllers.add_game_controller import AddGameController
 from controllers.filter_games_controller import FilterGamesController
 from controllers.sort_games_controller import SortGamesController
 from controllers.reload_scores_controller import ReloadScoresController
 from controllers.statistics_window_controller import StatisticsWindowController
-from models.constants import headers, COLUMN_SYSTEM, COLUMN_STATUS, COLUMN_LABELS
+from models.constants import headers, headers_extended, COLUMN_SYSTEM, COLUMN_STATUS, \
+                             COLUMN_LABELS, COLUMN_ORDER
 
 class MainWindowController(QtWidgets.QWidget):
     '''
@@ -51,29 +52,32 @@ class MainWindowController(QtWidgets.QWidget):
         self.user_interface.lineEditSearchGame.textChanged.connect(self.search_text_changed)
 
     def add_game_clicked(self):
-        ''' 
+        '''
         Display the dialog to add new games
         '''
-        addGameController = AddGameController(self.table, parent=self)
-        addGameController.show()
+        add_game_controller = AddGameController(self.table, parent=self)
+        add_game_controller.show()
 
     def remove_game_clicked(self):
+        '''
+        Removes the game/games selected. A confirmation dialog is displayed first.
+        '''
         indexes = self.table.selectionModel().selectedRows()
-        if len(indexes) > 0:
+        if indexes:
             actual_indexes = []
             for index in sorted(indexes):
                 if not self.table.isRowHidden(index.row()):
                     actual_indexes.append(index.row())
-            names = []
-            systems = []
+            name = []
+            system = []
             for i in actual_indexes:
-                names.append(self.table.item(i, 0).text())
-                systems.append(self.table.item(i, 1).text())
+                name.append(self.table.item(i, 0).text())
+                system.append(self.table.item(i, 1).text())
 
             delete_msg = 'Are you sure you want to delete the following entries?\n'
-            for i in range(0, min(len(names), 10)):
-                delete_msg = delete_msg + '\n' + names[i] + ' (' + systems[i] + ')'
-            if len(names) > 10:
+            for i in range(0, min(len(name), 10)):
+                delete_msg = delete_msg + '\n' + name[i] + ' (' + system[i] + ')'
+            if len(name) > 10:
                 delete_msg = delete_msg + '\n...'
             reply = QtWidgets.QMessageBox.question(
                 self, 'Confirm game removal',
@@ -106,22 +110,26 @@ class MainWindowController(QtWidgets.QWidget):
             error.exec_()
 
     def load_backlog_clicked(self):
+        '''
+        Displays the dialog to load a backlog and populates the table with the
+        information of the selected file, if any was selected.
+        '''
         confirm = False
         if self.table.changed:
-            confirm = self.showConfirmDialog()
+            confirm = self.show_confirm_dialog()
         if confirm or not self.table.changed:
-            fileName = QtWidgets.QFileDialog.getOpenFileName(self, 'Load backlog', '', '*.blg')[0]
-            if fileName:
+            filename = QtWidgets.QFileDialog.getOpenFileName(self, 'Load backlog', '', '*.blg')[0]
+            if filename:
                 self.table.last_index = 0
 
                 self.clear_options()
 
                 for i in reversed(range(self.table.rowCount())):
                     self.table.removeRow(i)
-                with open(fileName, 'r') as fp:
-                    reader = csv.reader(fp, delimiter=',', quoting=csv.QUOTE_ALL)
+                with open(filename, 'r') as file:
+                    reader = csv.reader(file, delimiter=',', quoting=csv.QUOTE_ALL)
                     rows = sum(1 for row in reader)
-                    fp.seek(0)
+                    file.seek(0)
                     progress = QtWidgets.QProgressDialog("Loading backlog", "", 0, rows, self)
                     progress.setCancelButton(None)
                     progress.setWindowModality(QtCore.Qt.WindowModal)
@@ -130,8 +138,8 @@ class MainWindowController(QtWidgets.QWidget):
                     self.table.loading = True
                     for row in reader:
                         row_dict = dict()
-                        for j in range(0, len(headers)):
-                            row_dict[headers[j]] = row[j]
+                        for header, cell in zip(headers, row):
+                            row_dict[header] = cell
                         self.table.add_game_row(row_dict, i)
                         progress.setValue(i+1)
                         i = i + 1
@@ -141,19 +149,22 @@ class MainWindowController(QtWidgets.QWidget):
                     self.table.loading = False
 
     def save_backlog_clicked(self):
-        if not self.checkEmpty():
-            fileName = QtWidgets.QFileDialog.getSaveFileName(self, 'Save backlog', '', '*.blg')[0]
-            if fileName:
-                if os.path.isfile(fileName):
-                    (dir, file) = os.path.split(str(fileName))
-                    name, extension = os.path.splitext(file)
-                    bak_file = os.path.join(dir, name + '.bak')
-                    copyfile(fileName, bak_file)
-                with open(fileName, 'w') as fp:
+        '''
+        Displays the dialog to save the backlog. It saves the backlog as a csv file, if any file
+        was selected, after a backup copy of the original file was created.
+        '''
+        if not self.check_empty():
+            filename = QtWidgets.QFileDialog.getSaveFileName(self, 'Save backlog', '', '*.blg')[0]
+            if filename:
+                if os.path.isfile(filename):
+                    (directory, file) = os.path.split(str(filename))
+                    name, _ = os.path.splitext(file)
+                    copyfile(filename, os.path.join(directory, name + '.bak'))
+                with open(filename, 'w') as file:
                     self.set_original_order()
 
                     writer = csv.writer(
-                        fp, delimiter=',', lineterminator='\n',
+                        file, delimiter=',', lineterminator='\n',
                         quoting=csv.QUOTE_ALL)
                     rows = self.table.rowCount()
                     progress = QtWidgets.QProgressDialog("Saving backlog", "", 0, rows, self)
@@ -162,8 +173,8 @@ class MainWindowController(QtWidgets.QWidget):
                     for i in range(0, rows):
                         data = self.table.get_game_data(i)
                         data_list = []
-                        for h in headers:
-                            data_list.append(str(data[h]))
+                        for header in headers:
+                            data_list.append(str(data[header]))
                         writer.writerows([data_list])
                         progress.setValue(i+1)
 
@@ -173,37 +184,58 @@ class MainWindowController(QtWidgets.QWidget):
                     self.table.changed = False
 
     def reload_scores_clicked(self):
-        if not self.checkEmpty():
-            rsc = ReloadScoresController(self.table, self)
-            rsc.reload_scores()
+        '''
+        Invokes the controller that reloads the data for the selected games
+        by re-scraping
+        '''
+        if not self.check_empty():
+            reload_scores_controller = ReloadScoresController(self.table, self)
+            reload_scores_controller.reload_scores()
 
     def sort_data_clicked(self):
+        '''
+        Displays the dialog to select sorting criteria for the data
+        '''
         self.user_interface.pushButtonSortData.setChecked(False)
-        if not self.checkEmpty():
-            sgc = SortGamesController(self.table, self)
-            sgc.exec_()
-            sgc.applySorting()
-            self.user_interface.pushButtonSortData.setChecked(sgc.sorting_active)
+        if not self.check_empty():
+            sort_games_controller = SortGamesController(self.table, self)
+            sort_games_controller.exec_()
+            sort_games_controller.applySorting()
+            self.user_interface.pushButtonSortData.setChecked(sort_games_controller.sorting_active)
 
     def filter_data_clicked(self):
+        '''
+        Displays the dialog to select filterin criteria for the data
+        '''
         self.user_interface.pushButtonFilterData.setChecked(False)
-        if not self.checkEmpty():
-            fgc = FilterGamesController(self.table, self)
-            fgc.exec_()
-            fgc.apply_filtering()
-            self.user_interface.pushButtonFilterData.setChecked(not fgc.filtering_all)
+        if not self.check_empty():
+            filter_games_controller = FilterGamesController(self.table, self)
+            filter_games_controller.exec_()
+            filter_games_controller.apply_filtering()
+            self.user_interface.pushButtonFilterData.setChecked(
+                not filter_games_controller.filtering_all)
 
     def statistics_clicked(self):
-        if not self.checkEmpty():
-            swc = StatisticsWindowController(self)
-            swc.exec_()
+        '''
+        Displays the statistics window
+        '''
+        if not self.check_empty():
+            statistics_window_controller = StatisticsWindowController(self)
+            statistics_window_controller.exec_()
 
     def search_text_changed(self):
+        '''
+        Callback for when the text in the search edit field changes. Gives the control
+        to the table object to do so.
+        '''
         search_text = str(self.user_interface.lineEditSearchGame.text()).lower()
         self.table.search_string = search_text
         self.table.hide_rows()
 
-    def checkEmpty(self):
+    def check_empty(self):
+        '''
+        Displays an error message if the backlog is empty.
+        '''
         empty = self.table.rowCount() == 0
         if empty:
             error = QtWidgets.QErrorMessage()
@@ -212,7 +244,11 @@ class MainWindowController(QtWidgets.QWidget):
             error.exec_()
         return empty
 
-    def showConfirmDialog(self):
+    def show_confirm_dialog(self):
+        '''
+        Displays a confirmation window for those cases in which an operation may cause
+        a result that may not be cancelled.
+        '''
         reply = QtWidgets.QMessageBox.question(
             self, 'Confirm action',
             'Your data changed since you loaded it. Are you sure you want to do this?',
@@ -220,15 +256,26 @@ class MainWindowController(QtWidgets.QWidget):
         return reply == QtWidgets.QMessageBox.Yes
 
     def closeEvent(self, event):
+        # pylint: disable-msg=invalid-name
+        '''
+        Callback which is invoked when the main window is closed. It asks for confirmation
+        in case there is unsaved data.
+
+        Ignoring pylint warning about invalid name because this is overriding
+        a method from the super class
+        '''
         confirm = False
         if self.table.changed:
-            confirm = self.showConfirmDialog()
+            confirm = self.show_confirm_dialog()
         if confirm or not self.table.changed:
             event.accept()
         else:
             event.ignore()
 
     def clear_options(self):
+        '''
+        Resets the interface options to the default values.
+        '''
         self.user_interface.pushButtonSortData.setChecked(False)
         self.user_interface.pushButtonFilterData.setChecked(False)
         self.user_interface.lineEditSearchGame.setText('')
@@ -240,6 +287,10 @@ class MainWindowController(QtWidgets.QWidget):
         self.table.show_all_rows()
 
     def set_original_order(self):
+        '''
+        Restores the order of the rows in the backlog to that in which
+        they were read from the file/downloaded from GameFAQs
+        '''
         self.table.models['sort_list_model'].clear()
         order = QtCore.Qt.AscendingOrder
-        self.table.sortByColumn(constants.headers_extended.index(constants.COLUMN_ORDER), order)
+        self.table.sortByColumn(headers_extended.index(COLUMN_ORDER), order)
