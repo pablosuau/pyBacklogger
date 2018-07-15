@@ -1,13 +1,13 @@
 from random import randint
 from time import sleep
-import urllib.request, urllib.error
-from PyQt5 import QtGui, QtCore, QtWidgets
+import urllib.request
+import urllib.error
+from PyQt5 import QtCore, QtWidgets, Qt
 from lxml.html.soupparser import fromstring
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from models.constants import headers, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_DIFFICULTY, COLUMN_LENGTH, COLUMN_URL
+from models.constants import headers, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_DIFFICULTY, \
+                             COLUMN_LENGTH, COLUMN_URL
 
-WARNING_MESSAGE = """<strong>A warning about doing too many requests to GameFAQs.</strong><br><br>\n 
+WARNING_MESSAGE = """<strong>A warning about doing too many requests to GameFAQs.</strong><br><br>\n
 Making too many requests to GameFAQs during the same day can result in your IP to be permanently blocked.
 As a consequence of this, this application limits the size of the selection to be updated to 200 rows.
 Please, try not to update more than this amount of games on a single day."""
@@ -22,7 +22,7 @@ class ReloadScoresController(QtWidgets.QWidget):
 
     def reload_scores(self):
         indexes = self.table.selectionModel().selectedRows()
-        if len(indexes) == 0:
+        if indexes:
             error = QtWidgets.QErrorMessage(self.parent)
             error.setWindowModality(QtCore.Qt.WindowModal)
             error.showMessage('No games were selected')
@@ -31,7 +31,8 @@ class ReloadScoresController(QtWidgets.QWidget):
         elif len(indexes) > 200:
             error = QtWidgets.QErrorMessage(self.parent)
             error.setWindowModality(QtCore.Qt.WindowModal)
-            error.showMessage(WARNING_MESSAGE + '<br><br><strong>Please select less than 200 games to use this option.</strong>')
+            error.showMessage(WARNING_MESSAGE + \
+                '<br><br><strong>Please select less than 200 games to use this option.</strong>')
             error.setWindowTitle('Reload scores')
             error.exec_()
         else:
@@ -72,26 +73,26 @@ class ReloadScoresController(QtWidgets.QWidget):
                     html = response.read().decode('ascii', 'ignore')
                     doc = fromstring(html)
                     # Updating the name, in case it changed
-                    el = doc.xpath("//h1[@class='page-title']")
-                    name = el[0].findtext('a')
+                    element = doc.xpath("//h1[@class='page-title']")
+                    name = element[0].findtext('a')
                     self.table.item(row, headers.index(COLUMN_NAME)).setText(name)
                     # Updating the score
-                    el = doc.xpath("//fieldset[@id='js_mygames_rate']")
-                    if len(el) > 0:
+                    element = doc.xpath("//fieldset[@id='js_mygames_rate']")
+                    if element:
                         rating_str = (
-                            el[0]
+                            element[0]
                             .getchildren()[0]
                             .getchildren()[0]
                             .getchildren()[1]
                             .findtext('a')
                         )
-                        if rating_str == None:
+                        if rating_str is None:
                             rating = '0.00'
                             votes = '0'
                         else:
                             rating = rating_str.split(' / ')[0]
                             votes_str = (
-                                el[0]
+                                element[0]
                                 .getchildren()[0]
                                 .getchildren()[0]
                                 .getchildren()[2]
@@ -103,18 +104,22 @@ class ReloadScoresController(QtWidgets.QWidget):
                         votes = '0'
                     # Difficulty
                     element = doc.xpath("//fieldset[@id='js_mygames_diff']")
-                    if len(element) > 0:
-                        difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                        difficulty = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                    if element:
+                        difficulty = element[0].getchildren()[0] \
+                            .getchildren()[0].getchildren()[1].findtext('a')
+                        difficulty = element[0].getchildren()[0] \
+                            .getchildren()[0].getchildren()[1].findtext('a')
                         if difficulty is None:
                             difficulty = 'Not Yet Rated'
                     else:
                         difficulty = 'Not Yet Rated'
                     # Length
                     element = doc.xpath("//fieldset[@id='js_mygames_time']")
-                    if len(element) > 0:
-                        length = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                        length = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
+                    if element:
+                        length = element[0].getchildren()[0] \
+                            .getchildren()[0].getchildren()[1].findtext('a')
+                        length = element[0].getchildren()[0] \
+                            .getchildren()[0].getchildren()[1].findtext('a')
                         if length is None:
                             length = 'Not Yet Rated'
                         else:
@@ -130,15 +135,16 @@ class ReloadScoresController(QtWidgets.QWidget):
                 self.table.compute_final_rating()
                 self.table.changed = True
                 self.table.update_colors()
-            except urllib.error.URLError as e:
-                print(e.reason)
-                errorMessage = QtWidgets.QErrorMessage(self.parent)
-                errorMessage.showMessage('Incorrect URL or not Internet connection')
-            except urllib.error.HTTPError as e:
-                print(e.code)
-                print(e.read())
-                errorMessage = QtWidgets.QErrorMessage(self.parent)
-                errorMessage.showMessage('Connection error: ' + e.code + ' ' + e.read())
+            except urllib.error.HTTPError as exception:
+                print(exception.code)
+                print(exception.read())
+                error_message = QtWidgets.QErrorMessage(self.parent)
+                error_message.showMessage(
+                    'Connection error: ' + exception.code + ' ' + exception.read())
+            except urllib.error.URLError as exception:
+                print(exception.reason)
+                error_message = QtWidgets.QErrorMessage(self.parent)
+                error_message.showMessage('Incorrect URL or not Internet connection')
 
         def __del__(self):
             self.exiting = True
