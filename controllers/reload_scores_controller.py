@@ -1,8 +1,14 @@
+'''
+Module that contains the code required to update the games' data by scraping
+GameFAQs. Several warning messages are displayed when convinient to avoid the user's ip
+to be banned.
+'''
+
 from random import randint
 from time import sleep
 import urllib.request
 import urllib.error
-from PyQt5 import QtCore, QtWidgets, Qt
+from PyQt5 import QtCore, QtWidgets
 from lxml.html.soupparser import fromstring
 from models.constants import headers, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_DIFFICULTY, \
                              COLUMN_LENGTH, COLUMN_URL
@@ -13,14 +19,31 @@ As a consequence of this, this application limits the size of the selection to b
 Please, try not to update more than this amount of games on a single day."""
 
 class ReloadScoresController(QtWidgets.QWidget):
+    '''
+    Controller object to update games' data by scraping GameFAQs
+    '''
     progress_signal = QtCore.pyqtSignal(int)
 
     def __init__(self, table, parent=None):
+        '''
+        There is no user interface linked to this controller,
+        so this method simply stores references to the requried
+        objects.
+
+        parameters:
+            - table: a table object
+            - parent: the parent of the controller
+        '''
         QtWidgets.QWidget.__init__(self, parent)
         self.table = table
         self.parent = parent
+        self.progress = None
 
     def reload_scores(self):
+        '''
+        Checks that between 1 and 200 games where selected, and then
+        creates a brackground thread to make the scraping requests.
+        '''
         indexes = self.table.selectionModel().selectedRows()
         if indexes:
             error = QtWidgets.QErrorMessage(self.parent)
@@ -44,17 +67,33 @@ class ReloadScoresController(QtWidgets.QWidget):
                 'Updating scores', '', 0, len(indexes), self.parent)
             self.progress.setWindowTitle('Reload scores')
             self.progress.setCancelButton(None)
-            self.progress.setWindowModality(Qt.WindowModal)
+            self.progress.setWindowModality(QtCore.Qt.WindowModal)
             self.thread = self.ReloadScoresWorker(self.table, indexes, self.progress_signal)
             self.progress_signal.connect(self.update_progress)
             self.progress.setValue(0)
             self.thread.start()
 
     def update_progress(self, i):
+        '''
+        Updates the progress bar
+        '''
         self.progress.setValue(i+1)
 
     class ReloadScoresWorker(QtCore.QThread):
+        '''
+        Object for the thread that will scrape GameFAQs to update
+        games' data.
+        '''
         def __init__(self, table, indexes, progress_signal, parent=None):
+            '''
+            Initialization of the thread.
+
+            parameters:
+                - table: the table object
+                - indexes: the index of the games to update
+                - progress_signal: the signal linked to the progress bar dialog
+                - parent: the parent object
+            '''
             QtCore.QThread.__init__(self, parent)
             self.exiting = False
             self.table = table
@@ -63,19 +102,25 @@ class ReloadScoresController(QtWidgets.QWidget):
             self.progress_signal = progress_signal
 
         def run(self):
+            '''
+            Downloads the HTML data from GameFAQs for the selected games and
+            applies the required updated to the data in the table.
+            '''
             try:
                 for i in range(0, len(self.indexes)):
                     row = self.indexes[i].row()
                     sleep(randint(5, 15))
                     url = self.table.item(row, headers.index(COLUMN_URL)).text()
-                    req = urllib.request.Request(str(url), headers={'User-Agent' : "Magic Browser"})
-                    response = urllib.request.urlopen(req)
-                    html = response.read().decode('ascii', 'ignore')
-                    doc = fromstring(html)
+                    response = urllib.request.urlopen(
+                        urllib.request.Request(
+                            str(url),
+                            headers={'User-Agent' : "Magic Browser"})
+                        )
+                    doc = fromstring(response.read().decode('ascii', 'ignore'))
                     # Updating the name, in case it changed
                     element = doc.xpath("//h1[@class='page-title']")
-                    name = element[0].findtext('a')
-                    self.table.item(row, headers.index(COLUMN_NAME)).setText(name)
+                    self.table.item(row,
+                                    headers.index(COLUMN_NAME)).setText(element[0].findtext('a'))
                     # Updating the score
                     element = doc.xpath("//fieldset[@id='js_mygames_rate']")
                     if element:
@@ -102,35 +147,39 @@ class ReloadScoresController(QtWidgets.QWidget):
                     else:
                         rating = '0.00'
                         votes = '0'
-                    # Difficulty
-                    element = doc.xpath("//fieldset[@id='js_mygames_diff']")
-                    if element:
-                        difficulty = element[0].getchildren()[0] \
-                            .getchildren()[0].getchildren()[1].findtext('a')
-                        difficulty = element[0].getchildren()[0] \
-                            .getchildren()[0].getchildren()[1].findtext('a')
-                        if difficulty is None:
-                            difficulty = 'Not Yet Rated'
-                    else:
-                        difficulty = 'Not Yet Rated'
-                    # Length
-                    element = doc.xpath("//fieldset[@id='js_mygames_time']")
-                    if element:
-                        length = element[0].getchildren()[0] \
-                            .getchildren()[0].getchildren()[1].findtext('a')
-                        length = element[0].getchildren()[0] \
-                            .getchildren()[0].getchildren()[1].findtext('a')
-                        if length is None:
-                            length = 'Not Yet Rated'
-                        else:
-                            length = length.split(' ')[0]
-                    else:
-                        length = 'Not Yet Rated'
-
                     self.table.item(row, headers.index(COLUMN_RATING)).setText(rating)
                     self.table.item(row, headers.index(COLUMN_VOTES)).setText(votes)
-                    self.table.item(row, headers.index(COLUMN_DIFFICULTY)).setText(difficulty)
-                    self.table.item(row, headers.index(COLUMN_LENGTH)).setText(length)
+                    # Difficulty and length
+                    def parse_difficulty_length(doc, id_element):
+                        '''
+                        Auxiliar function to parse difficulty and length, since the parsing process
+                        is very similar
+                        '''
+                        element = doc.xpath("//fieldset[@id='" + id_element + "']")
+                        if element:
+                            value = element[0] \
+                                    .getchildren()[0] \
+                                    .getchildren()[0] \
+                                    .getchildren()[1] \
+                                    .findtext('a')
+                            if value is None:
+                                ret = 'Not Yet Rated'
+                            else:
+                                ret = value
+                                if id_element == 'js_mygames_time':
+                                    ret = ret.split(' ')[0]
+                        else:
+                            ret = 'Not Yet Rated'
+                        return ret
+                    self.table.item(row,
+                                    headers.index(COLUMN_DIFFICULTY)) \
+                                    .setText(parse_difficulty_length(doc,
+                                                                     'js_mygames_diff'))
+                    self.table.item(row,
+                                    headers.index(COLUMN_LENGTH)) \
+                                    .setText(parse_difficulty_length(doc,
+                                                                     'js_mygames_time'))
+
                     self.progress_signal.emit(i)
                 self.table.compute_final_rating()
                 self.table.changed = True
