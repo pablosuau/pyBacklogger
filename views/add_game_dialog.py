@@ -26,7 +26,7 @@ class Ui_AddGameDialog(object):
         AddGameDialog.setSizeGripEnabled(False)
         AddGameDialog.setModal(True)
         self.radioButtonUrl = QtWidgets.QRadioButton(AddGameDialog)
-        self.radioButtonUrl.setGeometry(QtCore.QRect(10, 10, 101, 17))
+        self.radioButtonUrl.setGeometry(QtCore.QRect(10, 10, 110, 17))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -65,8 +65,8 @@ class Ui_AddGameDialog(object):
     def retranslateUi(self, AddGameDialog):
         _translate = QtCore.QCoreApplication.translate
         AddGameDialog.setWindowTitle(_translate("AddGameDialog", "Add game by"))
-        self.radioButtonUrl.setText(_translate("AddGameDialog", "GameFAQs\' url"))
-        self.radioButtonSearch.setText(_translate("AddGameDialog", "GameFAQs\' game search"))
+        self.radioButtonUrl.setText(_translate("AddGameDialog", "GameFAQs' url"))
+        self.radioButtonSearch.setText(_translate("AddGameDialog", "Game search"))
         self.pushButtonOk.setText(_translate("AddGameDialog", "Ok"))
         self.pushButtonCancel.setText(_translate("AddGameDialog", "Cancel"))
 

@@ -149,16 +149,16 @@ class FilterGamesController(QtWidgets.QDialog):
         if not self.canceled:
             apply_filtering_per_type(
                 self.table.models['system_list_model'],
-                self.ui.listSystem)
+                self.user_interface.listSystem)
             apply_filtering_per_type(
                 self.table.models['status_list_model'],
-                self.ui.listStatus)
+                self.user_interface.listStatus)
             apply_filtering_per_type(
                 self.table.models['label_list_model'],
-                self.ui.listLabel)
+                self.user_interface.listLabel)
             apply_filtering_per_type(
                 self.table.models['difficulty_list_model'],
-                self.ui.listDifficulty)
+                self.user_interface.listDifficulty)
             self.table.hide_rows()
 
         models = [self.table.models['system_list_model'],
