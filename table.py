@@ -450,12 +450,12 @@ class Table(QtWidgets.QTableWidget):
         elif column == headers.index(COLUMN_STATUS):
             ssc = SelectStatusController(self.item(row, column).text(), self)
             ssc.exec_()
-            status = ssc.getStatus()
+            status = ssc.get_status()
             if status != None:
                 self.item(row, column).setText(status)
                 self.item(row, column).setForeground(self.models['status_model'].getColor(status))
                 self.models['status_list_model'].add(status)
-                self.models['status_list_model'].remove(ssc.getPreviousStatus())
+                self.models['status_list_model'].remove(ssc.get_previous_status())
                 self.hide_rows()
 
     def cell_is_changed(self):
