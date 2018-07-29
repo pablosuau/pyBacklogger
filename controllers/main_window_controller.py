@@ -178,9 +178,9 @@ class MainWindowController(QtWidgets.QWidget):
                         writer.writerows([data_list])
                         progress.setValue(i+1)
 
-                    sgc = SortGamesController(self.table, self)
-                    sgc.canceled = False
-                    sgc.applySorting()
+                    sort_games_controller = SortGamesController(self.table, self)
+                    sort_games_controller.canceled = False
+                    sort_games_controller.apply_sorting()
                     self.table.changed = False
 
     def reload_scores_clicked(self):
@@ -200,7 +200,7 @@ class MainWindowController(QtWidgets.QWidget):
         if not self.check_empty():
             sort_games_controller = SortGamesController(self.table, self)
             sort_games_controller.exec_()
-            sort_games_controller.applySorting()
+            sort_games_controller.apply_sorting()
             self.user_interface.pushButtonSortData.setChecked(sort_games_controller.sorting_active)
 
     def filter_data_clicked(self):
