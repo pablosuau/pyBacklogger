@@ -443,7 +443,7 @@ class Table(QtWidgets.QTableWidget):
         if column == headers.index(COLUMN_YEAR):
             sdc = SelectDateController(self.item(row, column).text(), self)
             sdc.exec_()
-            date = sdc.getDate()
+            date = sdc.get_date()
             if date != None:
                 self.item(row, column).setText(date)
                 self.update_colors()
