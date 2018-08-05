@@ -1,3 +1,6 @@
+'''
+Global constants for the application
+'''
 from PyQt5 import QtGui
 
 GAMEFAQS_URL = 'https://gamefaqs.gamespot.com'
@@ -21,7 +24,7 @@ LABEL_NONE = '---None---'
 
 headers = [
 	   COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES,
-	   COLUMN_WEIGHTED, COLUMN_LENGTH, COLUMN_DIFFICULTY, COLUMN_STATUS, 
+	   COLUMN_WEIGHTED, COLUMN_LENGTH, COLUMN_DIFFICULTY, COLUMN_STATUS,
 	   COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL
 ]
 headers_extended = headers[:]
@@ -45,10 +48,10 @@ OPTIONS_STATUS = {
 }
 
 DIFFICULTY_COLORS = {
-	'Simple': QtGui.QColor(0, 0, 155),
-	'Easy': QtGui.QColor(0, 0, 255),
-	'Just Right': QtGui.QColor(0, 155, 0),
-	'Tough': QtGui.QColor(255, 155, 0),
-	'Unforgiving': QtGui.QColor(255, 0, 0),
-	'Not Yet Rated': QtGui.QColor(155, 0, 0),
+    'Simple': QtGui.QColor(0, 0, 155),
+    'Easy': QtGui.QColor(0, 0, 255),
+    'Just Right': QtGui.QColor(0, 155, 0),
+    'Tough': QtGui.QColor(255, 155, 0),
+    'Unforgiving': QtGui.QColor(255, 0, 0),
+    'Not Yet Rated': QtGui.QColor(155, 0, 0),
 }
