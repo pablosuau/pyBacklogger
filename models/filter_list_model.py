@@ -6,7 +6,7 @@ from models.constants import FILTERED, COUNT
 
 class FilterListModel():
     '''
-    Model for filtering data
+    Model to store filtering criteria
     '''
     def __init__(self, initial_entries=None):
         '''
