@@ -4,7 +4,7 @@ Code to populate the statistics dialog with the corresponding data.
 
 from PyQt5 import QtWidgets
 from views.statistics_dialog import Ui_StatisticsWindow
-from models.constants import headers, COLUMN_SYSTEM, COLUMN_STATUS, \
+from models.constants import HEADERS, COLUMN_SYSTEM, COLUMN_STATUS, \
                              COLUMN_LABELS, COLUMN_YEAR, LABEL_NONE
 
 class StatisticsWindowController(QtWidgets.QDialog):
@@ -87,10 +87,10 @@ class StatisticsWindowController(QtWidgets.QDialog):
         '''
         results = dict()
         for row in range(0, self.table.rowCount()):
-            value1 = str(self.table.item(row, headers.index(self.columns[selected[0]])).text())
+            value1 = str(self.table.item(row, HEADERS.index(self.columns[selected[0]])).text())
             value1 = value1.split(',') # To deal wiht labels
             value1 = [v1.strip() if v1 != '' else LABEL_NONE for v1 in value1]
-            value2 = str(self.table.item(row, headers.index(self.columns[selected[1]])).text())
+            value2 = str(self.table.item(row, HEADERS.index(self.columns[selected[1]])).text())
             value2 = value2.split(',')
             value2 = [v2.strip() if v2 != '' else LABEL_NONE for v2 in value2]
 
@@ -121,7 +121,7 @@ class StatisticsWindowController(QtWidgets.QDialog):
         '''
         results = dict()
         for row in range(0, self.table.rowCount()):
-            values = str(self.table.item(row, headers.index(self.columns[selected[0]])).text())
+            values = str(self.table.item(row, HEADERS.index(self.columns[selected[0]])).text())
             values = values.split(',') # To deal with labels
             values = [v.strip() if v != '' else LABEL_NONE for v in values]
             for vstrip in values:

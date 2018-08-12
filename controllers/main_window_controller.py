@@ -12,7 +12,7 @@ from controllers.filter_games_controller import FilterGamesController
 from controllers.sort_games_controller import SortGamesController
 from controllers.reload_scores_controller import ReloadScoresController
 from controllers.statistics_window_controller import StatisticsWindowController
-from models.constants import headers, headers_extended, COLUMN_SYSTEM, COLUMN_STATUS, \
+from models.constants import HEADERS, HEADERS_EXTENDED, COLUMN_SYSTEM, COLUMN_STATUS, \
                              COLUMN_LABELS, COLUMN_ORDER
 
 class MainWindowController(QtWidgets.QWidget):
@@ -92,7 +92,7 @@ class MainWindowController(QtWidgets.QWidget):
                     system = self.table.get_game_data(actual_indexes[i])[COLUMN_SYSTEM]
                     status = self.table.get_game_data(actual_indexes[i])[COLUMN_STATUS]
                     labels = self.table.cellWidget(
-                        actual_indexes[i], headers.index(COLUMN_LABELS)).getLabels()
+                        actual_indexes[i], HEADERS.index(COLUMN_LABELS)).getLabels()
                     self.table.models['system_list_model'].remove(system)
                     self.table.models['status_list_model'].remove(status)
                     for label in labels:
@@ -138,7 +138,7 @@ class MainWindowController(QtWidgets.QWidget):
                     self.table.loading = True
                     for row in reader:
                         row_dict = dict()
-                        for header, cell in zip(headers, row):
+                        for header, cell in zip(HEADERS, row):
                             row_dict[header] = cell
                         self.table.add_game_row(row_dict, i)
                         progress.setValue(i+1)
@@ -173,7 +173,7 @@ class MainWindowController(QtWidgets.QWidget):
                     for i in range(0, rows):
                         data = self.table.get_game_data(i)
                         data_list = []
-                        for header in headers:
+                        for header in HEADERS:
                             data_list.append(str(data[header]))
                         writer.writerows([data_list])
                         progress.setValue(i+1)
@@ -293,4 +293,4 @@ class MainWindowController(QtWidgets.QWidget):
         '''
         self.table.models['sort_list_model'].clear()
         order = QtCore.Qt.AscendingOrder
-        self.table.sortByColumn(headers_extended.index(COLUMN_ORDER), order)
+        self.table.sortByColumn(HEADERS_EXTENDED.index(COLUMN_ORDER), order)

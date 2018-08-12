@@ -15,7 +15,7 @@ from controllers.select_status_controller import SelectStatusController
 from models.filter_list_model import FilterListModel
 from models.status_model import StatusModel
 from models.sort_list_model import SortListModel
-from models.constants import headers, headers_extended, LABEL_NONE, COLUMN_NAME, \
+from models.constants import HEADERS, HEADERS_EXTENDED, LABEL_NONE, COLUMN_NAME, \
                              COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, \
                              COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_LENGTH, \
                              COLUMN_DIFFICULTY, COLUMN_STATUS, COLUMN_LABELS, \
@@ -64,15 +64,15 @@ class Table(QtWidgets.QTableWidget):
         super(Table, self).__init__(parent)
 
         self.setRowCount(0)
-        self.setColumnCount(len(headers_extended))
+        self.setColumnCount(len(HEADERS_EXTENDED))
 
-        self.setHorizontalHeaderLabels(headers_extended)
+        self.setHorizontalHeaderLabels(HEADERS_EXTENDED)
         font = QFont()
         font.setBold(True)
         font.setPointSize(11)
         self.horizontalHeader().setFont(font)
 
-        self.setColumnHidden(headers_extended.index(COLUMN_ORDER), True)
+        self.setColumnHidden(HEADERS_EXTENDED.index(COLUMN_ORDER), True)
 
         # Weighted rating initialization
         self.minimum = 100
@@ -168,7 +168,7 @@ class Table(QtWidgets.QTableWidget):
             found = False
             pos = 0
             while not found and pos < rows:
-                if self.item(pos, headers.index(COLUMN_URL)).text() == url:
+                if self.item(pos, HEADERS.index(COLUMN_URL)).text() == url:
                     found = True
                 pos = pos + 1
 
@@ -215,7 +215,7 @@ class Table(QtWidgets.QTableWidget):
             item = QtWidgets.QTableWidgetItem(data[column])
             if set_flags:
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.setItem(rows, headers_extended.index(column), item)
+            self.setItem(rows, HEADERS_EXTENDED.index(column), item)
             return item
 
         set_item(data, COLUMN_NAME)
@@ -236,10 +236,10 @@ class Table(QtWidgets.QTableWidget):
         # labels
         item = QtWidgets.QTableWidgetItem('')
         item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers.index(COLUMN_LABELS), item)
+        self.setItem(rows, HEADERS.index(COLUMN_LABELS), item)
         widget = LabelWidget(item, self)
         widget.stringToLabels(data[COLUMN_LABELS])
-        self.setCellWidget(rows, headers_extended.index(COLUMN_LABELS), widget)
+        self.setCellWidget(rows, HEADERS_EXTENDED.index(COLUMN_LABELS), widget)
         new_labels = widget.getLabels()
         for label in new_labels:
             self.models['label_list_model'].add(label)
@@ -247,7 +247,7 @@ class Table(QtWidgets.QTableWidget):
         item = QtWidgets.QTableWidgetItem()
         item.setData(Qt.DisplayRole, self.last_index)
         item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.setItem(rows, headers_extended.index(COLUMN_ORDER), item)
+        self.setItem(rows, HEADERS_EXTENDED.index(COLUMN_ORDER), item)
         self.last_index = self.last_index + 1
 
     def get_game_data(self, row):
@@ -260,18 +260,18 @@ class Table(QtWidgets.QTableWidget):
             - A dictionary which contains the data of the selected row
         '''
         data = dict()
-        data[COLUMN_NAME] = self.item(row, headers.index(COLUMN_NAME)).text()
-        data[COLUMN_SYSTEM] = self.item(row, headers.index(COLUMN_SYSTEM)).text()
-        data[COLUMN_YEAR] = self.item(row, headers.index(COLUMN_YEAR)).text()
-        data[COLUMN_RATING] = self.item(row, headers.index(COLUMN_RATING)).text()
-        data[COLUMN_VOTES] = self.item(row, headers.index(COLUMN_VOTES)).text()
-        data[COLUMN_WEIGHTED] = self.item(row, headers.index(COLUMN_WEIGHTED)).text()
-        data[COLUMN_DIFFICULTY] = self.item(row, headers.index(COLUMN_DIFFICULTY)).text()
-        data[COLUMN_LENGTH] = self.item(row, headers.index(COLUMN_LENGTH)).text()
-        data[COLUMN_STATUS] = self.item(row, headers.index(COLUMN_STATUS)).text()
-        data[COLUMN_LABELS] = self.cellWidget(row, headers.index(COLUMN_LABELS)).labelsToString()
-        data[COLUMN_NOTES] = self.item(row, headers.index(COLUMN_NOTES)).text()
-        data[COLUMN_URL] = self.item(row, headers.index(COLUMN_URL)).text()
+        data[COLUMN_NAME] = self.item(row, HEADERS.index(COLUMN_NAME)).text()
+        data[COLUMN_SYSTEM] = self.item(row, HEADERS.index(COLUMN_SYSTEM)).text()
+        data[COLUMN_YEAR] = self.item(row, HEADERS.index(COLUMN_YEAR)).text()
+        data[COLUMN_RATING] = self.item(row, HEADERS.index(COLUMN_RATING)).text()
+        data[COLUMN_VOTES] = self.item(row, HEADERS.index(COLUMN_VOTES)).text()
+        data[COLUMN_WEIGHTED] = self.item(row, HEADERS.index(COLUMN_WEIGHTED)).text()
+        data[COLUMN_DIFFICULTY] = self.item(row, HEADERS.index(COLUMN_DIFFICULTY)).text()
+        data[COLUMN_LENGTH] = self.item(row, HEADERS.index(COLUMN_LENGTH)).text()
+        data[COLUMN_STATUS] = self.item(row, HEADERS.index(COLUMN_STATUS)).text()
+        data[COLUMN_LABELS] = self.cellWidget(row, HEADERS.index(COLUMN_LABELS)).labelsToString()
+        data[COLUMN_NOTES] = self.item(row, HEADERS.index(COLUMN_NOTES)).text()
+        data[COLUMN_URL] = self.item(row, HEADERS.index(COLUMN_URL)).text()
 
         return data
 
@@ -286,8 +286,8 @@ class Table(QtWidgets.QTableWidget):
         ratings_i = []
         votes_i = []
         for i in range(0, rows):
-            ratings_i.append(float(self.item(i, headers.index(COLUMN_RATING)).text()))
-            votes_i.append(float(self.item(i, headers.index(COLUMN_VOTES)).text()))
+            ratings_i.append(float(self.item(i, HEADERS.index(COLUMN_RATING)).text()))
+            votes_i.append(float(self.item(i, HEADERS.index(COLUMN_VOTES)).text()))
         ratings_i = np.array(ratings_i)
         votes_i = np.array(votes_i)
         non_zeros = np.where(votes_i != 0)[0]
@@ -304,7 +304,7 @@ class Table(QtWidgets.QTableWidget):
         weighted_rating_str[non_zeros] = ['%.2f' % x for x in weighted_rating[non_zeros]]
         # Computing the weighted rating for all the games again
         for i in range(0, rows):
-            self.item(i, headers.index(COLUMN_WEIGHTED)) \
+            self.item(i, HEADERS.index(COLUMN_WEIGHTED)) \
                                 .setText(weighted_rating_str[i] \
                                 .decode('UTF-8'))
 
@@ -331,13 +331,13 @@ class Table(QtWidgets.QTableWidget):
                 # Computing colour ranges
                 for row in range(0, self.rowCount()):
                     try:
-                        value = float(self.item(row, headers.index(column)).text())
+                        value = float(self.item(row, HEADERS.index(column)).text())
                         max_value = max(max_value, value)
                         min_value = min(min_value, value)
                         all_values.append(value)
                     except ValueError:
                         # Maximum value for the length field is 80+
-                        if self.item(row, headers.index(column)).text() == '80+':
+                        if self.item(row, HEADERS.index(column)).text() == '80+':
                             all_values.append(80)
                         else:
                             all_values.append(-1)
@@ -354,7 +354,7 @@ class Table(QtWidgets.QTableWidget):
                 for row in range(0, self.rowCount()):
                     color = QtGui.QColor()
                     color.setHsv(all_values[row], 255, 150)
-                    self.item(row, headers.index(column)).setForeground(color)
+                    self.item(row, HEADERS.index(column)).setForeground(color)
 
             update_colors_column(COLUMN_WEIGHTED)
             update_colors_column(COLUMN_YEAR)
@@ -365,21 +365,21 @@ class Table(QtWidgets.QTableWidget):
             # Colour code for different systems
             systems = []
             for row in range(0, self.rowCount()):
-                system = self.item(row, headers.index(COLUMN_SYSTEM)).text()
+                system = self.item(row, HEADERS.index(COLUMN_SYSTEM)).text()
                 if system not in systems:
                     systems.append(system)
             number_systems = len(systems)
             step = int(360/float(number_systems))
             for row in range(0, self.rowCount()):
-                system = self.item(row, headers.index(COLUMN_SYSTEM)).text()
+                system = self.item(row, HEADERS.index(COLUMN_SYSTEM)).text()
                 color = QtGui.QColor()
                 color.setHsv(step*systems.index(system), 255, 150)
-                self.item(row, headers.index(COLUMN_SYSTEM)).setForeground(color)
+                self.item(row, HEADERS.index(COLUMN_SYSTEM)).setForeground(color)
 
             # COlour code for difficulty levels
             for row in range(0, self.rowCount()):
-                value = self.item(row, headers.index(COLUMN_DIFFICULTY)).text()
-                self.item(row, headers \
+                value = self.item(row, HEADERS.index(COLUMN_DIFFICULTY)).text()
+                self.item(row, HEADERS \
                                .index(COLUMN_DIFFICULTY)) \
                                .setForeground(DIFFICULTY_COLORS[value])
 
@@ -391,10 +391,10 @@ class Table(QtWidgets.QTableWidget):
         for row in range(0, self.rowCount()):
             filtered_out = False
             if self.search_string != '':
-                item_text = str(self.item(row, headers.index(COLUMN_NAME)).text()).lower()
+                item_text = str(self.item(row, HEADERS.index(COLUMN_NAME)).text()).lower()
                 filtered_out = self.search_string not in item_text
             if not filtered_out:
-                labels_row = self.cellWidget(row, headers.index(COLUMN_LABELS)).getLabels()
+                labels_row = self.cellWidget(row, HEADERS.index(COLUMN_LABELS)).getLabels()
                 filtered_out = none and not labels_row
                 if not filtered_out and labels_row:
                     filtered_list = []
@@ -404,13 +404,13 @@ class Table(QtWidgets.QTableWidget):
                     filtered_out = all(filtered_list)
                 filtered_out = filtered_out or \
                                self.models['system_list_model'].get_filtered(
-                                   self.item(row, headers.index(COLUMN_SYSTEM)).text())
+                                   self.item(row, HEADERS.index(COLUMN_SYSTEM)).text())
                 filtered_out = filtered_out or \
                                self.models['status_list_model'].get_filtered(
-                                   self.item(row, headers.index(COLUMN_STATUS)).text())
+                                   self.item(row, HEADERS.index(COLUMN_STATUS)).text())
                 filtered_out = filtered_out or \
                                self.models['difficulty_list_model'].get_filtered(
-                                   self.item(row, headers.index(COLUMN_DIFFICULTY)).text())
+                                   self.item(row, HEADERS.index(COLUMN_DIFFICULTY)).text())
             self.setRowHidden(row, filtered_out)
 
     def show_all_rows(self):
@@ -440,14 +440,14 @@ class Table(QtWidgets.QTableWidget):
         row = table_item.row()
         column = table_item.column()
 
-        if column == headers.index(COLUMN_YEAR):
+        if column == HEADERS.index(COLUMN_YEAR):
             sdc = SelectDateController(self.item(row, column).text(), self)
             sdc.exec_()
             date = sdc.get_date()
             if date != None:
                 self.item(row, column).setText(date)
                 self.update_colors()
-        elif column == headers.index(COLUMN_STATUS):
+        elif column == HEADERS.index(COLUMN_STATUS):
             ssc = SelectStatusController(self.item(row, column).text(), self)
             ssc.exec_()
             status = ssc.get_status()

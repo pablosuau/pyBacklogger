@@ -200,7 +200,7 @@ class SortGamesController(QtWidgets.QDialog):
             if sort_fields:
                 for i in range(0, len(sort_fields)):
                     j = len(sort_fields) - i - 1
-                    index_column = constants.headers.index(sort_fields[j])
+                    index_column = constants.HEADERS.index(sort_fields[j])
                     if sort_order[j] == constants.ORDER_ASCENDING:
                         order = QtCore.Qt.AscendingOrder
                     else:
@@ -209,7 +209,7 @@ class SortGamesController(QtWidgets.QDialog):
             else:
                 order = QtCore.Qt.AscendingOrder
                 self.table.sortByColumn(
-                    constants.headers_extended.index(constants.COLUMN_ORDER), order
+                    constants.HEADERS_EXTENDED.index(constants.COLUMN_ORDER), order
                 )
 
             self.table.setVisible(True)

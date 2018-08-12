@@ -10,7 +10,7 @@ import urllib.request
 import urllib.error
 from PyQt5 import QtCore, QtWidgets
 from lxml.html.soupparser import fromstring
-from models.constants import headers, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_DIFFICULTY, \
+from models.constants import HEADERS, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_DIFFICULTY, \
                              COLUMN_LENGTH, COLUMN_URL
 
 WARNING_MESSAGE = """<strong>A warning about doing too many requests to GameFAQs.</strong><br><br>\n
@@ -110,7 +110,7 @@ class ReloadScoresController(QtWidgets.QWidget):
                 for i in range(0, len(self.indexes)):
                     row = self.indexes[i].row()
                     sleep(randint(5, 15))
-                    url = self.table.item(row, headers.index(COLUMN_URL)).text()
+                    url = self.table.item(row, HEADERS.index(COLUMN_URL)).text()
                     response = urllib.request.urlopen(
                         urllib.request.Request(
                             str(url),
@@ -120,7 +120,7 @@ class ReloadScoresController(QtWidgets.QWidget):
                     # Updating the name, in case it changed
                     element = doc.xpath("//h1[@class='page-title']")
                     self.table.item(row,
-                                    headers.index(COLUMN_NAME)).setText(element[0].findtext('a'))
+                                    HEADERS.index(COLUMN_NAME)).setText(element[0].findtext('a'))
                     # Updating the score
                     element = doc.xpath("//fieldset[@id='js_mygames_rate']")
                     if element:
@@ -147,8 +147,8 @@ class ReloadScoresController(QtWidgets.QWidget):
                     else:
                         rating = '0.00'
                         votes = '0'
-                    self.table.item(row, headers.index(COLUMN_RATING)).setText(rating)
-                    self.table.item(row, headers.index(COLUMN_VOTES)).setText(votes)
+                    self.table.item(row, HEADERS.index(COLUMN_RATING)).setText(rating)
+                    self.table.item(row, HEADERS.index(COLUMN_VOTES)).setText(votes)
                     # Difficulty and length
                     def parse_difficulty_length(doc, id_element):
                         '''
@@ -172,11 +172,11 @@ class ReloadScoresController(QtWidgets.QWidget):
                             ret = 'Not Yet Rated'
                         return ret
                     self.table.item(row,
-                                    headers.index(COLUMN_DIFFICULTY)) \
+                                    HEADERS.index(COLUMN_DIFFICULTY)) \
                                     .setText(parse_difficulty_length(doc,
                                                                      'js_mygames_diff'))
                     self.table.item(row,
-                                    headers.index(COLUMN_LENGTH)) \
+                                    HEADERS.index(COLUMN_LENGTH)) \
                                     .setText(parse_difficulty_length(doc,
                                                                      'js_mygames_time'))
 
