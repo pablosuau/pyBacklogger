@@ -119,7 +119,7 @@ class SelectDateController(QtWidgets.QDialog):
         is_number = self.user_interface.lineEditYear.isEnabled()
         try:
             if is_number and (int(date) < INITIAL_YEAR or int(date) > FINAL_YEAR):
-                util.showErrorMessage(
+                util.show_error_message(
                     self,
                     'The year must be a number between ' + str(INITIAL_YEAR) +
                     ' and ' + str(FINAL_YEAR)
@@ -127,7 +127,7 @@ class SelectDateController(QtWidgets.QDialog):
             else:
                 self.hide()
         except ValueError:
-            util.showErrorMessage(self, 'The year must be a number')
+            util.show_error_message(self, 'The year must be a number')
 
     def push_button_cancel_clicked(self):
         '''
