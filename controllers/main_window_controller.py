@@ -92,7 +92,7 @@ class MainWindowController(QtWidgets.QWidget):
                     system = self.table.get_game_data(actual_indexes[i])[COLUMN_SYSTEM]
                     status = self.table.get_game_data(actual_indexes[i])[COLUMN_STATUS]
                     labels = self.table.cellWidget(
-                        actual_indexes[i], HEADERS.index(COLUMN_LABELS)).getLabels()
+                        actual_indexes[i], HEADERS.index(COLUMN_LABELS)).get_labels()
                     self.table.models['system_list_model'].remove(system)
                     self.table.models['status_list_model'].remove(status)
                     for label in labels:

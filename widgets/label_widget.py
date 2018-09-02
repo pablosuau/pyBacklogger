@@ -1,9 +1,23 @@
+'''
+User-defined widget with functionality to deal with labels in
+an interactive way
+'''
+
 from PyQt5 import QtGui, QtWidgets, QtCore
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 
 class LabelWidget(QtWidgets.QWidget):
+    '''
+    Widget to visualise and assign labels
+    '''
+
     def __init__(self, item, father):
+        '''
+        Initialises the widget.
+
+        parameters
+            - item: the table item around which we wrap the functionality
+            - father: the parent widget
+        '''
         super(LabelWidget, self).__init__()
         self.layout = QtWidgets.QHBoxLayout()
         self.layout.setAlignment(QtCore.Qt.AlignLeft)
@@ -15,7 +29,13 @@ class LabelWidget(QtWidgets.QWidget):
         self.setContentsMargins(0, 0, 0, 0)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-    def labelsToString(self):
+    def labels_to_string(self):
+        '''
+        Transforms a set of labels into a single string.
+
+        returns:
+            - A string representation of the widget's labels
+        '''
         if self.layout.count() > 0:
             labels = self.layout.itemAt(0).widget().text()
             for i in range(1, self.layout.count()):
@@ -25,10 +45,14 @@ class LabelWidget(QtWidgets.QWidget):
 
         return labels
 
-    def toString(self):
-        return self.labelsToString()
+    def string_to_labels(self, text):
+        '''
+        Transform a string representation into a set of labels. Labels are
+        supposed to be comma-separated.
 
-    def stringToLabels(self, text):
+        parameters:
+            - text: the string to parse for labels
+        '''
         # Removing the elements in the layout
         for i in reversed(range(self.layout.count())):
             self.layout.itemAt(i).widget().setParent(None)
@@ -40,16 +64,22 @@ class LabelWidget(QtWidgets.QWidget):
         labels = list(set(labels))
 
         # Adding label widgets
-        for i in range(0, len(labels)):
-            label_text = str(labels[i]).strip()
+        for label in labels:
+            label_text = str(label).strip()
             if label_text != '':
-                label = QtWidgets.QLabel(label_text)
-                label.setStyleSheet(self.style)
-                self.layout.addWidget(label)
+                label_widget = QtWidgets.QLabel(label_text)
+                label_widget.setStyleSheet(self.style)
+                self.layout.addWidget(label_widget)
 
-        self.item.setText(self.labelsToString())
+        self.item.setText(self.labels_to_string())
 
-    def getLabels(self):
+    def get_labels(self):
+        '''
+        Getter for the labels contained by the widget
+
+        returns:
+            - a list which contains the labels in the widget
+        '''
         labels = []
         if self.layout.count() > 0:
             for i in range(0, self.layout.count()):
@@ -58,7 +88,12 @@ class LabelWidget(QtWidgets.QWidget):
         return labels
 
     def mousePressEvent(self, event):
-        labels = self.labelsToString()
+        '''
+        Signal slot for the event of clicking on the widget. The event parameter is unused.
+        '''
+        # pylint: disable=invalid-name
+        # pylint: disable=unused-argument
+        labels = self.labels_to_string()
         text, ok = QtWidgets.QInputDialog.getText(
             self,
             'Labels',
@@ -66,7 +101,7 @@ class LabelWidget(QtWidgets.QWidget):
             QtWidgets.QLineEdit.Normal,
             labels)
         if ok:
-            self.stringToLabels(text)
+            self.string_to_labels(text)
             self.father.changed = text != labels
 
         QtWidgets.qApp.processEvents() # this line makes the labels to be

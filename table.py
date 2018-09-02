@@ -239,9 +239,9 @@ class Table(QtWidgets.QTableWidget):
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         self.setItem(rows, HEADERS.index(COLUMN_LABELS), item)
         widget = LabelWidget(item, self)
-        widget.stringToLabels(data[COLUMN_LABELS])
+        widget.string_to_labels(data[COLUMN_LABELS])
         self.setCellWidget(rows, HEADERS_EXTENDED.index(COLUMN_LABELS), widget)
-        new_labels = widget.getLabels()
+        new_labels = widget.get_labels()
         for label in new_labels:
             self.models['label_list_model'].add(label)
         # Used to restore the original order
@@ -270,7 +270,7 @@ class Table(QtWidgets.QTableWidget):
         data[COLUMN_DIFFICULTY] = self.item(row, HEADERS.index(COLUMN_DIFFICULTY)).text()
         data[COLUMN_LENGTH] = self.item(row, HEADERS.index(COLUMN_LENGTH)).text()
         data[COLUMN_STATUS] = self.item(row, HEADERS.index(COLUMN_STATUS)).text()
-        data[COLUMN_LABELS] = self.cellWidget(row, HEADERS.index(COLUMN_LABELS)).labelsToString()
+        data[COLUMN_LABELS] = self.cellWidget(row, HEADERS.index(COLUMN_LABELS)).labels_to_string()
         data[COLUMN_NOTES] = self.item(row, HEADERS.index(COLUMN_NOTES)).text()
         data[COLUMN_URL] = self.item(row, HEADERS.index(COLUMN_URL)).text()
 
@@ -395,7 +395,7 @@ class Table(QtWidgets.QTableWidget):
                 item_text = str(self.item(row, HEADERS.index(COLUMN_NAME)).text()).lower()
                 filtered_out = self.search_string not in item_text
             if not filtered_out:
-                labels_row = self.cellWidget(row, HEADERS.index(COLUMN_LABELS)).getLabels()
+                labels_row = self.cellWidget(row, HEADERS.index(COLUMN_LABELS)).get_labels()
                 filtered_out = none and not labels_row
                 if not filtered_out and labels_row:
                     filtered_list = []
