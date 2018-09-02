@@ -19,7 +19,8 @@ from models.constants import HEADERS, HEADERS_EXTENDED, LABEL_NONE, COLUMN_NAME,
                              COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, \
                              COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_LENGTH, \
                              COLUMN_DIFFICULTY, COLUMN_STATUS, COLUMN_LABELS, \
-                             COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER, DIFFICULTY_COLORS
+                             COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER, DIFFICULTY_COLORS, \
+                             OPTIONS_STATUS
 
 class Table(QtWidgets.QTableWidget):
     '''
@@ -229,7 +230,7 @@ class Table(QtWidgets.QTableWidget):
         set_item(data, COLUMN_URL)
         set_item(data, COLUMN_NOTES, False)
         item = set_item(data, COLUMN_STATUS)
-        item.setForeground(self.models['status_model'].getColor(data[COLUMN_STATUS]))
+        item.setForeground(OPTIONS_STATUS[data[COLUMN_STATUS]])
         self.models['difficulty_list_model'].add(data[COLUMN_DIFFICULTY])
         self.models['system_list_model'].add(data[COLUMN_SYSTEM])
         self.models['status_list_model'].add(data[COLUMN_STATUS])
@@ -453,7 +454,7 @@ class Table(QtWidgets.QTableWidget):
             status = ssc.get_status()
             if status != None:
                 self.item(row, column).setText(status)
-                self.item(row, column).setForeground(self.models['status_model'].getColor(status))
+                self.item(row, column).setForeground(OPTIONS_STATUS[status])
                 self.models['status_list_model'].add(status)
                 self.models['status_list_model'].remove(ssc.get_previous_status())
                 self.hide_rows()
