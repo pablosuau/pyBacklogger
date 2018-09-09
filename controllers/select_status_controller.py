@@ -51,18 +51,18 @@ class SelectStatusController(QtWidgets.QDialog):
         self.user_interface.pushButtonOk.clicked.connect(self.push_button_ok_clicked)
         self.user_interface.pushButtonCancel.clicked.connect(self.push_button_cancel_clicked)
 
-    def push_button_ok_clicked(self):
-        '''
-        Signal slot for the event of pressing the ok button
-        '''
-        self.canceled = False
-        self.hide()
-
     def push_button_cancel_clicked(self):
         '''
         Signal slot for the event of pressing the cancel button
         '''
         self.canceled = True
+        self.hide()
+
+    def push_button_ok_clicked(self):
+        '''
+        Signal slot for the event of pressing the ok button
+        '''
+        self.canceled = False
         self.hide()
 
     def closeEvent(self, event):

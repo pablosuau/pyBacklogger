@@ -10,6 +10,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from lxml.html.soupparser import fromstring
 from widgets.label_widget import LabelWidget
+from util.util import parse_difficulty_length
 from controllers.select_date_controller import SelectDateController
 from controllers.select_status_controller import SelectStatusController
 from models.filter_list_model import FilterListModel
@@ -141,27 +142,6 @@ class Table(QtWidgets.QTableWidget):
                 data[COLUMN_RATING] = '0.00'
                 data[COLUMN_VOTES] = '0'
             # Difficulty and length
-            def parse_difficulty_length(doc, id_element):
-                '''
-                Auxiliar function to parse difficulty and length, since the parsing process
-                is very similar
-                '''
-                element = doc.xpath("//fieldset[@id='" + id_element + "']")
-                if element:
-                    value = element[0] \
-                            .getchildren()[0] \
-                            .getchildren()[0] \
-                            .getchildren()[1] \
-                            .findtext('a')
-                    if value is None:
-                        ret = 'Not Yet Rated'
-                    else:
-                        ret = value
-                        if id_element == 'js_mygames_time':
-                            ret = ret.split(' ')[0]
-                else:
-                    ret = 'Not Yet Rated'
-                return ret
             data[COLUMN_DIFFICULTY] = parse_difficulty_length(doc, 'js_mygames_diff')
             data[COLUMN_LENGTH] = parse_difficulty_length(doc, 'js_mygames_time')
             # Checking that the game is not already in the database

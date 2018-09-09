@@ -10,6 +10,7 @@ import urllib.request
 import urllib.error
 from PyQt5 import QtCore, QtWidgets
 from lxml.html.soupparser import fromstring
+from util.util import parse_difficulty_length
 from models.constants import HEADERS, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_DIFFICULTY, \
                              COLUMN_LENGTH, COLUMN_URL
 
@@ -150,27 +151,6 @@ class ReloadScoresController(QtWidgets.QWidget):
                     self.table.item(row, HEADERS.index(COLUMN_RATING)).setText(rating)
                     self.table.item(row, HEADERS.index(COLUMN_VOTES)).setText(votes)
                     # Difficulty and length
-                    def parse_difficulty_length(doc, id_element):
-                        '''
-                        Auxiliar function to parse difficulty and length, since the parsing process
-                        is very similar
-                        '''
-                        element = doc.xpath("//fieldset[@id='" + id_element + "']")
-                        if element:
-                            value = element[0] \
-                                    .getchildren()[0] \
-                                    .getchildren()[0] \
-                                    .getchildren()[1] \
-                                    .findtext('a')
-                            if value is None:
-                                ret = 'Not Yet Rated'
-                            else:
-                                ret = value
-                                if id_element == 'js_mygames_time':
-                                    ret = ret.split(' ')[0]
-                        else:
-                            ret = 'Not Yet Rated'
-                        return ret
                     self.table.item(row,
                                     HEADERS.index(COLUMN_DIFFICULTY)) \
                                     .setText(parse_difficulty_length(doc,

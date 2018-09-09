@@ -14,3 +14,25 @@ def show_error_message(widget, message):
     error_message.setWindowModality(QtCore.Qt.WindowModal)
     error_message.setWindowTitle(widget.windowTitle())
     error_message.showMessage(message)
+
+def parse_difficulty_length(doc, id_element):
+    '''
+    Auxiliar function to parse both difficulty and length, since the parsing process
+    is very similar and is used at several points in the code
+    '''
+    element = doc.xpath("//fieldset[@id='" + id_element + "']")
+    if element:
+        value = element[0] \
+                .getchildren()[0] \
+                .getchildren()[0] \
+                .getchildren()[1] \
+                .findtext('a')
+        if value is None:
+            ret = 'Not Yet Rated'
+        else:
+            ret = value
+            if id_element == 'js_mygames_time':
+                ret = ret.split(' ')[0]
+    else:
+        ret = 'Not Yet Rated'
+    return ret
