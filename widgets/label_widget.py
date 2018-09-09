@@ -94,6 +94,8 @@ class LabelWidget(QtWidgets.QWidget):
         # pylint: disable=invalid-name
         # pylint: disable=unused-argument
         labels = self.labels_to_string()
+        for label in self.get_labels():
+            self.father.models['label_list_model'].remove(label)
         text, ok = QtWidgets.QInputDialog.getText(
             self,
             'Labels',
@@ -103,6 +105,8 @@ class LabelWidget(QtWidgets.QWidget):
         if ok:
             self.string_to_labels(text)
             self.father.changed = text != labels
+            for label in self.get_labels():
+                self.father.models['label_list_model'].add(label)
 
         QtWidgets.qApp.processEvents() # this line makes the labels to be
                                    # painted before resizing the table's
