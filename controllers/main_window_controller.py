@@ -202,6 +202,9 @@ class MainWindowController(QtWidgets.QWidget):
             sort_games_controller.exec_()
             sort_games_controller.apply_sorting()
             self.user_interface.pushButtonSortData.setChecked(sort_games_controller.sorting_active)
+            # Re applying filtering after sorting
+            filter_games_controller = FilterGamesController(self.table, self)
+            filter_games_controller.apply_filtering()
 
     def filter_data_clicked(self):
         '''
