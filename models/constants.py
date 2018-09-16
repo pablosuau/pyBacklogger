@@ -49,11 +49,11 @@ OPTIONS_STATUS = {
 
 DIFFICULTY_COLORS = {
     'Simple': QtGui.QColor(0, 0, 155),
-    'Simple-Easy': QtGui.QColor(0, 0, 200), 
+    'Simple-Easy': QtGui.QColor(0, 0, 200),
     'Easy': QtGui.QColor(0, 0, 255),
-    'Easy-Just Right': QtGui.QColor(0, 255, 255), 
+    'Easy-Just Right': QtGui.QColor(0, 255, 255),
     'Just Right': QtGui.QColor(0, 155, 0),
-    'Just Right-Tough': QtGui.QColor(179, 255, 0), 
+    'Just Right-Tough': QtGui.QColor(179, 255, 0),
     'Tough': QtGui.QColor(255, 155, 0),
     'Tough-Unforgiving': QtGui.QColor(255, 77, 0),
     'Unforgiving': QtGui.QColor(255, 0, 0),
