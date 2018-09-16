@@ -46,7 +46,7 @@ class ReloadScoresController(QtWidgets.QWidget):
         creates a brackground thread to make the scraping requests.
         '''
         indexes = self.table.selectionModel().selectedRows()
-        if indexes:
+        if not indexes:
             error = QtWidgets.QErrorMessage(self.parent)
             error.setWindowModality(QtCore.Qt.WindowModal)
             error.showMessage('No games were selected')
