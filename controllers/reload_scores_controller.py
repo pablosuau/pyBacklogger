@@ -15,7 +15,7 @@ from models.constants import HEADERS, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, 
                              COLUMN_LENGTH, COLUMN_URL
 
 WARNING_MESSAGE = """<strong>A warning about doing too many requests to GameFAQs.</strong><br><br>\n
-Making too many requests to GameFAQs during the same day can result in your IP to be permanently blocked.
+Making too many requests to GameFAQs during the course of the same day may result in your IP to be permanently blocked.
 As a consequence of this, this application limits the size of the selection to be updated to 200 rows.
 Please, try not to update more than this amount of games on a single day."""
 

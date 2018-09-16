@@ -12,6 +12,7 @@ from controllers.filter_games_controller import FilterGamesController
 from controllers.sort_games_controller import SortGamesController
 from controllers.reload_scores_controller import ReloadScoresController
 from controllers.statistics_window_controller import StatisticsWindowController
+from models.sort_list_model import SortListModel
 from models.constants import HEADERS, HEADERS_EXTENDED, COLUMN_SYSTEM, COLUMN_STATUS, \
                              COLUMN_LABELS, COLUMN_ORDER
 
@@ -294,6 +295,6 @@ class MainWindowController(QtWidgets.QWidget):
         Restores the order of the rows in the backlog to that in which
         they were read from the file/downloaded from GameFAQs
         '''
-        self.table.models['sort_list_model'].clear()
+        self.table.models['sort_list_model'] = SortListModel()
         order = QtCore.Qt.AscendingOrder
         self.table.sortByColumn(HEADERS_EXTENDED.index(COLUMN_ORDER), order)

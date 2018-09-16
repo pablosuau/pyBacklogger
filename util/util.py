@@ -20,12 +20,13 @@ def parse_difficulty_length(doc, id_element):
     Auxiliar function to parse both difficulty and length, since the parsing process
     is very similar and is used at several points in the code
     '''
+
     element = doc.xpath("//fieldset[@id='" + id_element + "']")
     if element:
         value = element[0] \
                 .getchildren()[0] \
                 .getchildren()[0] \
-                .getchildren()[1] \
+                .getchildren()[2] \
                 .findtext('a')
         if value is None:
             ret = 'Not Yet Rated'
