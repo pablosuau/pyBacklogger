@@ -1,81 +1,125 @@
-from PyQt5 import QtGui, QtWidgets
+'''
+Code to control the dialog to select a date after clicking the corresponding
+cell on the table.
+'''
+
+from PyQt5 import QtWidgets
 from views.select_date_dialog import Ui_SelectDateDialog
 from util import util
 
 from models.constants import INITIAL_YEAR, FINAL_YEAR
 
 class SelectDateController(QtWidgets.QDialog):
-    # UI and signal setup
+    '''
+    Controller for the select date dialog
+    '''
     def __init__(self, year, parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
-        self.ui = Ui_SelectDateDialog()
-        self.ui.setupUi(self)
+        '''
+        Initialises the user interface and sets up the signals
 
-        self.initializeUi(year)
+        parameters:
+            - year: the current value of the selected year field
+            - parent: the controller which is the parent of the search results dialog
+        '''
+        QtWidgets.QDialog.__init__(self, parent)
+        self.user_interface = Ui_SelectDateDialog()
+        self.user_interface.setupUi(self)
 
-        self.setupSignals()
+        self.initialize_ui(year)
+
+        self.setup_signals()
 
         self.canceled = False
 
-    def initializeUi(self, year):
-        self.ui.sliderYear.setRange(INITIAL_YEAR, FINAL_YEAR)
-        self.ui.sliderYear.setValue(INITIAL_YEAR)
+    def initialize_ui(self, year):
+        '''
+        Initialises the user interface and selects the already
+        existing year value
+
+        parameters:
+            - year: the current value of the selected year field
+        '''
+        self.user_interface.sliderYear.setRange(INITIAL_YEAR, FINAL_YEAR)
+        self.user_interface.sliderYear.setValue(INITIAL_YEAR)
         if year == 'Canceled':
-            self.ui.radioButtonCanceled.click()
+            self.user_interface.radioButtonCanceled.click()
         elif year == 'TBA':
-            self.ui.radioButtonTba.click()
+            self.user_interface.radioButtonTba.click()
         else:
-            self.ui.radioButtonYear.click()
+            self.user_interface.radioButtonYear.click()
 
-        self.ui.lineEditYear.setText(year)
+        self.user_interface.lineEditYear.setText(year)
         if year != 'Canceled' and year != 'TBA':
-            self.ui.sliderYear.setValue(int(year))
+            self.user_interface.sliderYear.setValue(int(year))
         else:
-            self.ui.sliderYear.setEnabled(False)
-            self.ui.lineEditYear.setEnabled(False)
+            self.user_interface.sliderYear.setEnabled(False)
+            self.user_interface.lineEditYear.setEnabled(False)
 
-    def setupSignals(self):
-        self.ui.sliderYear.valueChanged.connect(self.sliderYearChanged)
-        self.ui.lineEditYear.textChanged.connect(self.lineEditYearChanged)
-        self.ui.pushButtonOk.clicked.connect(self.pushButtonOkClicked)
-        self.ui.pushButtonCancel.clicked.connect(self.pushButtonCancelClicked)
-        self.ui.radioButtonCanceled.clicked.connect(self.radioButtonCanceledClicked)
-        self.ui.radioButtonTba.clicked.connect(self.radioButtonTbaClicked)
-        self.ui.radioButtonYear.clicked.connect(self.radioButtonYearClicked)
+    def setup_signals(self):
+        '''
+        Connects the user interface control events to the corresponding signals
+        '''
+        self.user_interface.sliderYear.valueChanged.connect(self.slider_year_changed)
+        self.user_interface.lineEditYear.textChanged.connect(self.line_edit_year_changed)
+        self.user_interface.pushButtonOk.clicked.connect(self.push_button_ok_clicked)
+        self.user_interface.pushButtonCancel.clicked.connect(self.push_button_cancel_clicked)
+        self.user_interface.radioButtonCanceled.clicked.connect(self.radio_button_canceled_clicked)
+        self.user_interface.radioButtonTba.clicked.connect(self.radio_button_tba_clicked)
+        self.user_interface.radioButtonYear.clicked.connect(self.radio_button_year_clicked)
 
-    def radioButtonCanceledClicked(self):
-        self.ui.sliderYear.setEnabled(False)
-        self.ui.lineEditYear.setEnabled(False)
-        self.ui.lineEditYear.setText('Canceled')
+    def radio_button_canceled_clicked(self):
+        '''
+        Signal slot of the event of pressing the 'cancelled' value button
+        '''
+        self.user_interface.sliderYear.setEnabled(False)
+        self.user_interface.lineEditYear.setEnabled(False)
+        self.user_interface.lineEditYear.setText('Canceled')
 
-    def radioButtonTbaClicked(self):
-        self.ui.sliderYear.setEnabled(False)
-        self.ui.lineEditYear.setEnabled(False)
-        self.ui.lineEditYear.setText('TBA')
+    def radio_button_tba_clicked(self):
+        '''
+        Signal slot for the event of pressing the 'TBA' value button
+        '''
+        self.user_interface.sliderYear.setEnabled(False)
+        self.user_interface.lineEditYear.setEnabled(False)
+        self.user_interface.lineEditYear.setText('TBA')
 
-    def radioButtonYearClicked(self):
-        self.ui.sliderYear.setEnabled(True)
-        self.ui.lineEditYear.setEnabled(True)
-        self.ui.lineEditYear.setText(str(self.ui.sliderYear.value()))
+    def radio_button_year_clicked(self):
+        '''
+        Signal slot for the event of pressing the 'year' value button
+        '''
+        self.user_interface.sliderYear.setEnabled(True)
+        self.user_interface.lineEditYear.setEnabled(True)
+        self.user_interface.lineEditYear.setText(str(self.user_interface.sliderYear.value()))
 
-    def sliderYearChanged(self):
-        self.ui.lineEditYear.setText(str(self.ui.sliderYear.value()))
+    def slider_year_changed(self):
+        '''
+        Signal slot linked to the year selection slider
+        '''
+        self.user_interface.lineEditYear.setText(str(self.user_interface.sliderYear.value()))
 
-    def lineEditYearChanged(self):
-        if self.ui.lineEditYear.isEnabled() and self.ui.lineEditYear.text() != '':
+    def line_edit_year_changed(self):
+        '''
+        Signal slot for the event of changing the text in the year
+        line editor
+        '''
+        if self.user_interface.lineEditYear.isEnabled() and \
+           self.user_interface.lineEditYear.text() != '':
             try:
-                year = int(self.ui.lineEditYear.text())
+                year = int(self.user_interface.lineEditYear.text())
                 if year >= INITIAL_YEAR and year <= FINAL_YEAR:
-                    self.ui.sliderYear.setValue(year)
+                    self.user_interface.sliderYear.setValue(year)
             except ValueError:
                 pass
 
-    def pushButtonOkClicked(self):
-        date = self.ui.lineEditYear.text()
-        isNumber = self.ui.lineEditYear.isEnabled()
+    def push_button_ok_clicked(self):
+        '''
+        Signal slot for the event of pressing the ok button
+        '''
+        date = self.user_interface.lineEditYear.text()
+        is_number = self.user_interface.lineEditYear.isEnabled()
         try:
-            if isNumber and (int(date) < INITIAL_YEAR or int(date) > FINAL_YEAR):
-                util.showErrorMessage(
+            if is_number and (int(date) < INITIAL_YEAR or int(date) > FINAL_YEAR):
+                util.show_error_message(
                     self,
                     'The year must be a number between ' + str(INITIAL_YEAR) +
                     ' and ' + str(FINAL_YEAR)
@@ -83,17 +127,30 @@ class SelectDateController(QtWidgets.QDialog):
             else:
                 self.hide()
         except ValueError:
-            util.showErrorMessage(self, 'The year must be a number')
+            util.show_error_message(self, 'The year must be a number')
 
-    def pushButtonCancelClicked(self):
+    def push_button_cancel_clicked(self):
+        '''
+        Signal slot for the event of pressing the cancel button
+        '''
         self.canceled = True
         self.hide()
 
     def closeEvent(self, event):
+        '''
+        Signal slot for the event of closing the window. The event parameter is unused.
+        '''
+        # pylint: disable=invalid-name
+        # pylint: disable=unused-argument
         self.canceled = True
 
-    def getDate(self):
-        if self.canceled == True:
-            return None
-        else:
-            return self.ui.lineEditYear.text()
+    def get_date(self):
+        '''
+        Returns the selected value (cancelled, TBA or a year)
+        '''
+        ret = None
+
+        if not self.canceled:
+            ret = self.user_interface.lineEditYear.text()
+
+        return ret

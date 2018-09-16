@@ -40,11 +40,10 @@ class SearchResultsController(QtWidgets.QDialog):
         '''
         Fills the view with the game search results
         '''
-        html = str(self.html)
         systems = []
         names = []
         urls = []
-        doc = fromstring(html)
+        doc = fromstring(str(self.html))
 
         element = doc.xpath("//div[@class='search_result']")
         for search_result in element:
@@ -71,9 +70,9 @@ class SearchResultsController(QtWidgets.QDialog):
 
         # Displaying search results
         model = QtGui.QStandardItemModel()
-        if len(systems) > 0:
-            for i in range(0, len(systems)):
-                item = QtGui.QStandardItem('(' + systems[i] + ') ' + names[i])
+        if systems:
+            for system, name in zip(systems, names):
+                item = QtGui.QStandardItem('(' + system + ') ' + name)
                 item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
                 item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole)
                 model.appendRow(item)
@@ -109,8 +108,10 @@ class SearchResultsController(QtWidgets.QDialog):
 
     def closeEvent(self, _event):
         '''
-        Signal slot for the event of closing the window. The event parameter is unused. 
+        Signal slot for the event of closing the window. The event parameter is unused.
         '''
+        # pylint: disable=invalid-name
+        # pylint: disable=unused-argument
         self.canceled = True
 
     def on_item_changed(self, item):

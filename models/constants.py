@@ -1,3 +1,6 @@
+'''
+Global constants for the application
+'''
 from PyQt5 import QtGui
 
 GAMEFAQS_URL = 'https://gamefaqs.gamespot.com'
@@ -19,13 +22,13 @@ COLUMN_ORDER = 'Order'
 
 LABEL_NONE = '---None---'
 
-headers = [
+HEADERS = [
 	   COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, COLUMN_VOTES,
-	   COLUMN_WEIGHTED, COLUMN_LENGTH, COLUMN_DIFFICULTY, COLUMN_STATUS, 
+	   COLUMN_WEIGHTED, COLUMN_LENGTH, COLUMN_DIFFICULTY, COLUMN_STATUS,
 	   COLUMN_LABELS, COLUMN_NOTES, COLUMN_URL
 ]
-headers_extended = headers[:]
-headers_extended.append(COLUMN_ORDER)
+HEADERS_EXTENDED = HEADERS[:]
+HEADERS_EXTENDED.append(COLUMN_ORDER)
 
 ORDER_ASCENDING = 'ascending'
 ORDER_DESCENDING = 'descending'
@@ -45,10 +48,14 @@ OPTIONS_STATUS = {
 }
 
 DIFFICULTY_COLORS = {
-	'Simple': QtGui.QColor(0, 0, 155),
-	'Easy': QtGui.QColor(0, 0, 255),
-	'Just Right': QtGui.QColor(0, 155, 0),
-	'Tough': QtGui.QColor(255, 155, 0),
-	'Unforgiving': QtGui.QColor(255, 0, 0),
-	'Not Yet Rated': QtGui.QColor(155, 0, 0),
+    'Simple': QtGui.QColor(0, 0, 155),
+    'Simple-Easy': QtGui.QColor(0, 0, 200),
+    'Easy': QtGui.QColor(0, 0, 255),
+    'Easy-Just Right': QtGui.QColor(0, 255, 255),
+    'Just Right': QtGui.QColor(0, 155, 0),
+    'Just Right-Tough': QtGui.QColor(179, 255, 0),
+    'Tough': QtGui.QColor(255, 155, 0),
+    'Tough-Unforgiving': QtGui.QColor(255, 77, 0),
+    'Unforgiving': QtGui.QColor(255, 0, 0),
+    'Not Yet Rated': QtGui.QColor(155, 0, 0),
 }

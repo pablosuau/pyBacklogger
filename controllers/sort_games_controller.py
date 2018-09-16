@@ -1,93 +1,161 @@
-from PyQt5 import QtGui, QtCore, QtWidgets
+'''
+Code to control the sort games dialog. It lets the user decide
+the criteria according to which the list of games is sorted
+'''
+
+from PyQt5 import QtCore, QtWidgets
 from views.sort_dialog import Ui_SortDialog
 import models.constants as constants
 
 class SortGamesController(QtWidgets.QDialog):
-    # UI and signal setup
+    '''
+    Controller for the sort games dialog
+    '''
     def __init__(self, table, parent):
-        QtWidgets.QWidget.__init__(self, parent)
+        '''
+        Initialises the user interface and sets up the signals
 
-        self.ui = Ui_SortDialog()
-        self.ui.setupUi(self)
+        parameters:
+            - table: the main table object in the application
+            - parent: the controller which is the parent of the search results dialog
+        '''
+        QtWidgets.QDialog.__init__(self, parent)
+
+        self.user_interface = Ui_SortDialog()
+        self.user_interface.setupUi(self)
 
         self.table = table
         self.table.models['sort_list_model'].save_model()
         self.canceled = False
         self.sorting_active = False
 
-        self.initializeUi()
-        self.setupSignals()
+        self.initialize_ui()
+        self.setup_signals()
 
-    def initializeUi(self):
-        self.ui.sortByList.setModel(self.table.models['sort_list_model'].sort)
-        self.ui.availableFieldsList.setModel(self.table.models['sort_list_model'].available)
+    def initialize_ui(self):
+        '''
+        Links controls with the corresponding models
+        '''
+        self.user_interface.sortByList.setModel(
+            self.table.models['sort_list_model'].sort)
+        self.user_interface.availableFieldsList.setModel(
+            self.table.models['sort_list_model'].available)
 
-    def setupSignals(self):
-        self.ui.pushButtonLeft.clicked.connect(self.left_clicked)
-        self.ui.pushButtonRight.clicked.connect(self.right_clicked)
-        self.ui.pushButtonUp.clicked.connect(self.up_clicked)
-        self.ui.pushButtonDown.clicked.connect(self.down_clicked)
-        self.ui.availableFieldsList.clicked.connect(self.activate_buttons_available)
-        self.ui.sortByList.clicked.connect(self.activate_buttons_sort)
-        self.ui.pushButtonOk.clicked.connect(self.ok_clicked)
-        self.ui.pushButtonCancel.clicked.connect(self.cancel_clicked)
-        self.ui.pushButtonSort.clicked.connect(self.sort_clicked)
+    def setup_signals(self):
+        '''
+        Connects the user interface control events to the corresponding signals
+        '''
+        self.user_interface.pushButtonLeft.clicked.connect(self.left_clicked)
+        self.user_interface.pushButtonRight.clicked.connect(self.right_clicked)
+        self.user_interface.pushButtonUp.clicked.connect(self.up_clicked)
+        self.user_interface.pushButtonDown.clicked.connect(self.down_clicked)
+        self.user_interface.availableFieldsList.clicked.connect(self.activate_buttons_available)
+        self.user_interface.sortByList.clicked.connect(self.activate_buttons_sort)
+        self.user_interface.pushButtonOk.clicked.connect(self.ok_clicked)
+        self.user_interface.pushButtonCancel.clicked.connect(self.cancel_clicked)
+        self.user_interface.pushButtonSort.clicked.connect(self.sort_clicked)
 
     def activate_buttons_available(self):
-        self.ui.pushButtonLeft.setEnabled(True)
-        self.ui.sortByList.clearSelection()
-        self.ui.pushButtonRight.setEnabled(False)
-        self.ui.pushButtonUp.setEnabled(False)
-        self.ui.pushButtonDown.setEnabled(False)
-        self.ui.pushButtonSort.setEnabled(False)
+        '''
+        Signal slot for the event of selecting any of the options in the available
+        fields list
+        '''
+        self.user_interface.pushButtonLeft.setEnabled(True)
+        self.user_interface.sortByList.clearSelection()
+        self.user_interface.pushButtonRight.setEnabled(False)
+        self.user_interface.pushButtonUp.setEnabled(False)
+        self.user_interface.pushButtonDown.setEnabled(False)
+        self.user_interface.pushButtonSort.setEnabled(False)
 
     def activate_buttons_sort(self):
-        self.ui.pushButtonRight.setEnabled(True)
-        self.ui.availableFieldsList.clearSelection()
-        self.ui.pushButtonLeft.setEnabled(False)
-        self.ui.pushButtonUp.setEnabled(False)
-        self.ui.pushButtonDown.setEnabled(False)
-        self.ui.pushButtonSort.setEnabled(True)
+        '''
+        Signal slot for the event of selecting any of the options in the
+        sort by list
+        '''
+        self.user_interface.pushButtonRight.setEnabled(True)
+        self.user_interface.availableFieldsList.clearSelection()
+        self.user_interface.pushButtonLeft.setEnabled(False)
+        self.user_interface.pushButtonUp.setEnabled(False)
+        self.user_interface.pushButtonDown.setEnabled(False)
+        self.user_interface.pushButtonSort.setEnabled(True)
         self.set_up_down()
 
     def clear_clicked(self):
-        self.ui.availableFieldsList.clearSelection()
-        self.ui.sortByList.clearSelection()
-        self.ui.pushButtonLeft.setEnabled(False)
-        self.ui.pushButtonRight.setEnabled(False)
-        self.ui.pushButtonUp.setEnabled(False)
-        self.ui.pushButtonDown.setEnabled(False)
+        '''
+        Auxiliar button to tidy up the interface after some
+        operations are done by the user
+        '''
+        self.user_interface.availableFieldsList.clearSelection()
+        self.user_interface.sortByList.clearSelection()
+        self.user_interface.pushButtonLeft.setEnabled(False)
+        self.user_interface.pushButtonRight.setEnabled(False)
+        self.user_interface.pushButtonUp.setEnabled(False)
+        self.user_interface.pushButtonDown.setEnabled(False)
 
     def set_up_down(self):
-        if self.ui.sortByList.model().rowCount() > 1:
-            row = self.ui.sortByList.selectedIndexes()[0].row()
+        '''
+        Auxiliar function to enable/disable the buttons to modify
+        the order of the sorting criteria depending on the
+        contents of the different elements of the interface
+        '''
+        if self.user_interface.sortByList.model().rowCount() > 1:
+            row = self.user_interface.sortByList.selectedIndexes()[0].row()
             if row > 0:
-                self.ui.pushButtonUp.setEnabled(True)
-            if row < self.ui.sortByList.model().rowCount() - 1:
-                self.ui.pushButtonDown.setEnabled(True)
+                self.user_interface.pushButtonUp.setEnabled(True)
+            if row < self.user_interface.sortByList.model().rowCount() - 1:
+                self.user_interface.pushButtonDown.setEnabled(True)
 
     def left_clicked(self):
-        self.table.models['sort_list_model'].to_sort(self.ui.availableFieldsList.selectedIndexes())
+        '''
+        Signal slot for the event of clicking the button that moves
+        a sorting criterium from the list of available fields to the
+        list of sorting fields
+        '''
+        self.table.models['sort_list_model'].to_sort(
+            self.user_interface.availableFieldsList.selectedIndexes())
         self.clear_clicked()
 
     def right_clicked(self):
-        self.table.models['sort_list_model'].to_available(self.ui.sortByList.selectedIndexes())
+        '''
+        Signal slot for the event of clicking the button that moves
+        a sorting criterium from the list of sorting fiels to the
+        list of available fields
+        '''
+        self.table.models['sort_list_model'].to_available(
+            self.user_interface.sortByList.selectedIndexes())
         self.clear_clicked()
 
     def up_down_clicked(self, method):
-        index = method(self.ui.sortByList.selectedIndexes()[0])
+        '''
+        Auxiliar function that encapsulates the common code of the
+        signal slots for the events of clicking the up or down buttons
+        '''
+        index = method(self.user_interface.sortByList.selectedIndexes()[0])
         self.clear_clicked()
-        self.ui.sortByList.selectionModel().select(index, QtCore.QItemSelectionModel.Select)
+        self.user_interface.sortByList.selectionModel().select(
+            index, QtCore.QItemSelectionModel.Select)
         self.set_up_down()
 
     def up_clicked(self):
+        '''
+        Signal slot for the event of clicking the button that moves a sorting
+        criterium up in the list of sorting fields
+        '''
         self.up_down_clicked(self.table.models['sort_list_model'].sort_up)
 
     def down_clicked(self):
+        '''
+        Signal slot for the event of clicking the button that moves a sorting
+        criterium down in the list of sorting fields
+        '''
         self.up_down_clicked(self.table.models['sort_list_model'].sort_down)
 
     def sort_clicked(self):
-        index = self.ui.sortByList.selectedIndexes()
+        '''
+        Signal slot for the event of clicking the button to switch
+        between ascending/descending order for a specific sorting criterium
+        '''
+        index = self.user_interface.sortByList.selectedIndexes()
         row = index[0].row()
         order = self.table.models['sort_list_model'].get_sort_order(index)
         if order == constants.ORDER_ASCENDING:
@@ -95,29 +163,44 @@ class SortGamesController(QtWidgets.QDialog):
         else:
             new_order = constants.ORDER_ASCENDING
         order = self.table.models['sort_list_model'].set_sort_order(index, new_order)
-        index = self.ui.sortByList.model().createIndex(row, 0)
-        self.ui.sortByList.selectionModel().select(index, QtCore.QItemSelectionModel.Select)
+        index = self.user_interface.sortByList.model().createIndex(row, 0)
+        self.user_interface.sortByList.selectionModel().select(
+            index, QtCore.QItemSelectionModel.Select)
 
     def ok_clicked(self):
+        '''
+        Signal slot for the event of pressing the ok button
+        '''
         self.canceled = False
         self.hide()
 
     def cancel_clicked(self):
+        '''
+        Signal slot for the event of pressing the cancel button
+        '''
         self.canceled = True
         self.hide()
 
     def closeEvent(self, event):
+        '''
+        Signal slot for the event of closing the window. The event parameter is unused.
+        '''
+        # pylint: disable=invalid-name
+        # pylint: disable=unused-argument
         self.canceled = True
 
-    def applySorting(self):
+    def apply_sorting(self):
+        '''
+        Applies the selected sorting criteria to the data in the table
+        '''
         if not self.canceled:
             self.table.setVisible(False)
             (sort_fields, sort_order) = self.table.models['sort_list_model'].get_sort_fields()
 
-            if len(sort_fields) > 0:
+            if sort_fields:
                 for i in range(0, len(sort_fields)):
                     j = len(sort_fields) - i - 1
-                    index_column = constants.headers.index(sort_fields[j])
+                    index_column = constants.HEADERS.index(sort_fields[j])
                     if sort_order[j] == constants.ORDER_ASCENDING:
                         order = QtCore.Qt.AscendingOrder
                     else:
@@ -126,7 +209,7 @@ class SortGamesController(QtWidgets.QDialog):
             else:
                 order = QtCore.Qt.AscendingOrder
                 self.table.sortByColumn(
-                    constants.headers_extended.index(constants.COLUMN_ORDER), order
+                    constants.HEADERS_EXTENDED.index(constants.COLUMN_ORDER), order
                 )
 
             self.table.setVisible(True)

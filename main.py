@@ -3,8 +3,8 @@ Main entry point of the pyBacklogger application.
 '''
 
 import sys
-from controllers.main_window_controller import MainWindowController
 from PyQt5.QtWidgets import QApplication
+from controllers.main_window_controller import MainWindowController
 
 def start_up_app():
     '''
