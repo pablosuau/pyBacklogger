@@ -23,17 +23,21 @@ def parse_difficulty_length(doc, id_element):
 
     element = doc.xpath("//fieldset[@id='" + id_element + "']")
     if element:
-        value = element[0] \
-                .getchildren()[0] \
-                .getchildren()[0] \
-                .getchildren()[2] \
-                .findtext('a')
-        if value is None:
+        try:
+            value = element[0] \
+                    .getchildren()[0] \
+                    .getchildren()[0] \
+                    .getchildren()[2] \
+                    .findtext('a')
+            if value is None:
+                ret = 'Not Yet Rated'
+            else:
+                ret = value
+                if id_element == 'js_mygames_time':
+                    ret = ret.split(' ')[0]
+        except IndexError:
+            # Not rated yet, therefore, length of the div is 2, not three
             ret = 'Not Yet Rated'
-        else:
-            ret = value
-            if id_element == 'js_mygames_time':
-                ret = ret.split(' ')[0]
     else:
         ret = 'Not Yet Rated'
     return ret
