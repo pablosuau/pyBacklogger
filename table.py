@@ -116,7 +116,7 @@ class Table(QtWidgets.QTableWidget):
             data = dict()
             # Game's name
             element = doc.xpath("//h1[@class='page-title']")
-            data[COLUMN_NAME] = element[0].findtext('a')
+            data[COLUMN_NAME] = element[0].text
             # Game's system
             element = doc.xpath("//title")
             value = element[0].text
@@ -124,8 +124,8 @@ class Table(QtWidgets.QTableWidget):
             value = value.split(' - GameFAQs')[0]
             data[COLUMN_SYSTEM] = value
             # Year
-            element = doc.xpath("//div[@class='pod pod_gameinfo']")
-            value = element[0].getchildren()[1].getchildren()[0].getchildren()[3].findtext('a')
+            element = doc.xpath("//*[text()='Release:']/parent::li")
+            value = element[0].findtext('a')
             data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', value).group()
             # Rating, votes and final rating
             element = doc.xpath("//fieldset[@id='js_mygames_rate']")
