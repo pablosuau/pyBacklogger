@@ -20,24 +20,10 @@ def parse_difficulty_length(doc, id_element):
     Auxiliar function to parse both difficulty and length, since the parsing process
     is very similar and is used at several points in the code
     '''
-
-    element = doc.xpath("//fieldset[@id='" + id_element + "']")
-    if element:
-        try:
-            value = element[0] \
-                    .getchildren()[0] \
-                    .getchildren()[0] \
-                    .getchildren()[2] \
-                    .findtext('a')
-            if value is None:
-                ret = 'Not Yet Rated'
-            else:
-                ret = value
-                if id_element == 'js_mygames_time':
-                    ret = ret.split(' ')[0]
-        except IndexError:
-            # Not rated yet, therefore, length of the div is 2, not three
-            ret = 'Not Yet Rated'
+    element = doc.xpath("//div[@id='" + id_element + "']")
+    value = element[0].text
+    if value != 'Unrated':
+        ret = value.split('(')[0].rstrip()
     else:
         ret = 'Not Yet Rated'
     return ret
