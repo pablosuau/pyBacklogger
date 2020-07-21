@@ -128,16 +128,10 @@ class Table(QtWidgets.QTableWidget):
             value = element[0].findtext('a')
             data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', value).group()
             # Rating, votes and final rating
-            element = doc.xpath("//fieldset[@id='js_mygames_rate']")
-            if element:
-                value = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                if value is None:
-                    data[COLUMN_RATING] = '0.00'
-                    data[COLUMN_VOTES] = '0'
-                else:
-                    data[COLUMN_RATING] = value.split(' / ')[0]
-                    value = element[0].getchildren()[0].getchildren()[0].getchildren()[2].text
-                    data[COLUMN_VOTES] = value.split(' ')[0]
+            element = re.sub(' +', ' ', doc.xpath("//div[@class='gamespace_rate_half']/@title")[0]).split(' ')
+            if len(element) == 6:
+                data[COLUMN_RATING] = element[1]
+                data[COLUMN_VOTES] = element[4]
             else:
                 data[COLUMN_RATING] = '0.00'
                 data[COLUMN_VOTES] = '0'
