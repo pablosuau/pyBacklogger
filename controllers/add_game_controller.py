@@ -187,4 +187,3 @@ class AddGameController(QtWidgets.QDialog):
                 util.show_error_message(self.parent(), 'Incorrect URL or no Internet connection')
         def __del__(self):
             self.exiting = True
-            self.wait()
