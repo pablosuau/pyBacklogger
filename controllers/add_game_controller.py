@@ -144,7 +144,7 @@ class AddGameController(QtWidgets.QDialog):
                 self.table.scrollToBottom()
 
         else:
-            src = SearchResultsController(html, parent=self)
+            src = SearchResultsController(html, parent = self)
             src.exec_()
             selected = src.get_search_results()
             if selected:
@@ -171,7 +171,7 @@ class AddGameController(QtWidgets.QDialog):
             Parses the html assigned to the worker.
             '''
             try:
-                req = urllib.request.Request(self.url, headers={'User-Agent' : "Magic Browser"})
+                req = urllib.request.Request(self.url, headers = {'User-Agent' : 'Magic Browser'})
                 response = urllib.request.urlopen(req)
                 html = response.read().decode('ascii', 'ignore')
                 self.html_read.emit(html)
