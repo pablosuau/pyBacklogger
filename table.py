@@ -111,61 +111,61 @@ class Table(QtWidgets.QTableWidget):
             - url: URL from which the html data was downloaded
             - html: html page of the game to be added to the database
         '''
-        #try:
-        doc = fromstring(html)
-        data = dict()
-        # Game's name
-        element = doc.xpath("//h1[@class='page-title']")
-        data[COLUMN_NAME] = element[0].text
-        # Game's system
-        element = doc.xpath("//title")
-        value = element[0].text
-        value = value.split(data[COLUMN_NAME] + ' for ')[1]
-        value = value.split(' - GameFAQs')[0]
-        data[COLUMN_SYSTEM] = value
-        # Year
-        element = doc.xpath("//*[text()='Release:']/parent::li")
-        value = element[0].findtext('a')
-        data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', value).group()
-        # Rating, votes and final rating
-        element = re.sub(' +', ' ', doc.xpath("//div[@class='gamespace_rate_half']/@title")[0]).split(' ')
-        if len(element) == 6:
-            data[COLUMN_RATING] = element[1]
-            data[COLUMN_VOTES] = element[4]
-        else:
-            data[COLUMN_RATING] = '0.00'
-            data[COLUMN_VOTES] = '0'
-        # Difficulty and length
-        data[COLUMN_DIFFICULTY] = parse_difficulty_length(doc, 'gs_difficulty_avg_hint')
-        data[COLUMN_LENGTH] = parse_difficulty_length(doc, 'gs_length_avg_hint').replace(' Hours', '')
-        # Checking that the game is not already in the database
-        rows = self.rowCount()
-        found = False
-        pos = 0
-        while not found and pos < rows:
-            if self.item(pos, HEADERS.index(COLUMN_URL)).text() == url:
-                found = True
-            pos = pos + 1
+        try:
+            doc = fromstring(html)
+            data = dict()
+            # Game's name
+            element = doc.xpath("//h1[@class='page-title']")
+            data[COLUMN_NAME] = element[0].text
+            # Game's system
+            element = doc.xpath("//title")
+            value = element[0].text
+            value = value.split(data[COLUMN_NAME] + ' for ')[1]
+            value = value.split(' - GameFAQs')[0]
+            data[COLUMN_SYSTEM] = value
+            # Year
+            element = doc.xpath("//*[text()='Release:']/parent::li")
+            value = element[0].findtext('a')
+            data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', value).group()
+            # Rating, votes and final rating
+            element = re.sub(' +', ' ', doc.xpath("//div[@class='gamespace_rate_half']/@title")[0]).split(' ')
+            if len(element) == 6:
+                data[COLUMN_RATING] = element[1]
+                data[COLUMN_VOTES] = element[4]
+            else:
+                data[COLUMN_RATING] = '0.00'
+                data[COLUMN_VOTES] = '0'
+            # Difficulty and length
+            data[COLUMN_DIFFICULTY] = parse_difficulty_length(doc, 'gs_difficulty_avg_hint')
+            data[COLUMN_LENGTH] = parse_difficulty_length(doc, 'gs_length_avg_hint').replace(' Hours', '')
+            # Checking that the game is not already in the database
+            rows = self.rowCount()
+            found = False
+            pos = 0
+            while not found and pos < rows:
+                if self.item(pos, HEADERS.index(COLUMN_URL)).text() == url:
+                    found = True
+                pos = pos + 1
 
-        if found:
-            error_message = QtWidgets.QErrorMessage(self)
-            error_message.showMessage(data[COLUMN_NAME] + ' (' +
-                                      data[COLUMN_SYSTEM] +
-                                      ') is already in the database')
-        else:
-            data[COLUMN_WEIGHTED] = ''
-            data[COLUMN_STATUS] = 'unplayed'
-            data[COLUMN_LABELS] = ''
-            data[COLUMN_NOTES] = ''
-            data[COLUMN_URL] = url
-            self.add_game_row(data)
-            # And recomputing weighted ratins
-            self.compute_final_rating()
-       # except (TypeError, IndexError):
+            if found:
+                error_message = QtWidgets.QErrorMessage(self)
+                error_message.showMessage(data[COLUMN_NAME] + ' (' +
+                                          data[COLUMN_SYSTEM] +
+                                          ') is already in the database')
+            else:
+                data[COLUMN_WEIGHTED] = ''
+                data[COLUMN_STATUS] = 'unplayed'
+                data[COLUMN_LABELS] = ''
+                data[COLUMN_NOTES] = ''
+                data[COLUMN_URL] = url
+                self.add_game_row(data)
+                # And recomputing weighted ratins
+                self.compute_final_rating()
+        except (TypeError, IndexError):
             # This exception is produced if there is an error while parsing the HTML
-       #     error_message = QtWidgets.QErrorMessage(self)
-       #     error_message.showMessage('The URL ' + url +
-       #                               ' does not seem to be a valid game entry on GameFAQs')
+            error_message = QtWidgets.QErrorMessage(self)
+            error_message.showMessage('The URL ' + url +
+                                      ' does not seem to be a valid game entry on GameFAQs')
 
     def add_game_row(self, data, row=None):
         '''
