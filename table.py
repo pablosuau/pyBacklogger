@@ -18,10 +18,8 @@ from models.status_model import StatusModel
 from models.sort_list_model import SortListModel
 from models.constants import HEADERS, HEADERS_EXTENDED, LABEL_NONE, COLUMN_NAME, \
                              COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, \
-                             COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_LENGTH, \
-                             COLUMN_DIFFICULTY, COLUMN_STATUS, COLUMN_LABELS, \
-                             COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER, DIFFICULTY_COLORS, \
-                             OPTIONS_STATUS
+                             COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, \
+                             COLUMN_LABELS, COLUMN_NOTES, COLUMN_ORDER, OPTIONS_STATUS
 
 class Table(QtWidgets.QTableWidget):
     '''

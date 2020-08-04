@@ -11,8 +11,7 @@ import urllib.error
 from PyQt5 import QtCore, QtWidgets
 from lxml.html.soupparser import fromstring
 from util.util import parse_difficulty_length
-from models.constants import HEADERS, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_DIFFICULTY, \
-                             COLUMN_LENGTH, COLUMN_URL
+from models.constants import HEADERS, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES
 
 WARNING_MESSAGE = """<strong>A warning about doing too many requests to GameFAQs.</strong><br><br>\n
 Making too many requests to GameFAQs during the course of the same day may result in your IP to be permanently blocked.
