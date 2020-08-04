@@ -89,7 +89,6 @@ class Table(QtWidgets.QTableWidget):
         self.models['system_list_model'] = FilterListModel()
         self.models['label_list_model'] = FilterListModel(LABEL_NONE)
         self.models['status_list_model'] = FilterListModel()
-        self.models['difficulty_list_model'] = FilterListModel()
         self.models['status_model'] = StatusModel()
         self.models['sort_list_model'] = SortListModel()
 
@@ -197,13 +196,9 @@ class Table(QtWidgets.QTableWidget):
         set_item(data, COLUMN_RATING)
         set_item(data, COLUMN_VOTES)
         set_item(data, COLUMN_WEIGHTED)
-        set_item(data, COLUMN_DIFFICULTY)
-        set_item(data, COLUMN_LENGTH)
-        set_item(data, COLUMN_URL)
         set_item(data, COLUMN_NOTES, False)
         item = set_item(data, COLUMN_STATUS)
         item.setForeground(OPTIONS_STATUS[data[COLUMN_STATUS]])
-        self.models['difficulty_list_model'].add(data[COLUMN_DIFFICULTY])
         self.models['system_list_model'].add(data[COLUMN_SYSTEM])
         self.models['status_list_model'].add(data[COLUMN_STATUS])
         # labels
@@ -317,8 +312,6 @@ class Table(QtWidgets.QTableWidget):
                 # Assigning colour ranges
                 all_values = np.array(all_values)
                 indices = all_values == -1
-                if column == COLUMN_LENGTH:
-                    all_values = 80 - all_values
                 if max_value - min_value > 0:
                     all_values = 100*(all_values - min_value)/(max_value - min_value)
                 else:
@@ -333,7 +326,6 @@ class Table(QtWidgets.QTableWidget):
             update_colors_column(COLUMN_YEAR)
             update_colors_column(COLUMN_VOTES)
             update_colors_column(COLUMN_RATING)
-            update_colors_column(COLUMN_LENGTH)
 
             # Colour code for different systems
             systems = []
@@ -348,13 +340,6 @@ class Table(QtWidgets.QTableWidget):
                 color = QtGui.QColor()
                 color.setHsv(step*systems.index(system), 255, 150)
                 self.item(row, HEADERS.index(COLUMN_SYSTEM)).setForeground(color)
-
-            # COlour code for difficulty levels
-            for row in range(0, self.rowCount()):
-                value = self.item(row, HEADERS.index(COLUMN_DIFFICULTY)).text()
-                self.item(row, HEADERS \
-                               .index(COLUMN_DIFFICULTY)) \
-                               .setForeground(DIFFICULTY_COLORS[value])
 
     def hide_rows(self):
         '''
@@ -381,9 +366,6 @@ class Table(QtWidgets.QTableWidget):
                 filtered_out = filtered_out or \
                                self.models['status_list_model'].get_filtered(
                                    self.item(row, HEADERS.index(COLUMN_STATUS)).text())
-                filtered_out = filtered_out or \
-                               self.models['difficulty_list_model'].get_filtered(
-                                   self.item(row, HEADERS.index(COLUMN_DIFFICULTY)).text())
             self.setRowHidden(row, filtered_out)
 
     def show_all_rows(self):
