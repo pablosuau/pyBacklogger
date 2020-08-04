@@ -2,6 +2,10 @@
 
 A desktop Python application based on PyQ to manage your videogame collection which includes data scraping from GameFAQs.com.
 
+**[04/08/2020] Notice:** GameFAQs has been making it harder and harder to scrape data from their website for personal use. As a result of that I've spent multiple hours over the last years updating this project. I've decided to transition from GameFAQs to [rawg](https://rawg.io/apidocs) as the data source for pyBacklogger. This will take some time. In the meantime, some options in the master branch's version will not work. 
+
+Contrary to GameFAQs, [rawg](https://rawg.io/apidocs) is a great and rich open data source. Because they offer API endpoints web scraping will become unnecessary and pyBacklogger more robust and stable.
+
 ![Main window view](readme_img/main_window.png)
 
 Project's [post-mortem](https://github.com/pablosuau/pyBacklogger/blob/master/postmortem.md)'s document
