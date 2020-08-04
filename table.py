@@ -19,7 +19,8 @@ from models.sort_list_model import SortListModel
 from models.constants import HEADERS, HEADERS_EXTENDED, LABEL_NONE, COLUMN_NAME, \
                              COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, \
                              COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, \
-                             COLUMN_LABELS, COLUMN_NOTES, COLUMN_ORDER, OPTIONS_STATUS
+                             COLUMN_LABELS, COLUMN_NOTES, COLUMN_ID, COLUMN_ORDER, \
+                             OPTIONS_STATUS
 
 class Table(QtWidgets.QTableWidget):
     '''
@@ -164,7 +165,7 @@ class Table(QtWidgets.QTableWidget):
             error_message.showMessage('The URL ' + url +
                                       ' does not seem to be a valid game entry on GameFAQs')
 
-    def add_game_row(self, data, row=None):
+    def add_game_row(self, data, row = None):
         '''
         This method effectively adds a single game as a row to the table after the data has been
         parsed from the corresponding HTML page.
@@ -197,6 +198,7 @@ class Table(QtWidgets.QTableWidget):
         set_item(data, COLUMN_VOTES)
         set_item(data, COLUMN_WEIGHTED)
         set_item(data, COLUMN_NOTES, False)
+        set_item(data, COLUMN_ID)
         item = set_item(data, COLUMN_STATUS)
         item.setForeground(OPTIONS_STATUS[data[COLUMN_STATUS]])
         self.models['system_list_model'].add(data[COLUMN_SYSTEM])
