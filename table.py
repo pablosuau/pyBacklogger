@@ -128,22 +128,16 @@ class Table(QtWidgets.QTableWidget):
             value = element[0].findtext('a')
             data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', value).group()
             # Rating, votes and final rating
-            element = doc.xpath("//fieldset[@id='js_mygames_rate']")
-            if element:
-                value = element[0].getchildren()[0].getchildren()[0].getchildren()[1].findtext('a')
-                if value is None:
-                    data[COLUMN_RATING] = '0.00'
-                    data[COLUMN_VOTES] = '0'
-                else:
-                    data[COLUMN_RATING] = value.split(' / ')[0]
-                    value = element[0].getchildren()[0].getchildren()[0].getchildren()[2].text
-                    data[COLUMN_VOTES] = value.split(' ')[0]
+            element = re.sub(' +', ' ', doc.xpath("//div[@class='gamespace_rate_half']/@title")[0]).split(' ')
+            if len(element) == 6:
+                data[COLUMN_RATING] = element[1]
+                data[COLUMN_VOTES] = element[4]
             else:
                 data[COLUMN_RATING] = '0.00'
                 data[COLUMN_VOTES] = '0'
             # Difficulty and length
-            data[COLUMN_DIFFICULTY] = parse_difficulty_length(doc, 'js_mygames_diff')
-            data[COLUMN_LENGTH] = parse_difficulty_length(doc, 'js_mygames_time')
+            data[COLUMN_DIFFICULTY] = parse_difficulty_length(doc, 'gs_difficulty_avg_hint')
+            data[COLUMN_LENGTH] = parse_difficulty_length(doc, 'gs_length_avg_hint').replace(' Hours', '')
             # Checking that the game is not already in the database
             rows = self.rowCount()
             found = False
