@@ -6,7 +6,7 @@ in the search results dialog to the backlog.
 from PyQt5 import QtGui, QtCore, QtWidgets
 from lxml.html.soupparser import fromstring
 from views.search_results_dialog import Ui_SearchResultsDialog
-from models.constants import GAMEFAQS_URL
+from models.constants import RAWG_URL
 
 class SearchResultsController(QtWidgets.QDialog):
     '''

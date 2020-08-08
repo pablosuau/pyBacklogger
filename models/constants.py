@@ -3,8 +3,8 @@ Global constants for the application
 '''
 from PyQt5 import QtGui
 
-GAMEFAQS_URL = 'https://gamefaqs.gamespot.com'
-SEARCH_URL = GAMEFAQS_URL + '/search?game='
+RAWG_USERAGENT = 'pyBacklogger'
+RAWG_URL = 'https://rawg.io/games/'
 
 COLUMN_NAME = 'Name'
 COLUMN_SYSTEM = 'System'

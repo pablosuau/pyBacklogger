@@ -3,13 +3,14 @@ Module that contains all the code required to add games to the backlog
 '''
 
 import re
-import urllib.request
-import urllib.error
+import rawgpy
+import numpy as np
+from rawgpy.game import Game
 from PyQt5 import QtCore, QtWidgets
 from views.add_game_dialog import Ui_AddGameDialog
 from controllers.search_results_controller import SearchResultsController
 from util import util
-from models.constants import SEARCH_URL, GAMEFAQS_URL
+from models.constants import RAWG_USERAGENT, RAWG_URL
 
 
 class AddGameController(QtWidgets.QDialog):
@@ -19,9 +20,9 @@ class AddGameController(QtWidgets.QDialog):
     '''
     # pylint: disable=too-many-instance-attributes
 
-    html_read = QtCore.pyqtSignal(str)
+    html_read = QtCore.pyqtSignal(Game)
 
-    def __init__(self, table, parent=None):
+    def __init__(self, table, parent = None):
         '''
         Set up the user interface and the signals
 
@@ -91,7 +92,7 @@ class AddGameController(QtWidgets.QDialog):
             self.url = str(self.user_interface.lineEditSearch.text()).strip()
             if not re.match(r'^[a-zA-Z]+://', self.url):
                 self.url = 'http://' + self.url
-            if not self.url.startswith(GAMEFAQS_URL):
+            if not self.url.startswith(RAWG_URL):
                 util.show_error_message(self.parent, 'The URL is not a valid GameFAQs one')
             else:
                 # Download the content of the page
@@ -126,6 +127,12 @@ class AddGameController(QtWidgets.QDialog):
         '''
         self.progress.close()
         if self.add_by_url:
+            print(html.id)
+            print(html.name)
+            print(html.platforms)
+            print(html.rating)
+            print(np.sum([r['count'] for r in html.ratings]))
+            asdda
             self.table.add_game(self.url, str(html))
             if self.pending_selected != None:
                 self.url = self.pending_selected[0]
@@ -171,10 +178,11 @@ class AddGameController(QtWidgets.QDialog):
             Parses the html assigned to the worker.
             '''
             try:
-                req = urllib.request.Request(self.url, headers = {'User-Agent' : 'Magic Browser'})
-                response = urllib.request.urlopen(req)
-                html = response.read().decode('ascii', 'ignore')
-                self.html_read.emit(html)
+                rawg = rawgpy.RAWG(RAWG_USERAGENT)
+                game_slug = self.url.split('/')[-1]
+                game = Game({'slug': game_slug})
+                game.populate()
+                self.html_read.emit(game)
             except urllib.error.HTTPError as exception:
                 print(exception.code)
                 print(exception.read())
