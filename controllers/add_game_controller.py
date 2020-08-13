@@ -20,7 +20,7 @@ class AddGameController(QtWidgets.QDialog):
     '''
     # pylint: disable=too-many-instance-attributes
 
-    html_read = QtCore.pyqtSignal(Game)
+    api_read = QtCore.pyqtSignal(Game)
 
     def __init__(self, table, parent = None):
         '''
@@ -53,7 +53,7 @@ class AddGameController(QtWidgets.QDialog):
         self.user_interface.pushButtonOk.clicked.connect(self.ok_clicked)
         self.user_interface.pushButtonCancel.clicked.connect(self.cancel_clicked)
         self.user_interface.lineEditSearch.textChanged.connect(self.text_changed)
-        self.html_read.connect(self.update_add_game)
+        self.api_read.connect(self.update_add_game)
 
     def ok_clicked(self):
         '''
@@ -93,7 +93,7 @@ class AddGameController(QtWidgets.QDialog):
             if not re.match(r'^[a-zA-Z]+://', self.url):
                 self.url = 'http://' + self.url
             if not self.url.startswith(RAWG_URL):
-                util.show_error_message(self.parent, 'The URL is not a valid GameFAQs one')
+                util.show_error_message(self.parent, 'The URL is not a valid rawg.io one')
             else:
                 # Download the content of the page
                 self.launch_add_game_worker()
@@ -112,10 +112,10 @@ class AddGameController(QtWidgets.QDialog):
         self.progress.setCancelButton(None)
         self.progress.setWindowModality(QtCore.Qt.WindowModal)
         self.progress.show()
-        self.thread = self.AddGameWorker(self.url, self.html_read, self.table)
+        self.thread = self.AddGameWorker(self.url, self.api_read, self.table)
         self.thread.start()
 
-    def update_add_game(self, html):
+    def update_add_game(self, game):
         '''
         Decides what's the next step after adding a game. If we are already adding games,
         and there are games pending, a new worker is created. If we are searching by name,
@@ -123,15 +123,17 @@ class AddGameController(QtWidgets.QDialog):
         the list of selected games.
 
         parameters:
-            - html: html code to be parsed in order to add a game
+            - game: the game object obtained by the API call
         '''
         self.progress.close()
         if self.add_by_url:
-            print(html.id)
-            print(html.name)
-            print(html.platforms)
-            print(html.rating)
-            print(np.sum([r['count'] for r in html.ratings]))
+            print(game.id)
+            print(game.name)
+            for p in game.platforms:
+                print(p.name)
+            print(game.rating)
+            print(game.released)
+            print(np.sum([r['count'] for r in game.ratings]))
             asdda
             self.table.add_game(self.url, str(html))
             if self.pending_selected != None:
@@ -167,31 +169,24 @@ class AddGameController(QtWidgets.QDialog):
         '''
         Private class to create background processes in order to parse a piece of html code.
         '''
-        def __init__(self, url, html_read, parent=None):
+        def __init__(self, url, api_read, parent=None):
             QtCore.QThread.__init__(self, parent)
             self.exiting = False
             self.url = url
-            self.html_read = html_read
+            self.api_read = api_read
 
         def run(self):
             '''
-            Parses the html assigned to the worker.
+            Reads the game data.
             '''
             try:
                 rawg = rawgpy.RAWG(RAWG_USERAGENT)
                 game_slug = self.url.split('/')[-1]
                 game = Game({'slug': game_slug})
                 game.populate()
-                self.html_read.emit(game)
-            except urllib.error.HTTPError as exception:
-                print(exception.code)
-                print(exception.read())
-                util.show_error_message(
-                    self.parent(),
-                    'Connection error: ' + exception.code + ' ' + exception.read()
-                )
-            except urllib.error.URLError as exception:
+                self.api_read.emit(game)
+            except:
                 print(exception.reason)
-                util.show_error_message(self.parent(), 'Incorrect URL or no Internet connection')
+                util.show_error_message(self.parent(), 'The game data couldn\'t be retrieved')
         def __del__(self):
             self.exiting = True
