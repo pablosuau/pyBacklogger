@@ -42,7 +42,7 @@
     <string>Select the system:</string>
    </property>
   </widget>
-  <widget class="QListView" name="listViewGames">
+  <widget class="QListView" name="listViewSystems">
    <property name="geometry">
     <rect>
      <x>10</x>

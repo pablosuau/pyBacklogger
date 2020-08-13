@@ -25,7 +25,7 @@ class Ui_SelectSystemDialog
 {
 public:
     QLabel *label;
-    QListView *listViewGames;
+    QListView *listViewSystems;
     QPushButton *pushButtonOk;
     QPushButton *pushButtonCancel;
 
@@ -42,9 +42,9 @@ public:
         label = new QLabel(SelectSystemDialog);
         label->setObjectName(QStringLiteral("label"));
         label->setGeometry(QRect(10, 10, 301, 16));
-        listViewGames = new QListView(SelectSystemDialog);
-        listViewGames->setObjectName(QStringLiteral("listViewGames"));
-        listViewGames->setGeometry(QRect(10, 30, 251, 221));
+        listViewSystems = new QListView(SelectSystemDialog);
+        listViewSystems->setObjectName(QStringLiteral("listViewSystems"));
+        listViewSystems->setGeometry(QRect(10, 30, 251, 221));
         pushButtonOk = new QPushButton(SelectSystemDialog);
         pushButtonOk->setObjectName(QStringLiteral("pushButtonOk"));
         pushButtonOk->setEnabled(true);

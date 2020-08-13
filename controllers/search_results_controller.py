@@ -13,12 +13,13 @@ class SearchResultsController(QtWidgets.QDialog):
     Controller of the dialog to interact with game search results
     '''
 
-    def __init__(self, html, parent=None):
+    def __init__(self, html, parent = None):
         '''
         Initialises the user interface and sets up the signals
 
         parameters:
             - parent: the controller which is the parent of the search results dialog
+            - html: a string containing the search results
         '''
         super(SearchResultsController, self).__init__(parent)
 
