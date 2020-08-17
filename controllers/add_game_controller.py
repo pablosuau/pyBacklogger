@@ -9,6 +9,7 @@ from rawgpy.game import Game
 from PyQt5 import QtCore, QtWidgets
 from views.add_game_dialog import Ui_AddGameDialog
 from controllers.search_results_controller import SearchResultsController
+from controllers.select_system_controller import SelectSystemController
 from util import util
 from models.constants import RAWG_USERAGENT, RAWG_URL
 
@@ -134,7 +135,13 @@ class AddGameController(QtWidgets.QDialog):
             print(game.rating)
             print(game.released)
             print(np.sum([r['count'] for r in game.ratings]))
+            ssc = SelectSystemController([p.name for p in game.platforms], parent = self)
+            ssc.exec_()
+            selected = ssc.get_selected_systems()
+            print(selected)
             asdda
+            if selected:
+                pass # add the game
             self.table.add_game(self.url, str(html))
             if self.pending_selected != None:
                 self.url = self.pending_selected[0]

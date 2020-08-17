@@ -5,7 +5,7 @@ specific system among all the options provided by rawg's api
 from PyQt5 import QtGui, QtCore, QtWidgets
 from views.select_system_dialog import Ui_SelectSystemDialog
 
-class SearchResultsController(QtWidgets.QDialog):
+class SelectSystemController(QtWidgets.QDialog):
     '''
     Controller of the dialog to select a game system
     '''
@@ -17,12 +17,13 @@ class SearchResultsController(QtWidgets.QDialog):
             - parent: the controller which is the parent of the search results dialog
             - systems: a list with the systems to display
         '''
-        super(SearchResultsController, self).__init__(parent)
+        super(SelectSystemController, self).__init__(parent)
 
-        self.view = Ui_SearchResultsDialog()
+        self.view = Ui_SelectSystemDialog()
         self.view.setupUi(self)
 
         self.systems = systems
+        self.checked = 0
         self.canceled = False
 
         self.initialize_ui()
@@ -36,8 +37,9 @@ class SearchResultsController(QtWidgets.QDialog):
         for system in self.systems:
         	item = QtGui.QStandardItem(system)
         	item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole)
-            model.appendRow(item)
+        	item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole)
+        	model.appendRow(item)
+        model.itemChanged.connect(self.on_item_changed)
         self.view.listViewSystems.setModel(model)
 
         self.view.pushButtonOk.setEnabled(False)
@@ -76,9 +78,27 @@ class SearchResultsController(QtWidgets.QDialog):
         '''
         if item.checkState() == QtCore.Qt.Checked:
             self.checked = self.checked + 1
-            if self.checked == 1:
+            if self.checked > 0:
                 self.view.pushButtonOk.setEnabled(True)
         else:
             self.checked = self.checked - 1
             if self.checked == 0:
                 self.view.pushButtonOk.setEnabled(False)
+
+    def get_selected_systems(self):
+        '''
+        Returns a list with the systems that were selected by the user by means of the selection
+        checkboxes.
+
+        returns:
+            - a list with the name of the selected systems on the search results dialog
+        '''
+        selected = []
+        if not self.canceled:
+            model = self.view.listViewSystems.model()
+            for index in range(model.rowCount()):
+                item = model.item(index)
+                if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
+                    selected.append(self.systems[index])
+
+        return selected

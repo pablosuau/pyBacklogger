@@ -1,77 +1,45 @@
-/********************************************************************************
-** Form generated from reading UI file 'select_system_dialog.ui'
-**
-** Created by: Qt User Interface Compiler version 5.9.7
-**
-** WARNING! All changes made in this file will be lost when recompiling UI file!
-********************************************************************************/
+# -*- coding: utf-8 -*-
 
-#ifndef UI_SELECT_SYSTEM_DIALOG_H
-#define UI_SELECT_SYSTEM_DIALOG_H
+# Form implementation generated from reading ui file 'select_system_dialog.ui'
+#
+# Created by: PyQt5 UI code generator 5.14.1
+#
+# WARNING! All changes made in this file will be lost!
 
-#include <QtCore/QVariant>
-#include <QtWidgets/QAction>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QHeaderView>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QListView>
-#include <QtWidgets/QPushButton>
 
-QT_BEGIN_NAMESPACE
+from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_SelectSystemDialog
-{
-public:
-    QLabel *label;
-    QListView *listViewSystems;
-    QPushButton *pushButtonOk;
-    QPushButton *pushButtonCancel;
 
-    void setupUi(QDialog *SelectSystemDialog)
-    {
-        if (SelectSystemDialog->objectName().isEmpty())
-            SelectSystemDialog->setObjectName(QStringLiteral("SelectSystemDialog"));
-        SelectSystemDialog->resize(270, 286);
-        SelectSystemDialog->setMinimumSize(QSize(270, 286));
-        SelectSystemDialog->setMaximumSize(QSize(270, 286));
-        QIcon icon;
-        icon.addFile(QStringLiteral(":/app_icon/shelf.png"), QSize(), QIcon::Normal, QIcon::Off);
-        SelectSystemDialog->setWindowIcon(icon);
-        label = new QLabel(SelectSystemDialog);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(10, 10, 301, 16));
-        listViewSystems = new QListView(SelectSystemDialog);
-        listViewSystems->setObjectName(QStringLiteral("listViewSystems"));
-        listViewSystems->setGeometry(QRect(10, 30, 251, 221));
-        pushButtonOk = new QPushButton(SelectSystemDialog);
-        pushButtonOk->setObjectName(QStringLiteral("pushButtonOk"));
-        pushButtonOk->setEnabled(true);
-        pushButtonOk->setGeometry(QRect(95, 257, 75, 23));
-        pushButtonCancel = new QPushButton(SelectSystemDialog);
-        pushButtonCancel->setObjectName(QStringLiteral("pushButtonCancel"));
-        pushButtonCancel->setGeometry(QRect(185, 257, 75, 23));
+class Ui_SelectSystemDialog(object):
+    def setupUi(self, SelectSystemDialog):
+        SelectSystemDialog.setObjectName("SelectSystemDialog")
+        SelectSystemDialog.resize(270, 286)
+        SelectSystemDialog.setMinimumSize(QtCore.QSize(270, 286))
+        SelectSystemDialog.setMaximumSize(QtCore.QSize(270, 286))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/app_icon/shelf.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        SelectSystemDialog.setWindowIcon(icon)
+        self.label = QtWidgets.QLabel(SelectSystemDialog)
+        self.label.setGeometry(QtCore.QRect(10, 10, 301, 16))
+        self.label.setObjectName("label")
+        self.listViewSystems = QtWidgets.QListView(SelectSystemDialog)
+        self.listViewSystems.setGeometry(QtCore.QRect(10, 30, 251, 221))
+        self.listViewSystems.setObjectName("listViewSystems")
+        self.pushButtonOk = QtWidgets.QPushButton(SelectSystemDialog)
+        self.pushButtonOk.setEnabled(True)
+        self.pushButtonOk.setGeometry(QtCore.QRect(95, 257, 75, 23))
+        self.pushButtonOk.setObjectName("pushButtonOk")
+        self.pushButtonCancel = QtWidgets.QPushButton(SelectSystemDialog)
+        self.pushButtonCancel.setGeometry(QtCore.QRect(185, 257, 75, 23))
+        self.pushButtonCancel.setObjectName("pushButtonCancel")
 
-        retranslateUi(SelectSystemDialog);
+        self.retranslateUi(SelectSystemDialog)
+        QtCore.QMetaObject.connectSlotsByName(SelectSystemDialog)
 
-        QMetaObject::connectSlotsByName(SelectSystemDialog);
-    } // setupUi
-
-    void retranslateUi(QDialog *SelectSystemDialog)
-    {
-        SelectSystemDialog->setWindowTitle(QApplication::translate("SelectSystemDialog", "System selection", Q_NULLPTR));
-        label->setText(QApplication::translate("SelectSystemDialog", "Select the system:", Q_NULLPTR));
-        pushButtonOk->setText(QApplication::translate("SelectSystemDialog", "Ok", Q_NULLPTR));
-        pushButtonCancel->setText(QApplication::translate("SelectSystemDialog", "Cancel", Q_NULLPTR));
-    } // retranslateUi
-
-};
-
-namespace Ui {
-    class SelectSystemDialog: public Ui_SelectSystemDialog {};
-} // namespace Ui
-
-QT_END_NAMESPACE
-
-#endif // UI_SELECT_SYSTEM_DIALOG_H
+    def retranslateUi(self, SelectSystemDialog):
+        _translate = QtCore.QCoreApplication.translate
+        SelectSystemDialog.setWindowTitle(_translate("SelectSystemDialog", "System selection"))
+        self.label.setText(_translate("SelectSystemDialog", "Select the system:"))
+        self.pushButtonOk.setText(_translate("SelectSystemDialog", "Ok"))
+        self.pushButtonCancel.setText(_translate("SelectSystemDialog", "Cancel"))
+import views.app_icon_rc
