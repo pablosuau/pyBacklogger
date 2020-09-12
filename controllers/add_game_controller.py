@@ -12,6 +12,8 @@ from controllers.search_results_controller import SearchResultsController
 from controllers.select_system_controller import SelectSystemController
 from util import util
 from models.constants import RAWG_USERAGENT, RAWG_URL
+from models.constants import COLUMN_NAME, COLUMN_SYSTEM, COLUMN_YEAR, \
+                             COLUMN_RATING, COLUMN_VOTES, COLUMN_ID
 
 
 class AddGameController(QtWidgets.QDialog):
@@ -128,21 +130,18 @@ class AddGameController(QtWidgets.QDialog):
         '''
         self.progress.close()
         if self.add_by_url:
-            print(game.id)
-            print(game.name)
-            for p in game.platforms:
-                print(p.name)
-            print(game.rating)
-            print(game.released)
-            print(np.sum([r['count'] for r in game.ratings]))
             ssc = SelectSystemController([p.name for p in game.platforms], parent = self)
             ssc.exec_()
             selected = ssc.get_selected_systems()
-            print(selected)
-            asdda
             if selected:
-                pass # add the game
-            self.table.add_game(self.url, str(html))
+                for system in selected:
+                    data = {COLUMN_ID: game.id,
+                            COLUMN_NAME: game.name,
+                            COLUMN_YEAR: game.released,
+                            COLUMN_RATING: str(game.rating),
+                            COLUMN_VOTES: str(np.sum([r['count'] for r in game.ratings])),
+                            COLUMN_SYSTEM: system}
+                    self.table.add_game(data)
             if self.pending_selected != None:
                 self.url = self.pending_selected[0]
                 del self.pending_selected[0]
