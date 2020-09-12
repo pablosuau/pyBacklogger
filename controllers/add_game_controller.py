@@ -140,7 +140,7 @@ class AddGameController(QtWidgets.QDialog):
                 game.released = game.released.split('-')[0]
             if selected:
                 for system in selected:
-                    data = {COLUMN_ID: game.id,
+                    data = {COLUMN_ID: str(game.id),
                             COLUMN_NAME: game.name,
                             COLUMN_YEAR: game.released,
                             COLUMN_RATING: str(game.rating),

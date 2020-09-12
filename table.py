@@ -291,6 +291,7 @@ class Table(QtWidgets.QTableWidget):
             update_colors_column(COLUMN_YEAR)
             update_colors_column(COLUMN_VOTES)
             update_colors_column(COLUMN_RATING)
+            update_colors_column(COLUMN_ID)
 
             # Colour code for different systems
             systems = []
