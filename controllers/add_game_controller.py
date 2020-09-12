@@ -133,6 +133,11 @@ class AddGameController(QtWidgets.QDialog):
             ssc = SelectSystemController([p.name for p in game.platforms], parent = self)
             ssc.exec_()
             selected = ssc.get_selected_systems()
+            if not hasattr(game, 'released'):
+                game.released = 'Cancelled'
+            else:
+                # Just keep the year
+                game.released = game.released.split('-')[0]
             if selected:
                 for system in selected:
                     data = {COLUMN_ID: game.id,
