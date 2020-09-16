@@ -9,13 +9,14 @@ class SelectSystemController(QtWidgets.QDialog):
     '''
     Controller of the dialog to select a game system
     '''
-    def __init__(self, systems, parent = None):
+    def __init__(self, name, systems, parent = None):
         '''
         Initialises the user interface and sets up the signals
 
         parameters:
+        	- name: the game's name
+        	- systems: a list with the systems to display
             - parent: the controller which is the parent of the search results dialog
-            - systems: a list with the systems to display
         '''
         super(SelectSystemController, self).__init__(parent)
 
@@ -26,13 +27,17 @@ class SelectSystemController(QtWidgets.QDialog):
         self.checked = 0
         self.canceled = False
 
-        self.initialize_ui()
+        self.initialize_ui(name)
         self.setup_signals()
 
-    def initialize_ui(self):
+    def initialize_ui(self, name):
         '''
         Fills the view with the elements of the system list
+
+        Parameters:
+        	- name: the game's name
         '''
+        self.setWindowTitle(name)
         model = QtGui.QStandardItemModel()
         for system in self.systems:
         	item = QtGui.QStandardItem(system)

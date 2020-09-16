@@ -13,20 +13,20 @@ class SearchResultsController(QtWidgets.QDialog):
     Controller of the dialog to interact with game search results
     '''
 
-    def __init__(self, html, parent = None):
+    def __init__(self, games, parent = None):
         '''
         Initialises the user interface and sets up the signals
 
         parameters:
             - parent: the controller which is the parent of the search results dialog
-            - html: a string containing the search results
+            - games: a list of RAWG's Game objects
         '''
         super(SearchResultsController, self).__init__(parent)
 
         self.view = Ui_SearchResultsDialog()
         self.view.setupUi(self)
 
-        self.html = html
+        self.games = games
         self.canceled = False
 
         self.importing = None
@@ -41,49 +41,16 @@ class SearchResultsController(QtWidgets.QDialog):
         '''
         Fills the view with the game search results
         '''
-        systems = []
-        names = []
-        urls = []
-        doc = fromstring(str(self.html))
-
-        element = doc.xpath("//div[@class='search_result']")
-        for search_result in element:
-            name = (
-                search_result.getchildren()[1]
-                .getchildren()[0]
-                .getchildren()[0]
-                .getchildren()[0]
-                .getchildren()[0]
-                .text
-                .strip()
-            )
-
-            details = search_result.getchildren()[1].getchildren()[1].getchildren()
-            for detail in details:
-                if detail.get('class') == 'sr_showall':
-                    pass
-                else:
-                    product = detail.getchildren()[0].getchildren()[0]
-
-                    systems.append(product.text.strip())
-                    names.append(name)
-                    urls.append(GAMEFAQS_URL + product.attrib['href'])
-
         # Displaying search results
         model = QtGui.QStandardItemModel()
-        if systems:
-            for system, name in zip(systems, names):
-                item = QtGui.QStandardItem('(' + system + ') ' + name)
-                item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-                item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole)
-                model.appendRow(item)
-            model.itemChanged.connect(self.on_item_changed)
-        else:
-            item = QtGui.QStandardItem('No game was found')
+        for game in self.games:
+            item = QtGui.QStandardItem(game.name)
+            item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+            item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole)
             model.appendRow(item)
+        model.itemChanged.connect(self.on_item_changed)
         self.view.listViewGames.setModel(model)
 
-        self.urls = urls
         self.checked = 0
         self.view.pushButtonOk.setEnabled(False)
 
@@ -142,6 +109,6 @@ class SearchResultsController(QtWidgets.QDialog):
             for index in range(model.rowCount()):
                 item = model.item(index)
                 if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
-                    selected.append(self.urls[index])
+                    selected.append(self.games[index].id)
 
         return selected
