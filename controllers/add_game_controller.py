@@ -130,39 +130,45 @@ class AddGameController(QtWidgets.QDialog):
         '''
         self.progress.close()
         if self.add_by_url:
-            ssc = SelectSystemController([p.name for p in game.platforms], parent = self)
-            ssc.exec_()
-            selected = ssc.get_selected_systems()
-            if not hasattr(game, 'released'):
-                game.released = 'Cancelled'
-            else:
-                # Just keep the year
-                game.released = game.released.split('-')[0]
-            if selected:
-                for system in selected:
-                    data = {COLUMN_ID: str(game.id),
-                            COLUMN_NAME: game.name,
-                            COLUMN_YEAR: game.released,
-                            COLUMN_RATING: str(game.rating),
-                            COLUMN_VOTES: str(np.sum([r['count'] for r in game.ratings])),
-                            COLUMN_SYSTEM: system}
-                    self.table.add_game(data)
-            if self.pending_selected != None:
-                self.url = self.pending_selected[0]
-                del self.pending_selected[0]
-                if not self.pending_selected:
-                    self.pending_selected = None
-                self.launch_add_game_worker()
-            else:
-                self.parent.clear_options()
-                self.parent.set_original_order()
+            if len(game.platforms) != 0:
+                ssc = SelectSystemController([p.name for p in game.platforms], parent = self)
+                ssc.exec_()
+                selected = ssc.get_selected_systems()
+                if not hasattr(game, 'released'):
+                    game.released = 'Cancelled'
+                else:
+                    # Just keep the year
+                    game.released = game.released.split('-')[0]
+                if selected:
+                    for system in selected:
+                        data = {COLUMN_ID: str(game.id),
+                                COLUMN_NAME: game.name,
+                                COLUMN_YEAR: game.released,
+                                COLUMN_RATING: str(game.rating),
+                                COLUMN_VOTES: str(np.sum([r['count'] for r in game.ratings])),
+                                COLUMN_SYSTEM: system}
+                        self.table.add_game(data)
+                if self.pending_selected != None:
+                    self.url = self.pending_selected[0]
+                    del self.pending_selected[0]
+                    if not self.pending_selected:
+                        self.pending_selected = None
+                    self.launch_add_game_worker()
+                else:
+                    self.parent.clear_options()
+                    self.parent.set_original_order()
 
-                self.table.update_colors()
+                    self.table.update_colors()
+                    self.hide()
+                    self.table.resize_columns()
+
+                    self.table.scrollToBottom()
+            else: # No platforms - that means that the game's id is incorrect
                 self.hide()
-                self.table.resize_columns()
-
-                self.table.scrollToBottom()
-
+                error = QtWidgets.QErrorMessage()
+                error.showMessage('That is not a valid game id')
+                error.setWindowTitle('Add game')
+                error.exec_()
         else:
             src = SearchResultsController(html, parent = self)
             src.exec_()
@@ -180,7 +186,7 @@ class AddGameController(QtWidgets.QDialog):
         '''
         Private class to create background processes in order to parse a piece of html code.
         '''
-        def __init__(self, url, api_read, parent=None):
+        def __init__(self, url, api_read, parent = None):
             QtCore.QThread.__init__(self, parent)
             self.exiting = False
             self.url = url
