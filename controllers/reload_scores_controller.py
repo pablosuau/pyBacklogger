@@ -114,7 +114,7 @@ class ReloadScoresController(QtWidgets.QWidget):
             try:
                 for i in range(0, len(self.indexes)):
                     row = self.indexes[i].row()
-                    sleep(randint(5, 15))
+                    sleep(randint(1, 5))
                     game_id = self.table.item(row, HEADERS.index(COLUMN_ID)).text()
                     try:
                         rawg = rawgpy.RAWG(RAWG_USERAGENT)
