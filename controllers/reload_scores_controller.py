@@ -6,16 +6,21 @@ to be banned.
 
 from random import randint
 from time import sleep
+import numpy as np
 import urllib.request
 import urllib.error
+import rawgpy
+from rawgpy.game import Game
 from PyQt5 import QtCore, QtWidgets
 from lxml.html.soupparser import fromstring
+from util import util
 from util.util import parse_difficulty_length
-from models.constants import HEADERS, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES
+from models.constants import RAWG_USERAGENT
+from models.constants import HEADERS, COLUMN_NAME, COLUMN_RATING, COLUMN_VOTES, COLUMN_ID
 
-WARNING_MESSAGE = """<strong>A warning about doing too many requests to GameFAQs.</strong><br><br>\n
-Making too many requests to GameFAQs during the course of the same day may result in your IP to be permanently blocked.
-As a consequence of this, this application limits the size of the selection to be updated to 200 rows.
+WARNING_MESSAGE = """<strong>A warning about doing too many requests.</strong><br><br>\n
+Making too many requests to rawg.io may overload their servers.
+As a consequence of this, this application limits the size of the selection to be updated to 100 rows.
 Please, try not to update more than this amount of games on a single day."""
 
 class ReloadScoresController(QtWidgets.QWidget):
@@ -51,11 +56,11 @@ class ReloadScoresController(QtWidgets.QWidget):
             error.showMessage('No games were selected')
             error.setWindowTitle('Reload scores')
             error.exec_()
-        elif len(indexes) > 200:
+        elif len(indexes) > 100:
             error = QtWidgets.QErrorMessage(self.parent)
             error.setWindowModality(QtCore.Qt.WindowModal)
             error.showMessage(WARNING_MESSAGE + \
-                '<br><br><strong>Please select less than 200 games to use this option.</strong>')
+                '<br><br><strong>A maximum of 100 games can be selected</strong>')
             error.setWindowTitle('Reload scores')
             error.exec_()
         else:
@@ -84,7 +89,7 @@ class ReloadScoresController(QtWidgets.QWidget):
         Object for the thread that will scrape GameFAQs to update
         games' data.
         '''
-        def __init__(self, table, indexes, progress_signal, parent=None):
+        def __init__(self, table, indexes, progress_signal, parent = None):
             '''
             Initialization of the thread.
 
@@ -110,56 +115,24 @@ class ReloadScoresController(QtWidgets.QWidget):
                 for i in range(0, len(self.indexes)):
                     row = self.indexes[i].row()
                     sleep(randint(5, 15))
-                    url = self.table.item(row, HEADERS.index(COLUMN_URL)).text()
-                    response = urllib.request.urlopen(
-                        urllib.request.Request(
-                            str(url),
-                            headers={'User-Agent' : "Magic Browser"})
-                        )
-                    doc = fromstring(response.read().decode('ascii', 'ignore'))
-                    # Updating the name, in case it changed
-                    element = doc.xpath("//h1[@class='page-title']")
-                    self.table.item(row,
-                                    HEADERS.index(COLUMN_NAME)).setText(element[0].findtext('a'))
-                    # Updating the score
-                    element = doc.xpath("//fieldset[@id='js_mygames_rate']")
-                    if element:
-                        rating_str = (
-                            element[0]
-                            .getchildren()[0]
-                            .getchildren()[0]
-                            .getchildren()[1]
-                            .findtext('a')
-                        )
-                        if rating_str is None:
-                            rating = '0.00'
-                            votes = '0'
-                        else:
-                            rating = rating_str.split(' / ')[0]
-                            votes_str = (
-                                element[0]
-                                .getchildren()[0]
-                                .getchildren()[0]
-                                .getchildren()[2]
-                                .text
-                            )
-                            votes = votes_str.split(' ')[0]
-                    else:
-                        rating = '0.00'
-                        votes = '0'
-                    self.table.item(row, HEADERS.index(COLUMN_RATING)).setText(rating)
-                    self.table.item(row, HEADERS.index(COLUMN_VOTES)).setText(votes)
-                    # Difficulty and length
-                    self.table.item(row,
-                                    HEADERS.index(COLUMN_DIFFICULTY)) \
-                                    .setText(parse_difficulty_length(doc,
-                                                                     'js_mygames_diff'))
-                    self.table.item(row,
-                                    HEADERS.index(COLUMN_LENGTH)) \
-                                    .setText(parse_difficulty_length(doc,
-                                                                     'js_mygames_time'))
+                    game_id = self.table.item(row, HEADERS.index(COLUMN_ID)).text()
+                    try:
+                        rawg = rawgpy.RAWG(RAWG_USERAGENT)
+                        game = Game({'slug': game_id})
+                        game.populate()
+                        self.progress_signal.emit(i)
 
-                    self.progress_signal.emit(i)
+                        self.table.item(row,
+                                        HEADERS.index(COLUMN_NAME)).setText(game.name)
+                        self.table.item(row, 
+                                        HEADERS.index(COLUMN_RATING)).setText(str(game.rating))
+                        self.table.item(row, 
+                                        HEADERS.index(COLUMN_VOTES)) \
+                                  .setText(str(np.sum([r['count'] for r in game.ratings])))
+                    except Exception as e:
+                        print(e)
+                        util.show_error_message(self.parent, 'The game data couldn\'t be retrieved')
+
                 self.table.compute_final_rating()
                 self.table.changed = True
                 self.table.update_colors()

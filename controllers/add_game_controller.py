@@ -205,8 +205,8 @@ class AddGameController(QtWidgets.QDialog):
                 game = Game({'slug': self.game_id})
                 game.populate()
                 self.api_read.emit(game)
-            except exception:
-                print(exception.reason)
-                util.show_error_message(self.parent(), 'The game data couldn\'t be retrieved')
+            except Exception as e:
+                print(e)
+                util.show_error_message(self.parent, 'The game data couldn\'t be retrieved')
         def __del__(self):
             self.exiting = True
