@@ -65,7 +65,7 @@ class Ui_AddGameDialog(object):
     def retranslateUi(self, AddGameDialog):
         _translate = QtCore.QCoreApplication.translate
         AddGameDialog.setWindowTitle(_translate("AddGameDialog", "Add game by"))
-        self.radioButtonUrl.setText(_translate("AddGameDialog", "GameFAQs' url"))
+        self.radioButtonUrl.setText(_translate("AddGameDialog", "RAWG.io's url"))
         self.radioButtonSearch.setText(_translate("AddGameDialog", "Game search"))
         self.pushButtonOk.setText(_translate("AddGameDialog", "Ok"))
         self.pushButtonCancel.setText(_translate("AddGameDialog", "Cancel"))

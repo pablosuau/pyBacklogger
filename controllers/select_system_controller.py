@@ -1,57 +1,52 @@
 '''
-Code to control the search results interface. It allows to add the selected games
-in the search results dialog to the backlog.
+Code to control the system selection interface. It allows to select the game's
+specific system among all the options provided by rawg's api
 '''
-
 from PyQt5 import QtGui, QtCore, QtWidgets
-from lxml.html.soupparser import fromstring
-from views.search_results_dialog import Ui_SearchResultsDialog
-from models.constants import RAWG_URL
+from views.select_system_dialog import Ui_SelectSystemDialog
 
-class SearchResultsController(QtWidgets.QDialog):
+class SelectSystemController(QtWidgets.QDialog):
     '''
-    Controller of the dialog to interact with game search results
+    Controller of the dialog to select a game system
     '''
-
-    def __init__(self, games, parent = None):
+    def __init__(self, name, systems, parent = None):
         '''
         Initialises the user interface and sets up the signals
 
         parameters:
+        	- name: the game's name
+        	- systems: a list with the systems to display
             - parent: the controller which is the parent of the search results dialog
-            - games: a list of RAWG's Game objects
         '''
-        super(SearchResultsController, self).__init__(parent)
+        super(SelectSystemController, self).__init__(parent)
 
-        self.view = Ui_SearchResultsDialog()
+        self.view = Ui_SelectSystemDialog()
         self.view.setupUi(self)
 
-        self.games = games
+        self.systems = systems
+        self.checked = 0
         self.canceled = False
 
-        self.importing = None
-        self.pending_selected = None
-
-        self.checked = 0
-
-        self.initialize_ui()
+        self.initialize_ui(name)
         self.setup_signals()
 
-    def initialize_ui(self):
+    def initialize_ui(self, name):
         '''
-        Fills the view with the game search results
-        '''
-        # Displaying search results
-        model = QtGui.QStandardItemModel()
-        for game in self.games:
-            item = QtGui.QStandardItem(game.name)
-            item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-            item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole)
-            model.appendRow(item)
-        model.itemChanged.connect(self.on_item_changed)
-        self.view.listViewGames.setModel(model)
+        Fills the view with the elements of the system list
 
-        self.checked = 0
+        Parameters:
+        	- name: the game's name
+        '''
+        self.setWindowTitle(name)
+        model = QtGui.QStandardItemModel()
+        for system in self.systems:
+        	item = QtGui.QStandardItem(system)
+        	item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
+        	item.setData(QtCore.Qt.Unchecked, QtCore.Qt.CheckStateRole)
+        	model.appendRow(item)
+        model.itemChanged.connect(self.on_item_changed)
+        self.view.listViewSystems.setModel(model)
+
         self.view.pushButtonOk.setEnabled(False)
 
     def setup_signals(self):
@@ -88,27 +83,27 @@ class SearchResultsController(QtWidgets.QDialog):
         '''
         if item.checkState() == QtCore.Qt.Checked:
             self.checked = self.checked + 1
-            if self.checked == 1:
+            if self.checked > 0:
                 self.view.pushButtonOk.setEnabled(True)
         else:
             self.checked = self.checked - 1
             if self.checked == 0:
                 self.view.pushButtonOk.setEnabled(False)
 
-    def get_search_results(self):
+    def get_selected_systems(self):
         '''
-        Returns a list with the games that were selected by the user by means of the selection
+        Returns a list with the systems that were selected by the user by means of the selection
         checkboxes.
 
         returns:
-            - a list with the URLs of the selected games in the search results dialog
+            - a list with the name of the selected systems on the search results dialog
         '''
         selected = []
         if not self.canceled:
-            model = self.view.listViewGames.model()
+            model = self.view.listViewSystems.model()
             for index in range(model.rowCount()):
                 item = model.item(index)
                 if item.isCheckable() and item.checkState() == QtCore.Qt.Checked:
-                    selected.append(self.games[index].id)
+                    selected.append(self.systems[index])
 
         return selected

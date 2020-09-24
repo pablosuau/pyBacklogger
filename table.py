@@ -18,9 +18,8 @@ from models.status_model import StatusModel
 from models.sort_list_model import SortListModel
 from models.constants import HEADERS, HEADERS_EXTENDED, LABEL_NONE, COLUMN_NAME, \
                              COLUMN_SYSTEM, COLUMN_YEAR, COLUMN_RATING, \
-                             COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_LENGTH, \
-                             COLUMN_DIFFICULTY, COLUMN_STATUS, COLUMN_LABELS, \
-                             COLUMN_NOTES, COLUMN_URL, COLUMN_ORDER, DIFFICULTY_COLORS, \
+                             COLUMN_VOTES, COLUMN_WEIGHTED, COLUMN_STATUS, \
+                             COLUMN_LABELS, COLUMN_NOTES, COLUMN_ID, COLUMN_ORDER, \
                              OPTIONS_STATUS
 
 class Table(QtWidgets.QTableWidget):
@@ -91,7 +90,6 @@ class Table(QtWidgets.QTableWidget):
         self.models['system_list_model'] = FilterListModel()
         self.models['label_list_model'] = FilterListModel(LABEL_NONE)
         self.models['status_list_model'] = FilterListModel()
-        self.models['difficulty_list_model'] = FilterListModel()
         self.models['status_model'] = StatusModel()
         self.models['sort_list_model'] = SortListModel()
 
@@ -101,73 +99,38 @@ class Table(QtWidgets.QTableWidget):
         self.clicked.connect(self.cell_is_clicked)
         self.cellChanged.connect(self.cell_is_changed)
 
-    def add_game(self, url, html):
+    def add_game(self, data):
         '''
-        Extracts the game data from a downloaded html page prior to adding the game to the table
-        (see add_game_row). The URL of the downloaded html page is used to check whether the game
-        was already in the database, and an error message is produced if that is the case.
+        Preprocess the game data and prepares it to be inserted into the database
 
         parameters:
-            - url: URL from which the html data was downloaded
-            - html: html page of the game to be added to the database
+            - data: a dictionary containing the game data as extracted from the API
         '''
-        try:
-            doc = fromstring(html)
-            data = dict()
-            # Game's name
-            element = doc.xpath("//h1[@class='page-title']")
-            data[COLUMN_NAME] = element[0].text
-            # Game's system
-            element = doc.xpath("//title")
-            value = element[0].text
-            value = value.split(data[COLUMN_NAME] + ' for ')[1]
-            value = value.split(' - GameFAQs')[0]
-            data[COLUMN_SYSTEM] = value
-            # Year
-            element = doc.xpath("//*[text()='Release:']/parent::li")
-            value = element[0].findtext('a')
-            data[COLUMN_YEAR] = re.search('[0-9][0-9][0-9][0-9]|Canceled|TBA', value).group()
-            # Rating, votes and final rating
-            element = re.sub(' +', ' ', doc.xpath("//div[@class='gamespace_rate_half']/@title")[0]).split(' ')
-            if len(element) == 6:
-                data[COLUMN_RATING] = element[1]
-                data[COLUMN_VOTES] = element[4]
-            else:
-                data[COLUMN_RATING] = '0.00'
-                data[COLUMN_VOTES] = '0'
-            # Difficulty and length
-            data[COLUMN_DIFFICULTY] = parse_difficulty_length(doc, 'gs_difficulty_avg_hint')
-            data[COLUMN_LENGTH] = parse_difficulty_length(doc, 'gs_length_avg_hint').replace(' Hours', '')
-            # Checking that the game is not already in the database
-            rows = self.rowCount()
-            found = False
-            pos = 0
-            while not found and pos < rows:
-                if self.item(pos, HEADERS.index(COLUMN_URL)).text() == url:
-                    found = True
-                pos = pos + 1
+        # Checking that the game is not already in the database
+        rows = self.rowCount()
+        found = False
+        pos = 0
+        while not found and pos < rows:
+            if self.item(pos, HEADERS.index(COLUMN_ID)).text() == data[COLUMN_ID]  and \
+               self.item(pos, HEADERS.index(COLUMN_SYSTEM)).text() == data[COLUMN_SYSTEM]:
+                found = True
+            pos = pos + 1
 
-            if found:
-                error_message = QtWidgets.QErrorMessage(self)
-                error_message.showMessage(data[COLUMN_NAME] + ' (' +
-                                          data[COLUMN_SYSTEM] +
-                                          ') is already in the database')
-            else:
-                data[COLUMN_WEIGHTED] = ''
-                data[COLUMN_STATUS] = 'unplayed'
-                data[COLUMN_LABELS] = ''
-                data[COLUMN_NOTES] = ''
-                data[COLUMN_URL] = url
-                self.add_game_row(data)
-                # And recomputing weighted ratins
-                self.compute_final_rating()
-        except (TypeError, IndexError):
-            # This exception is produced if there is an error while parsing the HTML
+        if found:
             error_message = QtWidgets.QErrorMessage(self)
-            error_message.showMessage('The URL ' + url +
-                                      ' does not seem to be a valid game entry on GameFAQs')
+            error_message.showMessage(data[COLUMN_NAME] + ' (' +
+                                      data[COLUMN_SYSTEM] +
+                                      ') is already in the database')
+        else:
+            data[COLUMN_WEIGHTED] = ''
+            data[COLUMN_STATUS] = 'unplayed'
+            data[COLUMN_LABELS] = ''
+            data[COLUMN_NOTES] = ''
+            self.add_game_row(data)
+            # And recomputing weighted ratins
+            self.compute_final_rating()
 
-    def add_game_row(self, data, row=None):
+    def add_game_row(self, data, row = None):
         '''
         This method effectively adds a single game as a row to the table after the data has been
         parsed from the corresponding HTML page.
@@ -183,7 +146,7 @@ class Table(QtWidgets.QTableWidget):
         else:
             rows = row
 
-        def set_item(data, column, set_flags=True):
+        def set_item(data, column, set_flags = True):
             """
             Creates items for the table and assigns elements
             """
@@ -199,13 +162,10 @@ class Table(QtWidgets.QTableWidget):
         set_item(data, COLUMN_RATING)
         set_item(data, COLUMN_VOTES)
         set_item(data, COLUMN_WEIGHTED)
-        set_item(data, COLUMN_DIFFICULTY)
-        set_item(data, COLUMN_LENGTH)
-        set_item(data, COLUMN_URL)
         set_item(data, COLUMN_NOTES, False)
+        set_item(data, COLUMN_ID)
         item = set_item(data, COLUMN_STATUS)
         item.setForeground(OPTIONS_STATUS[data[COLUMN_STATUS]])
-        self.models['difficulty_list_model'].add(data[COLUMN_DIFFICULTY])
         self.models['system_list_model'].add(data[COLUMN_SYSTEM])
         self.models['status_list_model'].add(data[COLUMN_STATUS])
         # labels
@@ -241,12 +201,10 @@ class Table(QtWidgets.QTableWidget):
         data[COLUMN_RATING] = self.item(row, HEADERS.index(COLUMN_RATING)).text()
         data[COLUMN_VOTES] = self.item(row, HEADERS.index(COLUMN_VOTES)).text()
         data[COLUMN_WEIGHTED] = self.item(row, HEADERS.index(COLUMN_WEIGHTED)).text()
-        data[COLUMN_DIFFICULTY] = self.item(row, HEADERS.index(COLUMN_DIFFICULTY)).text()
-        data[COLUMN_LENGTH] = self.item(row, HEADERS.index(COLUMN_LENGTH)).text()
         data[COLUMN_STATUS] = self.item(row, HEADERS.index(COLUMN_STATUS)).text()
         data[COLUMN_LABELS] = self.cellWidget(row, HEADERS.index(COLUMN_LABELS)).labels_to_string()
         data[COLUMN_NOTES] = self.item(row, HEADERS.index(COLUMN_NOTES)).text()
-        data[COLUMN_URL] = self.item(row, HEADERS.index(COLUMN_URL)).text()
+        data[COLUMN_ID] = self.item(row, HEADERS.index(COLUMN_ID)).text()
 
         return data
 
@@ -319,8 +277,6 @@ class Table(QtWidgets.QTableWidget):
                 # Assigning colour ranges
                 all_values = np.array(all_values)
                 indices = all_values == -1
-                if column == COLUMN_LENGTH:
-                    all_values = 80 - all_values
                 if max_value - min_value > 0:
                     all_values = 100*(all_values - min_value)/(max_value - min_value)
                 else:
@@ -335,7 +291,7 @@ class Table(QtWidgets.QTableWidget):
             update_colors_column(COLUMN_YEAR)
             update_colors_column(COLUMN_VOTES)
             update_colors_column(COLUMN_RATING)
-            update_colors_column(COLUMN_LENGTH)
+            update_colors_column(COLUMN_ID)
 
             # Colour code for different systems
             systems = []
@@ -350,13 +306,6 @@ class Table(QtWidgets.QTableWidget):
                 color = QtGui.QColor()
                 color.setHsv(step*systems.index(system), 255, 150)
                 self.item(row, HEADERS.index(COLUMN_SYSTEM)).setForeground(color)
-
-            # COlour code for difficulty levels
-            for row in range(0, self.rowCount()):
-                value = self.item(row, HEADERS.index(COLUMN_DIFFICULTY)).text()
-                self.item(row, HEADERS \
-                               .index(COLUMN_DIFFICULTY)) \
-                               .setForeground(DIFFICULTY_COLORS[value])
 
     def hide_rows(self):
         '''
@@ -383,9 +332,6 @@ class Table(QtWidgets.QTableWidget):
                 filtered_out = filtered_out or \
                                self.models['status_list_model'].get_filtered(
                                    self.item(row, HEADERS.index(COLUMN_STATUS)).text())
-                filtered_out = filtered_out or \
-                               self.models['difficulty_list_model'].get_filtered(
-                                   self.item(row, HEADERS.index(COLUMN_DIFFICULTY)).text())
             self.setRowHidden(row, filtered_out)
 
     def show_all_rows(self):
